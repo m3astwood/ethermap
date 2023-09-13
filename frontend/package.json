@@ -1,0 +1,21 @@
+{
+  "name": "ethermap.front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "eslint-plugin-lit": "^1.9.1",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "leaflet-contextmenu": "^1.4.0",
+    "lit": "^2.8.0",
+    "socket.io-client": "^4.7.2"
+  }
+}
