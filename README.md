@@ -26,6 +26,28 @@ $ npm run dev
 
 You should now be able to access ethermaps on [http://localhost:3000](http://localhost:3000/) (or whichever port you configured in your `.env` file).
 
+## Tech
+
+### Backend
+
+Backend is running on [express.js](https://expressjs.com/) with [ViteExpress](https://github.com/szymmis/vite-express) bridging the gap between the fron and backends.
+
+Database models, and queries are handled by [objection.js](https://vincit.github.io/objection.js/) ORM built on top of [knex](https://knexjs.org/). During dev the database defaults to an Sqlite3 db, and then during production it will be able to handle whichever database you choose. For now it has only been setup to work with PostgreSQL.
+
+Live data is shared with the client using [socket.io](https://socket.io/).
+
+Tests are written with [AVA](https://github.com/avajs/ava) and route testing uses [supertest](https://github.com/ladjs/supertest).
+
+### Frontend
+
+Frontend is an SPA using [lit](https://lit.dev/) element, and some [utilities](https://github.com/thepassle/app-tools) by [Pascal Schilp](https://github.com/thepassle).
+
+Map rendering is done with [leaflet](https://leafletjs.com/).
+
+Live rendering of users is done with [socket.io-client](https://socket.io/docs/v4/client-api/).
+
+For the developer environment and future building, the frontend is managed by [Vite](https://vitejs.dev/).
+
 ## Desires
 
 Minimal viable functionality for this project is the following :

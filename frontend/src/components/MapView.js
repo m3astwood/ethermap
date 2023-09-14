@@ -81,11 +81,16 @@ class MapView extends LitElement {
     })
 
     // get the map with name
+    // TODO@me only run this if we are at the path /m/:mapName
     this.mapController.get(this.name).then(m => {
-      this.socket.emit('connect-map', m.id)
+      if (m?.id) {
+        this.socket.emit('connect-map', m.id)
+      }
 
       // set points
-      this.setPoints(m.map_points)
+      if (m?.map_points.length > 0) {
+        this.setPoints(m.map_points)
+      }
     })
 
   }
