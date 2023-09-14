@@ -48,6 +48,15 @@ Live rendering of users is done with [socket.io-client](https://socket.io/docs/v
 
 For the developer environment and future building, the frontend is managed by [Vite](https://vitejs.dev/).
 
+### Docker
+
+You can build a development image & run it with the following:
+
+```sh
+docker build -t m3astwood/ethermap
+docker run -it -p 3000:3000 m3astwood/ethermap
+```
+
 ## Desires
 
 Minimal viable functionality for this project is the following :
