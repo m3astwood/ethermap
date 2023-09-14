@@ -22,12 +22,15 @@ const updatePoint = async (req, res, next) => {
 
     const _point = await PointModel.query().patchAndFetchById(id, point)
 
-    if (!_point) throw new Error('No point found with id :', id)
+    if (!_point) {
+      res.status(404)
+      throw new Error('No point found with id :', id)
+    }
+
 
     res.status(201)
     res.json(_point)
   } catch (err) {
-    res.status(404)
     next(err)
   }
 }
@@ -37,12 +40,14 @@ const deletePoint = async (req, res, next) => {
     const { id } = req.params
     const num = await PointModel.query().deleteById(id)
 
-    if (!num) throw new Error('No items deleted with id', id)
+    if (!num) {
+      res.status(404)
+      throw new Error('No items deleted with id', id)
+    }
 
     res.status(200)
     res.json({})
   } catch (err) {
-    res.status(404)
     next(err)
   }
 

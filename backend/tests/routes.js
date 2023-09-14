@@ -98,6 +98,22 @@ test.serial('put "/api/point/:id" with invalid id throws 404 error', async t => 
   t.is(res.status, 404)
 })
 
+test.serial('get "/api/map/:id/points" will return an array of all points associated with map and status of 200', async t => {
+  const res = await request(App)
+    .get('/api/map/1/points')
+
+  t.is(res.status, 200)
+  t.truthy(res.body.points?.constructor === Array)
+  t.is(res.body.points[0].name, 'very pointy')
+})
+
+test.serial ('get "/api/map/:id/points" with invalid id throws a 404 error', async t => {
+  const res = await request(App)
+    .get('/api/map/100/points')
+
+  t.is(res.status, 404)
+})
+
 test.serial('delete "/api/point/:id" with invalid id throws 404 error', async t => {
   const res = await request(App)
     .delete('/api/point/100')

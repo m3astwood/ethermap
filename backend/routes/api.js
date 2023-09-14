@@ -2,11 +2,10 @@ import { Router } from 'express'
 const router = Router()
 
 // MAPS
-import { getAllMaps } from '../controllers/maps.js'
-import { getMapByName } from '../controllers/maps.js'
-
+import { getMapByName, getAllMaps, getMapPoints } from '../controllers/maps.js'
 router.get('/maps', getAllMaps)
-router.get('/map/:mapName', getMapByName)
+router.get('/map/:name', getMapByName)
+router.get('/map/:id/points', getMapPoints)
 
 // POINTS
 import { createPoint, deletePoint, updatePoint } from '../controllers/points.js'
