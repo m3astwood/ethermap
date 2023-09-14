@@ -131,4 +131,3 @@ test.serial('delete "/api/point/:id" with valid id returns 200 status', async t 
 test.after(async () => {
   await db.migrate.down()
 })
-

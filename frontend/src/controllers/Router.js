@@ -13,7 +13,7 @@ if (!globalThis.URLPattern) {
 export default new Router({
   fallback: '/404',
   routes: [
-    { 
+    {
       path: '/',
       title: 'ethermap | index',
       render: () => html`
@@ -33,4 +33,3 @@ export default new Router({
     }
   ]
 })
-

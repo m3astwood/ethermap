@@ -1,4 +1,4 @@
-# ethermap 
+# ethermap
 
 > This is very much a janky _earlydays_ project. All help is welcome!
 
@@ -9,18 +9,18 @@ An interactive map tool. A tool for collaborative planning on maps. Anyone can c
 Ethermap is built in JavaScript (soz) using NodeJS. To install you can do so by running the following commands.
 
 To install all dependencies for the front and backend :
-```sh 
+```sh
 $ npm install
 ```
 You will then need to create a `.env` file in the root folder. There is a `.env.template` that you can copy as a guide. For a dev server you can simply copy and paste the template leaving it as is.
 
 Then migrate the database structure :
-```sh 
+```sh
 $ npm run migrate:latest
 ```
 
 Then you should be able to run the dev server :
-```sh 
+```sh
 $ npm run dev
 ```
 
@@ -47,6 +47,15 @@ Map rendering is done with [leaflet](https://leafletjs.com/).
 Live rendering of users is done with [socket.io-client](https://socket.io/docs/v4/client-api/).
 
 For the developer environment and future building, the frontend is managed by [Vite](https://vitejs.dev/).
+
+### Docker
+
+You can build a development image & run it with the following:
+
+```sh
+docker build -t m3astwood/ethermap
+docker run -it -p 3000:3000 m3astwood/ethermap
+```
 
 ## Desires
 
