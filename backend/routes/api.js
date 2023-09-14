@@ -9,7 +9,7 @@ router.get('/maps', getAllMaps)
 router.get('/map/:mapName', getMapByName)
 
 // POINTS
-import { setPoint } from '../controllers/points.js'
-router.post('/point/add', setPoint)
+import { createPoint } from '../controllers/points.js'
+router.post('/point/add', createPoint)
 
 export default router

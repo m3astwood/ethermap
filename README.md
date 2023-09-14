@@ -24,7 +24,7 @@ Then you should be able to run the dev server :
 $ npm run dev
 ```
 
-You should now be able to access ethermaps on [`http://localhost:3000`](http://localhost:3000/) (or whichever port you configured in your `.env` file).
+You should now be able to access ethermaps on [http://localhost:3000](http://localhost:3000/) (or whichever port you configured in your `.env` file).
 
 ## Desires
 
