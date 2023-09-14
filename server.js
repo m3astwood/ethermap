@@ -15,4 +15,3 @@ const io = new Server(server)
 ViteExpress.bind(App, server)
 
 Socket(io)
-

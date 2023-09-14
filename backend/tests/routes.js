@@ -89,4 +89,3 @@ test.serial('post "/api/point/add" with incorrect data keys throws 500 error', a
 test.after(async () => {
   await db.migrate.down()
 })
-
