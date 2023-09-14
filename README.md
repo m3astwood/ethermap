@@ -6,7 +6,7 @@ An interactive map tool. A tool for collaborative planning on maps. Anyone can c
 
 ## Install
 
-Ethermap is built in JavaScript (soz) using NodeJS. To install you can do so by running the following commands.
+Ethermap is built in JavaScript using NodeJS. To install you can do so by running the following commands.
 
 To install all dependencies for the front and backend :
 ```sh
