@@ -20,7 +20,7 @@ export default class PointController {
         })
       })
 
-      console.log(res)
+      console.log(await res.json())
     } catch (err) {
       console.error(err)
     }

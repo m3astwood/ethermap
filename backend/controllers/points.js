@@ -6,7 +6,7 @@ const createPoint = async (req, res, next) => {
     const { mapId, point } = req.body
 
     const map = await MapModel.query().findById(mapId)
-    const _point = await map.$relatedQuery('map_points').insert(point)
+    const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
 
     res.status(201)
     res.json(_point)
