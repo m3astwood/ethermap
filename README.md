@@ -10,23 +10,21 @@ Ethermap is built in JavaScript (soz) using NodeJS. To install you can do so by 
 
 To install all dependencies for the front and backend :
 ```sh 
-$ npm run install:all
+$ npm run install
 ```
-You will then need to create a `.env` file in the root of the backend. There is a `.env.template` that you can copy as a guide. For a dev server you can simply copy and paste the template leaving it as is.
+You will then need to create a `.env` file in the root folder. There is a `.env.template` that you can copy as a guide. For a dev server you can simply copy and paste the template leaving it as is.
 
 Then migrate the database structure :
 ```sh 
 $ npm run migrate:latest
 ```
 
-Then you should be able to run the dev servers :
+Then you should be able to run the dev server :
 ```sh 
-$ npm run dev:all
+$ npm run dev
 ```
 
-> NOTE : while you can change the server port number, the front end is hardwired to make requests on port 3000, so for now don't change this.
-
-The backend is running on the port that you defined in your `.env` file (by default it is port 3000), and the frontend will be running on the default Vite port `5173`.
+You should now be able to access ethermaps on [`http://localhost:3000`](http://localhost:3000/) (or whichever port you configured in your `.env` file).
 
 ## Desires
 
