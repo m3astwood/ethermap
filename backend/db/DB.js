@@ -1,4 +1,4 @@
-import knexConfig from '../knexfile.js'
+import knexConfig from '../../knexfile.js'
 import Knex from 'knex'
 import { Model } from 'objection'
 

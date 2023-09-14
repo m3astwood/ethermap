@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  root: 'frontend/',
   base: '/',
   build: {
     sourcemap: true,

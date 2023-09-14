@@ -11,11 +11,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export default {
   development: {
     client: 'sqlite3',
+    useNullAsDefault: true,
     connection: {
-      filename: './db/development.db'
+      filename: __dirname + '/backend/db/development.db'
     },
     migrations: {
-      directory: __dirname + '/db/migrations'
+      directory: __dirname + '/backend/db/migrations'
     },
     seeds: {
       directory: __dirname + '/db/seeds'
@@ -27,10 +28,10 @@ export default {
     connection: ':memory:',
     useNullAsDefault: true,
     migrations: {
-      directory: __dirname + '/db/migrations'
+      directory: __dirname + '/backend/db/migrations'
     },
     seeds: {
-      directory: __dirname + '/db/seeds'
+      directory: __dirname + '/backend/db/seeds'
     }
   },
 

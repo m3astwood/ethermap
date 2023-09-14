@@ -32,7 +32,7 @@ class MapView extends LitElement {
 
   firstUpdated() {
     // connect to socket
-    this.socket = io('http://localhost:3000')
+    this.socket = io()
 
     // create leaflet map
     const mapEl = this.shadowRoot.querySelector('main')
