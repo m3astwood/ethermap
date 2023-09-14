@@ -6,7 +6,27 @@ An interactive map tool. A tool for collaborative planning on maps. Anyone can c
 
 ## Install
 
-Ethermap is built in JavaScript (soz) using NodeJS. Install instructinos for the back and frontend are in their respective folders.
+Ethermap is built in JavaScript (soz) using NodeJS. To install you can do so by running the following commands.
+
+To install all dependencies for the front and backend :
+```sh 
+$ npm run install:all
+```
+You will then need to create a `.env` file in the root of the backend. There is a `.env.template` that you can copy as a guide. For a dev server you can simply copy and paste the template leaving it as is.
+
+Then migrate the database structure :
+```sh 
+$ npm run migrate:latest
+```
+
+Then you should be able to run the dev servers :
+```sh 
+$ npm run dev:all
+```
+
+> NOTE : while you can change the server port number, the front end is hardwired to make requests on port 3000, so for now don't change this.
+
+The backend is running on the port that you defined in your `.env` file (by default it is port 3000), and the frontend will be running on the default Vite port `5173`.
 
 ## Desires
 

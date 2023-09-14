@@ -24,10 +24,8 @@ export default {
 
   test: {
     client: 'sqlite3',
+    connection: ':memory:',
     useNullAsDefault: true,
-    connection: {
-      filename: './db/testing.db'
-    },
     migrations: {
       directory: __dirname + '/db/migrations'
     },
@@ -37,7 +35,7 @@ export default {
   },
 
   staging: {
-    client: 'pg',
+    client: process.env.DB_PROVIDER,
     connection: {
       database: process.env.DB_NAME,
       user: process.env.DB_USER,
@@ -55,7 +53,7 @@ export default {
   },
 
   production: {
-    client: 'pg',
+    client: process.env.DB_PROVIDER,
     connection: {
       database: process.env.DB_NAME,
       user: process.env.DB_USER,

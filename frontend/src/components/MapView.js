@@ -91,10 +91,12 @@ class MapView extends LitElement {
   }
 
   setPoints(points) {
+    console.log(points)
     points.forEach((p, i) => {
       this.points[i] = L.marker([ p.location.x, p.location.y ]).addTo(this.leaflet)
       this.points[i].bindPopup(`<h3>${p.name}</h3>${p.notes ? `<p>${p.notes}</p>` : ''}`)
     })
+
 
     const end = points.length - 1
     this.leaflet.setView([ points[end].location.x, points[end].location.y ], 13)
