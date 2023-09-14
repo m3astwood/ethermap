@@ -67,6 +67,6 @@ class NewMapModal extends LitElement {
       }
     `
   }
-} 
+}
 
 window.customElements.define('newmap-modal', NewMapModal)

@@ -58,7 +58,7 @@ class MapView extends LitElement {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.leaflet)
 
-    
+
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => {
       this.socket.emit('mousemove', evt.latlng)
