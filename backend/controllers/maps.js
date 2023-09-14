@@ -36,7 +36,9 @@ const getMapByName = async (req, res, next) => {
       })
     }
 
-    res.json(map)
+    const { user } = req.session
+
+    res.json({ user, map })
   } catch (err) {
     next(err)
   }

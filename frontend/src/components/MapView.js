@@ -18,6 +18,7 @@ class MapView extends LitElement {
       points: { type: Array, state: true },
       leaflet: { state: true },
       socket: { state: true },
+      clientSettings: { state: true },
       users: { state: true }
     }
   }
@@ -28,6 +29,7 @@ class MapView extends LitElement {
     this.leaflet = {}
     this.points = []
     this.users = []
+    this.clientSettings = {}
   }
 
   firstUpdated() {
@@ -82,14 +84,18 @@ class MapView extends LitElement {
 
     // get the map with name
     // TODO@me only run this if we are at the path /m/:mapName
-    this.mapController.get(this.name).then(m => {
-      if (m?.id) {
-        this.socket.emit('connect-map', m.id)
+    this.mapController.get(this.name).then(data => {
+      const { user, map } = data
+      this.clientSettings = user
+      console.log(this.clientSettings)
+
+      if (map?.id) {
+        this.socket.emit('connect-map', map.id)
       }
 
       // set points
-      if (m?.map_points.length > 0) {
-        this.setPoints(m.map_points)
+      if (map?.map_points.length > 0) {
+        this.setPoints(map.map_points)
       }
     })
   }

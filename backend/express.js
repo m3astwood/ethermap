@@ -27,6 +27,10 @@ app.use(session({
   store
 }))
 
+//middleware
+import { setSessionData } from './middleware/sessions.js'
+app.use(setSessionData)
+
 // routes
 import apiRouter from './routes/api.js'
 app.use('/api', apiRouter)

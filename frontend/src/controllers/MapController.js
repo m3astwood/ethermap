@@ -11,7 +11,7 @@ export default class MapController {
       const req = await fetch(`/api/map/${name}`)
       const json = await req.json()
 
-      this.map = json
+      this.map = json.map
       return json
     } catch (err) {
       console.error(err)
