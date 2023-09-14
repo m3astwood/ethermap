@@ -1,6 +1,6 @@
 import MapModel from '../db/models/map.js'
 
-const getAllMaps = async (req, res) => {
+const getAllMaps = async (_, res) => {
   const maps = await MapModel.query()
 
   res.json({ maps })
@@ -12,8 +12,13 @@ const getMapByName = async (req, res) => {
     let map = await MapModel.query().where({ name }).withGraphFetched('map_points').first()
 
     if (!map) {
-      const created = await MapModel.query().insert({ name })
-      map = await MapModel.query().findById(created.id).withGraphFetched('map_points')
+      const created = await MapModel
+        .query()
+        .insert({ name })
+
+      map = await MapModel.query()
+        .findById(created.id)
+        .withGraphFetched('map_points')
     }
 
     // convert location from string to point

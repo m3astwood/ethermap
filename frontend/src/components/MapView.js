@@ -92,7 +92,6 @@ class MapView extends LitElement {
         this.setPoints(m.map_points)
       }
     })
-
   }
 
   setPoints(points) {

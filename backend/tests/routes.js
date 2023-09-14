@@ -57,7 +57,7 @@ test.serial('post "/api/point/add" body containing a name, location and map_id s
       }
     })
 
-  t.is(res.status, 200)
+  t.is(res.status, 201)
   t.is(res.body.id, 1)
   t.is(res.body.map_id, mapId)
   t.is(res.body.name, 'pointy')
@@ -84,6 +84,40 @@ test.serial('post "/api/point/add" with incorrect data keys throws 500 error', a
     })
 
   t.is(error.status, 500)
+})
+
+test.serial('update "/api/point/:id" with valid data will return new point object', async t => {
+  const body = { point: { name: 'very pointy' } }
+  const res = await request(App)
+    .put('/api/point/1')
+    .send(body)
+
+  t.is(res.status, 201)
+  t.is(res.body.id, 1)
+  t.is(res.body.name, 'very pointy')
+})  
+
+test.serial('put "/api/point/:id" with invalid id throws 404 error', async t => {
+  const body = { point: { name: 'dull' } }
+  const res = await request(App)
+    .put('/api/point/100')
+    .send(body)
+
+  t.is(res.status, 404)
+})
+
+test.serial('delete "/api/point/:id" with invalid id throws 404 error', async t => {
+  const res = await request(App)
+    .delete('/api/point/100')
+
+  t.is(res.status, 404)
+})
+
+test.serial('delete "/api/point/:id" with valid id returns 200 status', async t => {
+  const res = await request(App)
+    .delete('/api/point/1')
+
+  t.is(res.status, 200)
 })
 
 test.after(async () => {
