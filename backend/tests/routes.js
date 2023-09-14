@@ -23,29 +23,21 @@ test.serial('get "/api/maps" route should return an object containing an array c
   t.truthy(res.body.maps?.constructor === Array)
 })
 
-test.serial('get "/api/map/:mapName" route should return map with matching name', async t => {
+test.serial('get "/api/map/:mapName" route to new mapName should return new map with matching name and status 201', async t => {
   const res = await request(App).get('/api/map/bingo')
 
-  t.is(res.status, 200)
+  t.is(res.status, 201)
   t.is(res.body.name, 'bingo')
 })
 
-test.serial('get "/api/map/:mapName" route with different mapName should create new map with different id', async t => {
-  const res = await request(App).get('/api/map/cheese')
-
-  t.is(res.status, 200)
-  t.truthy(res.body.id)
-  t.not(res.body.id, 1)
-})
-
-test.serial('get "/api/map/:mapName" route with existing mapName should return same id', async t => {
+test.serial('get "/api/map/:mapName" route to existing mapName should return same id with status 200', async t => {
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 200)
   t.is(res.body.id, 1)
 })
 
-test.serial('post "/api/point/add" body containing a name, location and map_id should return a point', async t => {
+test.serial('post "/api/point/add" body containing a name, location and map_id should return a point with status 201', async t => {
   const { body: { id: mapId } } = await request(App).get('/api/map/bingo')
   const res = await request(App)
     .post('/api/point/add')
@@ -63,7 +55,7 @@ test.serial('post "/api/point/add" body containing a name, location and map_id s
   t.is(res.body.name, 'pointy')
 })
 
-test.serial('get "/api/map/:mapName" with associated points should return a map with an array of points', async t => {
+test.serial('get "/api/map/:mapName" with associated points should return a map with an array of points with status 200', async t => {
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 200)
@@ -86,7 +78,7 @@ test.serial('post "/api/point/add" with incorrect data keys throws 500 error', a
   t.is(error.status, 500)
 })
 
-test.serial('update "/api/point/:id" with valid data will return new point object', async t => {
+test.serial('update "/api/point/:id" with valid data will return new point object with status 201', async t => {
   const body = { point: { name: 'very pointy' } }
   const res = await request(App)
     .put('/api/point/1')

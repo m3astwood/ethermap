@@ -10,15 +10,15 @@ const getMapByName = async (req, res) => {
   const name = req.params.mapName
   try {
     let map = await MapModel.query().where({ name }).withGraphFetched('map_points').first()
+    res.status(200)
 
     if (!map) {
-      const created = await MapModel
+      map = await MapModel
         .query()
-        .insert({ name })
-
-      map = await MapModel.query()
-        .findById(created.id)
+        .insertAndFetch({ name })
         .withGraphFetched('map_points')
+
+      res.status(201)
     }
 
     // convert location from string to point
