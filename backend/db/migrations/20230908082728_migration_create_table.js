@@ -17,7 +17,7 @@ const up = (knex) => {
       table.point('location')
       table.timestamp('created_at').defaultTo(knex.fn.now())
       table.timestamp('updated_at').defaultTo(knex.fn.now())
-      table.integer('map_id').references('id').inTable('maps')
+      table.integer('map_id').references('id').inTable('maps').onDelete('CASCADE')
     })
 }
 
@@ -26,9 +26,15 @@ const up = (knex) => {
  * @returns { Promise<void> }
  */
 const down = (knex) => {
-  return knex.schema
-    .raw('DROP TABLE maps CASCADE')
-    .dropTable('map_points')
+  if (knex.client.version === 'pg' || knex.client.version === 'pg-mem') {
+    return knex.schema
+      .raw('DROP TABLE maps CASCADE')
+      .dropTable('map_points')
+  } else {
+    return knex.schema
+      .dropTable('maps')
+      .dropTable('map_points')
+  }
 }
 
 export { up, down }

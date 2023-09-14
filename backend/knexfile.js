@@ -10,13 +10,23 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
  */
 export default {
   development: {
-    client: 'pg',
+    client: 'sqlite3',
     connection: {
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT
+      filename: './db/development.db'
+    },
+    migrations: {
+      directory: __dirname + '/db/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/db/seeds'
+    }
+  },
+
+  test: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection: {
+      filename: './db/testing.db'
     },
     migrations: {
       directory: __dirname + '/db/migrations'
