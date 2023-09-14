@@ -10,7 +10,7 @@ Ethermap is built in JavaScript (soz) using NodeJS. To install you can do so by 
 
 To install all dependencies for the front and backend :
 ```sh 
-$ npm run install
+$ npm install
 ```
 You will then need to create a `.env` file in the root folder. There is a `.env.template` that you can copy as a guide. For a dev server you can simply copy and paste the template leaving it as is.
 
