@@ -15,8 +15,6 @@ export default class UserController {
       const res = await fetch('/api/user')
       const { user } = await res.json()
 
-      console.log(user)
-
       this.settings = user
       return this.settings
     } catch (err) {
@@ -28,7 +26,6 @@ export default class UserController {
     try {
       const body = { user: {} }
       body.user[evt.target.name] = evt.target.value
-      console.log('sending', body)
 
       const res = await fetch('/api/user', {
         method: 'POST',
@@ -37,9 +34,7 @@ export default class UserController {
         },
         body: JSON.stringify(body)
       })
-
-      const json = await res.json()
-      console.log(json)
+      // TODO@m3astwood add feedback of success/error
     } catch (err) {
       console.error(err)
     }

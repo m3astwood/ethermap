@@ -5,6 +5,8 @@ import * as L from 'leaflet'
 import 'leaflet-contextmenu'
 
 import { io } from 'socket.io-client'
+// HACK this needs to be finessed
+import SvgCursor from './SvgCursor.js'
 
 import MapController from '../controllers/MapController'
 
@@ -66,22 +68,24 @@ class MapView extends LitElement {
 
     // track other users
     this.socket.on('mousemove', (data) => {
-      // TODO@me check whether user is in view before rendering
-      // TODO@me restrict rendering within range of zoom-level
-      const { id, pos } = data
+      // TODO@suroh check whether user is in view before rendering
+      // TODO@suroh restrict rendering within range of zoom-level
+      const { user, pos } = data
+
+      console.log(user)
 
       // if user is not created, then do so
-      if (!this.users[id]) {
-        const cursorIcon = L.icon({ iconUrl: '/icons/cursor.svg', iconSize: [ 20, 30 ], iconAnchor: [ 0, 8 ], className: 'user-cursor' })
-         this.users[id] = L.marker([ pos.lat, pos.lng ], { icon: cursorIcon, interactive: false, zIndexOffset: 1000 }).addTo(this.leaflet)
+      if (!this.users[user.id]) {
+        const cursorIcon = L.divIcon({ html: SvgCursor(user.colour), iconSize: [ 20, 30 ], iconAnchor: [ 0, 8 ], className: 'user-cursor' })
+        this.users[user.id] = L.marker([ pos.lat, pos.lng ], { icon: cursorIcon, interactive: false, zIndexOffset: 1000 }).addTo(this.leaflet)
       }
 
       // update cursor's position
-      this.users[id].setLatLng([ pos.lat, pos.lng ])
+      this.users[user.id].setLatLng([ pos.lat, pos.lng ])
     })
 
     // get the map with name
-    // TODO@me only run this if we are at the path /m/:mapName
+    // TODO@suroh only run this if we are at the path /m/:mapName
     this.mapController.get(this.name).then(data => {
       const { map } = data
 
@@ -103,7 +107,6 @@ class MapView extends LitElement {
       this.points[i].bindPopup(`<h3>${p.name}</h3>${p.notes ? `<p>${p.notes}</p>` : ''}`)
     })
 
-
     const end = points.length - 1
     this.leaflet.setView([ points[end].location.x, points[end].location.y ], 13)
   }
@@ -114,16 +117,20 @@ class MapView extends LitElement {
 
   static get styles() {
     return [ unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
-    :host {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 
-    main {
-      flex-grow: 1;
-    }
-    ` ]
+.user-cursor {
+  color: var(--user-colour, #333333);
+}
+
+main {
+  flex-grow: 1;
+}
+` ]
   }
 }
 
