@@ -9,7 +9,8 @@ class MapModel extends Model {
     required: ['name'],
     properties: {
       id: { type: 'integer' },
-      name: { type: 'string', minLength: 1 }
+      name: { type: 'string', minLength: 1 },
+      map_points: { type: 'array', items: { type: 'object' } }
     }
   }
 
