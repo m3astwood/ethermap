@@ -9,15 +9,16 @@ import { io } from 'socket.io-client'
 import SvgCursor from './SvgCursor.js'
 
 import MapController from '../controllers/MapController'
+import PointController from '../controllers/PointController.js'
 
 class MapView extends LitElement {
   mapController = new MapController(this)
+  pointController = new PointController(this)
 
   static get properties() {
     return {
       name: { type: String },
       map: { state: true },
-      points: { type: Array, state: true },
       leaflet: { state: true },
       socket: { state: true },
       users: { state: true }
@@ -28,7 +29,6 @@ class MapView extends LitElement {
     super()
     this.name = ''
     this.leaflet = {}
-    this.points = []
     this.users = []
   }
 
@@ -93,20 +93,19 @@ class MapView extends LitElement {
 
       // set points
       if (map?.map_points.length > 0) {
-        this.setPoints(map.map_points)
+        this.pointController.list = map.map_points
+        this.pointController.list.forEach(this.setPoint, this)
+
+        const end = this.pointController.list.length - 1
+        this.leaflet.setView([ this.pointController.list[end].location.x, this.pointController.list[end].location.y ])
       }
     })
   }
 
-  setPoints(points) {
-    console.log(points)
-    points.forEach((p, i) => {
-      this.points[i] = L.marker([ p.location.x, p.location.y ]).addTo(this.leaflet)
-      this.points[i].bindPopup(`<h3>${p.name}</h3>${p.notes ? `<p>${p.notes}</p>` : ''}`)
-    })
-
-    const end = points.length - 1
-    this.leaflet.setView([ points[end].location.x, points[end].location.y ], 13)
+  setPoint(point, index) {
+    index = index ?? this.pointController.list.length - 1
+    this.pointController.list[index].marker = L.marker([ point.location.x, point.location.y ]).addTo(this.leaflet)
+    this.pointController.list[index].marker.bindPopup(`<h3>${point.name}</h3>${point.notes ? `<p>${point.notes}</p>` : ''}`)
   }
 
   render() {

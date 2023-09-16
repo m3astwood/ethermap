@@ -2,6 +2,17 @@ export default class PointController {
   constructor(host) {
     this.host = host
     this.host.addController(this)
+
+    this.list = []
+  }
+
+  hostConnected() {
+    console.log('connected to', this.host)
+    window.addEventListener('point-saved', ({ detail: newPoint }) => {
+      console.log('point created', newPoint)
+      this.list = [ ...this.list, newPoint ]
+      this.host.setPoint(newPoint)
+    })
   }
 
   static async savePoint(mapId, point) {
@@ -20,7 +31,7 @@ export default class PointController {
         })
       })
 
-      console.log(await res.json())
+      return await res.json()
     } catch (err) {
       console.error(err)
     }

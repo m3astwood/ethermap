@@ -3,9 +3,6 @@ import { live } from 'lit/directives/live.js'
 import PointController from '../controllers/PointController.js'
 
 class PointModal extends LitElement {
-
-  pointController = new PointController(this)
-
   static get properties() {
     return {
       latlng: { type: Object },
@@ -45,13 +42,23 @@ class PointModal extends LitElement {
     this.modalEl.close()
   }
 
-  save(evt) {
+  async save(evt) {
     evt.preventDefault()
-    console.log(this.mapId)
-    PointController.savePoint(this.mapId, { name: this.name, notes: this.notes, location: this.latlng })
-    // TODO@me validate form entry
-    // TODO@me check if successful
-    this.close(evt)
+    try {
+      const newPoint = await PointController.savePoint(this.mapId, { name: this.name, notes: this.notes, location: this.latlng })
+
+      if (!newPoint) throw new Error('No point created')
+
+      const event = new CustomEvent('point-saved', {
+        bubbles: true, composed: true,
+        detail: newPoint
+      })
+
+      this.dispatchEvent(event)
+      this.close(evt)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   render() {

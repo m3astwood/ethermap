@@ -1,5 +1,5 @@
 import MapModel from '../db/models/map.js'
-import PointModel from '../db/models/point.js'
+import { convertMapPoint } from '../utils/toPoint.js'
 
 const getAllMaps = async (_, res) => {
   const maps = await MapModel.query()
@@ -24,16 +24,7 @@ const getMapByName = async (req, res, next) => {
 
     // convert location from string to point
     if (map?.map_points.length > 0) {
-      map.map_points.forEach(p => {
-        if (
-          typeof p.location === 'string' ||
-          p.location instanceof String
-        ) {
-          const locString = p.location.replace(/[()\s]/g, '')
-          const [ x, y ] = locString.split(',')
-          p.location = { x, y }
-        }
-      })
+      map.map_points.forEach(convertMapPoint)
     }
 
     const { user } = req.session
@@ -47,7 +38,7 @@ const getMapByName = async (req, res, next) => {
 const getMapPoints = async (req, res, next) => {
   try {
     const { id } = await req.params
-    
+
     let map = await MapModel.query().findById(id)
 
     if (!map) {
@@ -57,6 +48,8 @@ const getMapPoints = async (req, res, next) => {
 
     let points = await map
       .$relatedQuery('map_points')
+
+    points.forEach(convertMapPoint)
 
     res.status(200)
     res.json({ points })
