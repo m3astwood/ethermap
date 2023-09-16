@@ -72,8 +72,6 @@ class MapView extends LitElement {
       // TODO@suroh restrict rendering within range of zoom-level
       const { user, pos } = data
 
-      console.log(user)
-
       // if user is not created, then do so
       if (!this.users[user.id]) {
         const cursorIcon = L.divIcon({ html: SvgCursor(user.colour), iconSize: [ 20, 30 ], iconAnchor: [ 0, 8 ], className: 'user-cursor' })
@@ -117,20 +115,16 @@ class MapView extends LitElement {
 
   static get styles() {
     return [ unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
-:host {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
+      :host {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
 
-.user-cursor {
-  color: var(--user-colour, #333333);
-}
-
-main {
-  flex-grow: 1;
-}
-` ]
+      main {
+        flex-grow: 1;
+      }
+    ` ]
   }
 }
 
