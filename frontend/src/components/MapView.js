@@ -29,7 +29,7 @@ class MapView extends LitElement {
     super()
     this.name = ''
     this.leaflet = {}
-    this.users = []
+    this.users = {}
   }
 
   firstUpdated() {
@@ -80,6 +80,11 @@ class MapView extends LitElement {
 
       // update cursor's position
       this.users[user.id].setLatLng([ pos.lat, pos.lng ])
+    })
+
+    this.socket.on('user-disconnected', (id) => {
+      this.users[id].remove()
+      delete this.users[id]
     })
 
     // get the map with name
