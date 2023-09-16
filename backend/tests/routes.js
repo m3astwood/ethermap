@@ -27,18 +27,18 @@ test.serial('get "/api/map/:mapName" route to new mapName should return new map 
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 201)
-  t.is(res.body.name, 'bingo')
+  t.is(res.body.map.name, 'bingo')
 })
 
 test.serial('get "/api/map/:mapName" route to existing mapName should return same id with status 200', async t => {
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 200)
-  t.is(res.body.id, 1)
+  t.is(res.body.map.id, 1)
 })
 
 test.serial('post "/api/point/add" body containing a name, location and map_id should return a point with status 201', async t => {
-  const { body: { id: mapId } } = await request(App).get('/api/map/bingo')
+  const { body: { map: { id: mapId } } } = await request(App).get('/api/map/bingo')
   const res = await request(App)
     .post('/api/point/add')
     .send({
@@ -59,12 +59,12 @@ test.serial('get "/api/map/:mapName" with associated points should return a map 
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 200)
-  t.truthy(res.body.map_points)
-  t.is(res.body.map_points.length, 1)
+  t.truthy(res.body.map.map_points)
+  t.is(res.body.map.map_points.length, 1)
 })
 
 test.serial('post "/api/point/add" with incorrect data keys throws 500 error', async t => {
-  const { body: { id: mapId } } = await request(App).get('/api/map/bingo')
+  const { body: { map: { id: mapId } } } = await request(App).get('/api/map/bingo')
   const error = await request(App)
     .post('/api/point/add')
     .send({
@@ -87,7 +87,7 @@ test.serial('update "/api/point/:id" with valid data will return new point objec
   t.is(res.status, 201)
   t.is(res.body.id, 1)
   t.is(res.body.name, 'very pointy')
-})  
+})
 
 test.serial('put "/api/point/:id" with invalid id throws 404 error', async t => {
   const body = { point: { name: 'dull' } }
