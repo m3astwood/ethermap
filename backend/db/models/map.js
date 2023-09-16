@@ -4,6 +4,15 @@ import Point from './point.js'
 class MapModel extends Model {
   static tableName = 'maps'
 
+  static jsonSchema = {
+    type: 'object',
+    required: ['name'],
+    properties: {
+      id: { type: 'integer' },
+      name: { type: 'string', minLength: 1 }
+    }
+  }
+
   static get relationMappings() {
     return {
       map_points: {
