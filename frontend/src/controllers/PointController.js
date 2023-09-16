@@ -8,6 +8,7 @@ export default class PointController {
 
   hostConnected() {
     console.log('connected to', this.host)
+
     window.addEventListener('point-saved', ({ detail: newPoint }) => {
       console.log('point created', newPoint)
       this.list = [ ...this.list, newPoint ]
@@ -31,7 +32,8 @@ export default class PointController {
         })
       })
 
-      return await res.json()
+      const newPoint = await res.json()
+      return newPoint
     } catch (err) {
       console.error(err)
     }

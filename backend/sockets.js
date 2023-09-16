@@ -19,5 +19,10 @@ export const Socket = (io, session) => {
       socket.to(roomId).emit('mousemove', { user: { ...session.user }, pos })
     })
 
+    socket.on('new-point', (point) => {
+      console.log(point)
+      socket.to(roomId).emit('new-point', point)
+    })
+
   })
 }
