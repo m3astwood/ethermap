@@ -10,26 +10,26 @@ const getAllMaps = async (_, res) => {
 const getMapByName = async (req, res, next) => {
   const { name } = req.params
   try {
-    let map = await MapModel.query().where({ name }).withGraphFetched('map_points').first()
-    res.status(200)
+    let points, map = await MapModel.query().where({ name }).first()
 
-    if (!map) {
+    if (map) {
+      points = await map.$relatedQuery('map_points')
+      res.status(200)
+    } else {
       map = await MapModel
         .query()
         .insertAndFetch({ name })
-        .withGraphFetched('map_points')
+      points = []
 
       res.status(201)
     }
 
     // convert location from string to point
-    if (map?.map_points.length > 0) {
-      map.map_points.forEach(convertMapPoint)
+    if (points.length > 0) {
+      points.forEach(convertMapPoint)
     }
 
-    const { user } = req.session
-
-    res.json({ user, map })
+    res.json({ map, points })
   } catch (err) {
     next(err)
   }

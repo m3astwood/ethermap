@@ -3,10 +3,7 @@ import './components/PointModal.js'
 import './components/UserTool.js'
 import Router from './controllers/Router.js'
 
-import UserController from './controllers/UserController.js'
-
 class EthermapApp extends LitElement {
-  userController = new UserController(this)
 
   static get properties() {
     return {
@@ -21,8 +18,6 @@ class EthermapApp extends LitElement {
   }
 
   async firstUpdated() {
-    this.user = await this.userController.getUser()
-
     Router.addEventListener('route-changed', () => {
       console.log('route-changed')
       this.route = Router.render()
@@ -38,7 +33,7 @@ class EthermapApp extends LitElement {
     return html`
     <nav>
       <span>toolbar</span>
-      <user-tool .user=${this.user}></user-tool>
+      <user-tool></user-tool>
     </nav>
     ${this.route}
     <point-modal></point-modal>

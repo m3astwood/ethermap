@@ -1,12 +1,15 @@
 import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
-import PointController from '../controllers/PointController.js'
+
+import { StoreController } from 'exome/lit'
+import mapStore from '../store/mapStore'
 
 class PointModal extends LitElement {
+  map = new StoreController(this, mapStore)
+
   static get properties() {
     return {
       latlng: { type: Object },
-      mapId: { type: Number, state: true },
       id: { type: Number },
       name: { type: String },
       notes: { type: String },
@@ -17,7 +20,6 @@ class PointModal extends LitElement {
   constructor() {
     super()
     this.id = ''
-    this.mapId = ''
     this.name = ''
     this.notes = ''
     this.latlng = {}
@@ -28,9 +30,7 @@ class PointModal extends LitElement {
     this.modalEl = this.shadowRoot.querySelector('dialog')
   }
 
-  open(mapId, latlng) {
-    this.mapId = mapId
-    console.log(mapId)
+  open(latlng) {
     this.latlng = { ...latlng }
     this.name = ''
     this.notes = ''
@@ -45,16 +45,12 @@ class PointModal extends LitElement {
   async save(evt) {
     evt.preventDefault()
     try {
-      const newPoint = await PointController.savePoint(this.mapId, { name: this.name, notes: this.notes, location: this.latlng })
-
-      if (!newPoint) throw new Error('No point created')
-
-      const event = new CustomEvent('point-saved', {
-        bubbles: true, composed: true,
-        detail: newPoint
+      await this.map.store.createPoint({
+        name: this.name,
+        notes: this.notes,
+        location: this.latlng
       })
 
-      this.dispatchEvent(event)
       this.close(evt)
     } catch (err) {
       console.error(err)

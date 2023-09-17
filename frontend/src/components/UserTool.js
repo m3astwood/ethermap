@@ -1,18 +1,24 @@
 import AccountIcon from '../../public/icons/AccountUserPersonSquare.svg'
 import { LitElement, html, css } from "lit"
 import { live } from 'lit/directives/live.js'
-import UserController from '../controllers/UserController'
+
+// store
+import { StoreController } from 'exome/lit'
+import userStore from '../store/userStore.js'
 
 class UserTool extends LitElement {
+  user = new StoreController(this, userStore)
+
   static get properties() {
-    return {
-      user: { type: Object }
-    }
+    return {}
   }
 
   constructor() {
     super()
-    this.user = {}
+  }
+
+  firstUpdated() {
+    this.user.store.getSettings()
   }
 
   toggleDropdown() {
@@ -27,8 +33,8 @@ class UserTool extends LitElement {
       </button>
 
       <div class="dropdown">
-        <input name="name" placeholder="name" value=${live(this.user?.name)} @change=${async e => await UserController.updateSettings(e)}></input>
-        <input name="colour" type="color" value=${live(this.user?.colour)} @change=${async e => await UserController.updateSettings(e)}></input>
+        <input name="name" placeholder="name" value=${live(this.user.store.data.name)} @change=${async e => await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
+        <input name="colour" type="color" value=${live(this.user.store.data.colour)} @change=${async e => await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
       </div>
     `
   }
