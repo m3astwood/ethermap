@@ -1,11 +1,14 @@
 import { LitElement, html, css } from 'lit'
 import './components/PointModal.js'
+import './components/UserTool.js'
 import Router from './controllers/Router.js'
 
 class EthermapApp extends LitElement {
+
   static get properties() {
     return {
-      route: {}
+      route: { state: true },
+      user: { state: true }
     }
   }
 
@@ -14,7 +17,7 @@ class EthermapApp extends LitElement {
     this.route = Router.render()
   }
 
-  firstUpdated() {
+  async firstUpdated() {
     Router.addEventListener('route-changed', () => {
       console.log('route-changed')
       this.route = Router.render()
@@ -28,7 +31,10 @@ class EthermapApp extends LitElement {
 
   render() {
     return html`
-    <nav>toolbar</nav>
+    <nav>
+      <span>toolbar</span>
+      <user-tool></user-tool>
+    </nav>
     ${this.route}
     <point-modal></point-modal>
     `
@@ -43,8 +49,14 @@ class EthermapApp extends LitElement {
       }
 
       nav {
-        padding-inline: 0.75em;
-        padding-block: 0.75em;
+        display: flex;
+        align-items: center;
+        padding-inline: 1em;
+        padding-block: 0.75em 0.5em;
+      }
+
+      user-tool {
+        margin-inline-start: auto;
       }
     `
   }

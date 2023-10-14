@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
-import PointController from '../controllers/PointController.js'
+
+import { StoreController } from 'exome/lit'
+import mapStore from '../store/mapStore'
 
 class PointModal extends LitElement {
-
-  pointController = new PointController(this)
+  map = new StoreController(this, mapStore)
 
   static get properties() {
     return {
       latlng: { type: Object },
-      mapId: { type: Number, state: true },
       id: { type: Number },
       name: { type: String },
       notes: { type: String },
@@ -20,7 +20,6 @@ class PointModal extends LitElement {
   constructor() {
     super()
     this.id = ''
-    this.mapId = ''
     this.name = ''
     this.notes = ''
     this.latlng = {}
@@ -31,9 +30,7 @@ class PointModal extends LitElement {
     this.modalEl = this.shadowRoot.querySelector('dialog')
   }
 
-  open(mapId, latlng) {
-    this.mapId = mapId
-    console.log(mapId)
+  open(latlng) {
     this.latlng = { ...latlng }
     this.name = ''
     this.notes = ''
@@ -45,13 +42,19 @@ class PointModal extends LitElement {
     this.modalEl.close()
   }
 
-  save(evt) {
+  async save(evt) {
     evt.preventDefault()
-    console.log(this.mapId)
-    PointController.savePoint(this.mapId, { name: this.name, notes: this.notes, location: this.latlng })
-    // TODO@me validate form entry
-    // TODO@me check if successful
-    this.close(evt)
+    try {
+      await this.map.store.createPoint({
+        name: this.name,
+        notes: this.notes,
+        location: this.latlng
+      })
+
+      this.close(evt)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   render() {

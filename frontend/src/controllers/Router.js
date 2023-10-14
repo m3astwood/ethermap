@@ -2,7 +2,7 @@ import { html } from 'lit'
 import { Router } from '@thepassle/app-tools/router.js'
 
 // views
-import '../components/MapView.js'
+import '../views/Map.js'
 import '../components/NewMapModal.js'
 
 if (!globalThis.URLPattern) {

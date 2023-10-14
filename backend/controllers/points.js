@@ -1,12 +1,15 @@
 import MapModel from '../db/models/map.js'
 import PointModel from '../db/models/point.js'
+import { convertMapPoint } from '../utils/toPoint.js'
 
 const createPoint = async (req, res, next) => {
   try {
     const { mapId, point } = req.body
 
     const map = await MapModel.query().findById(mapId)
-    const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
+    let _point = await map.$relatedQuery('map_points').insertAndFetch(point)
+
+    convertMapPoint(_point)
 
     res.status(201)
     res.json(_point)
@@ -20,13 +23,12 @@ const updatePoint = async (req, res, next) => {
     const { id } = req.params
     const { point } = req.body
 
-    const _point = await PointModel.query().patchAndFetchById(id, point)
+    let _point = await PointModel.query().patchAndFetchById(id, point)
 
     if (!_point) {
       res.status(404)
       throw new Error('No point found with id :', id)
     }
-
 
     res.status(201)
     res.json(_point)
