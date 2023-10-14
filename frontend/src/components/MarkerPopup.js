@@ -5,7 +5,9 @@ class MarkerPopup extends LitElement {
   static get properties() {
     return {
       id: { type: Number },
-      point: { type: Object }
+      point: { type: Object },
+
+      elWidth: { state: true }
     }
   }
 
@@ -20,8 +22,15 @@ class MarkerPopup extends LitElement {
     this.id = 0
   }
 
-  attributeChangedCallback(prop, ov, nv) {
-    console.log(prop, ov, nv)
+  firstUpdated() {
+    const event = new CustomEvent('mm:update-popup', {
+      bubbles: true, composed: true,
+      detail: {
+        width: this.shadowRoot
+      }
+    })
+
+    this.dispatchEvent(event)
   }
 
   render() {
@@ -48,16 +57,18 @@ class MarkerPopup extends LitElement {
     return css`
       :host {
         display: grid;
+        grid-template-columns: 1fr;
         grid-auto-flow: row;
         gap: 0.25em;
-        background: pink;
       }
 
       input, textarea {
-        display: bock;
+        display: block;
+        box-sizing: border-box;
+        width: 100%:
       }
     `
   }
 }
 
-window.customElements.define('marker-popup', MarkerPopup)
+window.customElements.define('em-marker-popup', MarkerPopup)

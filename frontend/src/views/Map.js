@@ -3,6 +3,8 @@ import io from '../api/socket.js'
 
 // components
 import '../components/LeafletMap.js'
+import '../components/MapPoint.js'
+import '../components/MarkerPopup.js'
 
 // Stores
 import { StoreController } from 'exome/lit'
@@ -51,13 +53,18 @@ class MapView extends LitElement {
   }
 
   render() {
-    console.log(this.map.store.points)
     return html`
-      <leaflet-map
-        .points=${this.map.store.points}
-        .contextMenu=${this.contextMenu}
-      >
-      </leaflet-map>
+      <!-- map -->
+      <em-leaflet-map .contextMenu=${this.contextMenu}>
+
+        <!-- points -->
+        ${this.map.store.points.map((point, idx) => html`
+          <em-map-point .point=${point} .latlon=${[point.location.x, point.location.y]}>
+            <em-marker-popup id=${idx} .point=${point}></em-marker-popup>
+          </em-map-point>
+        `)}
+
+      </em-leaflet-map>
     `
   }
 

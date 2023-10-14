@@ -1,12 +1,11 @@
-import { unsafeCSS, LitElement, html, css } from 'lit'
+import { unsafeCSS, LitElement, html, css, render } from 'lit'
+import { html as staticHtml } from 'lit/static-html.js'
 import leafletCss from 'leaflet/dist/leaflet.css?inline'
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
 import * as L from 'leaflet'
 import 'leaflet-contextmenu'
 
 import UserCursor from '../controllers/UserCursor'
-
-import '../components/MarkerPopup.js'
 
 class LeafletMap extends LitElement {
   userCursor = new UserCursor(this)
@@ -26,11 +25,6 @@ class LeafletMap extends LitElement {
     this.points = []
     this.contextMenu = []
     this.markers = []
-  }
-
-  // FIX@suroh this is not working perfectly
-  set points(array) {
-    array.forEach(this.setPoints, this)
   }
 
   firstUpdated() {
@@ -54,23 +48,23 @@ class LeafletMap extends LitElement {
 
   }
 
-  // TODO@suroh not taking values passed to attributes or properties
-  setPoints(point, idx) {
-    const pp = L.popup().setContent(`<marker-popup id=${idx} .point=${point}></marker-popup>`)
-    L.marker([ point.location.x, point.location.y ])
-      .bindPopup(pp)
-      .addTo(this.leaflet)
-  }
-
   setBounds() {
     // zoom map to see all markers
     const markerGroup = new L.featureGroup(this.points)
     this.leaflet.fitBounds(markerGroup.getBounds())
   }
 
+  handleSlotChange(evt) {
+    const childNodes = evt.target.assignedNodes({ flatten: true })
+    const points = childNodes.filter(cn => cn.tagName == 'EM-MAP-POINT')
+    points.forEach(p => p.leaflet = this.leaflet)
+  }
+
   render() {
     return html`
-      <main></main>
+      <main>
+        <slot @slotchange=${this.handleSlotChange}></slot>
+      </main>
     `
   }
 
@@ -86,4 +80,4 @@ class LeafletMap extends LitElement {
   }
 }
 
-window.customElements.define('leaflet-map', LeafletMap)
+window.customElements.define('em-leaflet-map', LeafletMap)

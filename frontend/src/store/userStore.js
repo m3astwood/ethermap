@@ -2,6 +2,10 @@ import { Exome } from 'exome'
 
 class UserStore extends Exome {
   data = {}
+  settings = {
+    name: '',
+    colour: ''
+  }
 
   async getSettings() {
     try {
@@ -18,15 +22,17 @@ class UserStore extends Exome {
     try {
       this.settings[field] = value
 
-      console.log(this.settings)
-
-      await fetch('/api/user', {
+      const res = await fetch('/api/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ user: this.settings })
       })
+
+      if (res.status != 200) {
+        throw Error(res)
+      }
     } catch (err) {
       // TODO@m3astwood add feedback of success/error
       console.error(err)
