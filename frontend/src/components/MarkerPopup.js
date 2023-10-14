@@ -22,17 +22,6 @@ class MarkerPopup extends LitElement {
     this.id = 0
   }
 
-  firstUpdated() {
-    const event = new CustomEvent('mm:update-popup', {
-      bubbles: true, composed: true,
-      detail: {
-        width: this.shadowRoot
-      }
-    })
-
-    this.dispatchEvent(event)
-  }
-
   render() {
     return html`
       <div>id : ${this.id}</div>

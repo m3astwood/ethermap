@@ -15,9 +15,11 @@ class MapView extends LitElement {
 
   static get properties() {
     return {
+      // props
       name: { type: String },
+      contextMenu: { type: Array },
+      // internal state
       socket: { state: true },
-      contextMenu: { type: Array }
     }
   }
 
