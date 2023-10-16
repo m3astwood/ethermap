@@ -1,5 +1,4 @@
-import { unsafeCSS, LitElement, html, css, render } from 'lit'
-import { html as staticHtml } from 'lit/static-html.js'
+import { unsafeCSS, LitElement, html, css } from 'lit'
 import leafletCss from 'leaflet/dist/leaflet.css?inline'
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
 import * as L from 'leaflet'
@@ -27,6 +26,11 @@ class LeafletMap extends LitElement {
     this.markers = []
   }
 
+  get slottedChildren() {
+    const slot = this.shadowRoot.querySelector('slot')
+    return slot.assignedElements()
+  }
+
   firstUpdated() {
     // create leaflet map
     const mapEl = this.shadowRoot.querySelector('main')
@@ -45,7 +49,6 @@ class LeafletMap extends LitElement {
 
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
-
   }
 
   setBounds() {
@@ -55,9 +58,8 @@ class LeafletMap extends LitElement {
   }
 
   handleSlotChange(evt) {
-    const childNodes = evt.target.assignedNodes({ flatten: true })
-    const points = childNodes.filter(cn => cn.tagName == 'EM-MAP-POINT')
-    points.forEach(p => p.leaflet = this.leaflet)
+    const childElements = evt.target.assignedElements({ selector: 'em-map-point' })
+    childElements.forEach(p => p.leaflet = this.leaflet)
   }
 
   render() {
@@ -75,6 +77,9 @@ class LeafletMap extends LitElement {
       }
       main {
         height: 100%;
+      }
+      .leaflet-popup-content {
+        margin: 8px;
       }
     `]
   }

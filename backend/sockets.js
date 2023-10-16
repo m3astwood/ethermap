@@ -19,9 +19,19 @@ export const Socket = (io, session) => {
       socket.to(roomId).emit('mousemove', { user: { ...session.user }, pos })
     })
 
-    socket.on('new-point', (point) => {
+    socket.on('point-create', (point) => {
       console.log(point)
-      socket.to(roomId).emit('new-point', point)
+      socket.to(roomId).emit('point-create', point)
+    })
+
+    socket.on('point-delete', (id) => {
+      console.log(id)
+      socket.to(roomId).emit('point-delete', id)
+    })
+
+    socket.on('point-update', (point) => {
+      console.log(point)
+      socket.to(roomId).emit('point-update', point)
     })
 
     socket.on('disconnect', () => {

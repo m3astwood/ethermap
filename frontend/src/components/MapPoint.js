@@ -5,22 +5,28 @@ class MapPoint extends LitElement {
   static properties = {
     id: { type: Number },
     lonlat: { type: Array },
-    leflet: { type: Object },
+    leaflet: { type: Object },
 
     marker: { state: true },
-    popup: { state: true }
+    popup: { state: true },
+    slotted: { state: true }
   }
 
   constructor() {
     super()
     this.id = {}
     this.latlon = []
+    this.slotted = []
   }
 
   firstUpdated() {
-    this.marker = L.marker(this.latlon).addTo(this.leaflet)
-
     this.genPopup(this.slottedChildren)
+  }
+
+  willUpdate(att) {
+    if (att.has('leaflet') && this.latlon) {
+      this.marker = L.marker(this.latlon).addTo(this.leaflet)
+    }
   }
 
   get slottedChildren() {
@@ -32,9 +38,15 @@ class MapPoint extends LitElement {
     this.popup = L.popup()
     this.marker.bindPopup(this.popup)
 
-    this.marker.on('popupopen', () => {
+    this.marker.on('popupopen', async () => {
       const pp = this.popup.getElement()
       const inner = pp.querySelector('.leaflet-popup-content')
+
+      // load MarkerPopup element
+      const hasPopup = childNodes.findIndex(n => n.tagName == 'EM-MARKER-POPUP') >= 0
+      if (hasPopup) {
+        await import('./MarkerPopup.js')
+      }
 
       render(childNodes, inner)
       this.popup.update()
@@ -43,7 +55,7 @@ class MapPoint extends LitElement {
 
   render() {
     return html`
-      <slot></slot>
+      <slot @slotchange=${this.handleSlotChange}></slot>
     `
   }
 }

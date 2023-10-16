@@ -4,7 +4,6 @@ import io from '../api/socket.js'
 // components
 import '../components/LeafletMap.js'
 import '../components/MapPoint.js'
-import '../components/MarkerPopup.js'
 
 // Stores
 import { StoreController } from 'exome/lit'
@@ -18,6 +17,7 @@ class MapView extends LitElement {
       // props
       name: { type: String },
       contextMenu: { type: Array },
+
       // internal state
       socket: { state: true },
     }
@@ -51,7 +51,19 @@ class MapView extends LitElement {
     // connect to socket room
     this.socket.emit('connect-map', this.map.store.data.id)
 
-    this.socket.on('new-point', this.map.store.setPoints)
+    // point actions
+    this.socket.on('point-create', this.map.store.setPoints)
+    this.socket.on('point-delete', this.map.store.deletePoint)
+
+    this.addEventListener('em:point-update', ({ detail }) => {
+      this.map.store.updatePoint(detail)
+      this.socket.emit('point-update', detail)
+    })
+
+    this.addEventListener('em:point-delete', ({ detail }) => {
+      this.map.store.deletePoint(detail.id)
+      this.socket.emit('point-delete', detail.id)
+    })
   }
 
   render() {
@@ -60,9 +72,9 @@ class MapView extends LitElement {
       <em-leaflet-map .contextMenu=${this.contextMenu}>
 
         <!-- points -->
-        ${this.map.store.points.map((point, idx) => html`
+        ${this.map.store.points.map(point => html`
           <em-map-point .point=${point} .latlon=${[point.location.x, point.location.y]}>
-            <em-marker-popup id=${idx} .point=${point}></em-marker-popup>
+            <em-marker-popup id=${point.id} .point=${point}></em-marker-popup>
           </em-map-point>
         `)}
 

@@ -23,6 +23,8 @@ const updatePoint = async (req, res, next) => {
     const { id } = req.params
     const { point } = req.body
 
+    console.log(req.body)
+
     let _point = await PointModel.query().patchAndFetchById(id, point)
 
     if (!_point) {

@@ -4,6 +4,10 @@ class MapStore extends Exome {
   data = {}
   points = []
 
+  _toCoords(location) {
+    return `(${location.lat}, ${location.lng})`
+  }
+
   async get(name) {
     try {
       const res = await fetch(`/api/map/${name}`)
@@ -30,7 +34,7 @@ class MapStore extends Exome {
   async createPoint(point) {
     try {
       // set location to point for db
-      point.location = `(${point.location.lat}, ${point.location.lng})`
+      point.location = this._toCoords(point.location)
 
       const res = await fetch('/api/point/add', {
         method: 'POST',
@@ -49,12 +53,44 @@ class MapStore extends Exome {
     }
   }
 
-  async updatePoint() {
+  async updatePoint(point) {
+    try {
+      const body = {
+        point: {
+          name: point.name || '',
+          notes: point.notes || ''
+        }
+      }
 
+      await fetch(`/api/point/${point.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  async deletePoint() {
+  async deletePoint(id) {
+    try {
+      let points = this.points
+      const idx = this.points.findIndex(p => p.id == id)
+      const res = await fetch(`/api/point/${id}`, {
+        method: 'DELETE',
+      })
 
+      if (res.status != 200) {
+        throw new Error(res)
+      }
+
+      points.splice(idx, 1)
+      this.points = [ ...points ]
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
 
