@@ -34,6 +34,10 @@ class MarkerPopup extends LitElement {
     this.id = 0
   }
 
+  firstUpdated() {
+    console.log(this.point)
+  }
+
   deleteHandler() {
     this.eventController.dispatch('em:point-delete', { detail: { id: this.id } })
   }
@@ -48,7 +52,7 @@ class MarkerPopup extends LitElement {
       <input
         type="text"
         name="name"
-        value=${live(this.point.name)}
+        .value=${live(this.point.name)}
         placeholder="name"
         @input=${e => this.point.name = e.target.value}
       >
@@ -57,7 +61,7 @@ class MarkerPopup extends LitElement {
       <textarea
         name="notes"
         placeholder="notes"
-        value=${live(this.point.notes)}
+        .value=${live(this.point.notes)}
         @input=${e => this.point.notes = e.target.value}
       ></textarea>
 

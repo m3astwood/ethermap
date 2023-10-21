@@ -1,4 +1,4 @@
-import AccountIcon from '../../public/icons/AccountUserPersonSquare.svg'
+import AccountIcon from '/icons/AccountUserPersonSquare.svg'
 import { LitElement, html, css } from "lit"
 import { live } from 'lit/directives/live.js'
 
