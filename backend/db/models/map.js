@@ -4,6 +4,14 @@ import Point from './point.js'
 class MapModel extends Model {
   static tableName = 'maps'
 
+  $beforeInsert() {
+    this.created_at = new Date().toISOString();
+  }
+
+  $beforeUpdate() {
+    this.updated_at = new Date().toISOString();
+  }
+
   static jsonSchema = {
     type: 'object',
     required: ['name'],
