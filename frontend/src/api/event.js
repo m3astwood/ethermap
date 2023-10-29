@@ -4,13 +4,13 @@ export default class EventController {
     this.host.addController(this)
   }
 
-  hostConnected() {
-    console.log('EventController connected')
-  }
-
-  hostDisconnected() {
-    console.log('EventController disconnected')
-  }
+  // hostConnected() {
+  //   console.log('EventController connected')
+  // }
+  //
+  // hostDisconnected() {
+  //   console.log('EventController disconnected')
+  // }
 
   dispatch(event, options) {
     options = options || {}

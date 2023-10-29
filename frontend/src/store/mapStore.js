@@ -47,7 +47,7 @@ class MapStore extends Exome {
         })
       })
 
-      this.points = [ ...this.points, await res.json() ]
+      this.setPoints([ ...this.points, await res.json() ])
     } catch (err) {
       console.error(err)
     }
@@ -87,7 +87,7 @@ class MapStore extends Exome {
       }
 
       points.splice(idx, 1)
-      this.points = [ ...points ]
+      this.setPoints([ ...points ])
     } catch (err) {
       console.error(err)
     }

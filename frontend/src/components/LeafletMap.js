@@ -1,6 +1,6 @@
 import { unsafeCSS, LitElement, html, css } from 'lit'
-import leafletCss from 'leaflet/dist/leaflet.css?inline'
-import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
+import leafletCss from 'leaflet/dist/leaflet.css'
+import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
 import * as L from 'leaflet'
 import 'leaflet-contextmenu'
 
@@ -11,10 +11,12 @@ class LeafletMap extends LitElement {
 
   static get properties() {
     return {
-      leaflet: { state: true },
-      markers: { state: true },
       points: { type: Array },
       contextMenu: { type: Array },
+      controls: { type: Boolean },
+
+      leaflet: { state: true },
+      markers: { state: true },
     }
   }
 
@@ -24,6 +26,7 @@ class LeafletMap extends LitElement {
     this.points = []
     this.contextMenu = []
     this.markers = []
+    this.controls = this.controls == undefined ? false : true
   }
 
   get slottedChildren() {
@@ -47,6 +50,16 @@ class LeafletMap extends LitElement {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.leaflet)
 
+    this.leaflet.locate({ setview: true, maxZoom: 19 })
+
+    this.leaflet.on('locationfound', (evt) => {
+      this.leaflet.panTo(evt.latlng)
+    })
+
+    this.leaflet.on('locationerror', () => {
+      console.error('location cannot be found')
+    })
+
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
   }
@@ -58,6 +71,7 @@ class LeafletMap extends LitElement {
   }
 
   handleSlotChange(evt) {
+    console.log(evt.target.assignedElements())
     const childElements = evt.target.assignedElements({ selector: 'em-map-point' })
     childElements.forEach(p => p.leaflet = this.leaflet)
   }
@@ -71,7 +85,7 @@ class LeafletMap extends LitElement {
   }
 
   static get styles() {
-    return [unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
+    return [ unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
       :host {
         flex-grow: 1;
       }
@@ -81,7 +95,7 @@ class LeafletMap extends LitElement {
       .leaflet-popup-content {
         margin: 8px;
       }
-    `]
+    ` ]
   }
 }
 

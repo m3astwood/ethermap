@@ -31,7 +31,7 @@ class MapView extends LitElement {
         text: 'create point',
         callback: async (evt) => {
           await this.map.store.createPoint({ location: evt.latlng })
-          this.socket.emit('new-point', this.map.store.points)
+          this.socket.emit('point-create', this.map.store.points)
         }
       }
     ]

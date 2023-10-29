@@ -17,6 +17,7 @@ class MarkerPopup extends LitElement {
       // props
       id: { type: Number },
       point: { type: Object },
+      marker: { type: Object },
 
       // internal state
       elWidth: { state: true }
@@ -34,15 +35,13 @@ class MarkerPopup extends LitElement {
     this.id = 0
   }
 
-  firstUpdated() {
-    console.log(this.point)
-  }
-
   deleteHandler() {
+    this.marker.remove()
     this.eventController.dispatch('em:point-delete', { detail: { id: this.id } })
   }
 
   updateHandler() {
+    this.marker.closePopup()
     this.eventController.dispatch('em:point-update', { detail: { ...this.point } })
   }
 

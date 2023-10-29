@@ -43,13 +43,18 @@ class MapPoint extends LitElement {
       const inner = pp.querySelector('.leaflet-popup-content')
 
       // load MarkerPopup element
-      const hasPopup = childNodes.findIndex(n => n.tagName == 'EM-MARKER-POPUP') >= 0
-      if (hasPopup) {
+      const popupIndex = childNodes.findIndex(n => n.tagName == 'EM-MARKER-POPUP')
+      if (popupIndex >= 0) {
         await import('./MarkerPopup.js')
+        childNodes[popupIndex].marker = this.marker
       }
 
       render(childNodes, inner)
       this.popup.update()
+    })
+
+    this.marker.on('popupclose', async () => {
+      this.popup.remove()
     })
   }
 
