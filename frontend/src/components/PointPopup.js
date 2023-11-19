@@ -18,6 +18,7 @@ class MarkerPopup extends LitElement {
       id: { type: Number },
       point: { type: Object },
       marker: { type: Object },
+      open: { type: Boolean },
 
       // internal state
       elWidth: { state: true }

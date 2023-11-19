@@ -50,11 +50,13 @@ class LeafletMap extends LitElement {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.leaflet)
 
-    this.leaflet.locate({ setview: true, maxZoom: 19 })
+    if (!this.controls) {
+      this.leaflet.locate({ setview: true, maxZoom: 19 })
 
-    this.leaflet.on('locationfound', (evt) => {
-      this.leaflet.panTo(evt.latlng)
-    })
+      this.leaflet.on('locationfound', (evt) => {
+        this.leaflet.panTo(evt.latlng)
+      })
+    }
 
     this.leaflet.on('locationerror', () => {
       console.error('location cannot be found')
@@ -71,8 +73,7 @@ class LeafletMap extends LitElement {
   }
 
   handleSlotChange(evt) {
-    console.log(evt.target.assignedElements())
-    const childElements = evt.target.assignedElements({ selector: 'em-map-point' })
+    const childElements = evt.target.assignedElements()
     childElements.forEach(p => p.leaflet = this.leaflet)
   }
 
