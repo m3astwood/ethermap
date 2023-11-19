@@ -55,15 +55,15 @@ test.serial('post "/api/point/add" body containing a name, location and map_id s
   t.is(res.body.name, 'pointy')
 })
 
-test.serial('get "/api/map/:mapName" with associated points should return a map with an array of points with status 200', async t => {
+test.serial('get "/api/map/:mapName" with points should return a map with an array of points with status 200', async t => {
   const res = await request(App).get('/api/map/bingo')
 
   t.is(res.status, 200)
-  t.truthy(res.body.map.map_points)
-  t.is(res.body.map.map_points.length, 1)
+  t.truthy(res.body.points)
+  t.is(res.body.points.length, 1)
 })
 
-test.serial('post "/api/point/add" with incorrect data keys throws 500 error', async t => {
+test.serial('post "/api/point/add" with incorrect data keys throws 400 error', async t => {
   const { body: { map: { id: mapId } } } = await request(App).get('/api/map/bingo')
   const error = await request(App)
     .post('/api/point/add')
@@ -75,7 +75,7 @@ test.serial('post "/api/point/add" with incorrect data keys throws 500 error', a
       }
     })
 
-  t.is(error.status, 500)
+  t.is(error.status, 400)
 })
 
 test.serial('update "/api/point/:id" with valid data will return new point object with status 201', async t => {
