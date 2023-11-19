@@ -12,7 +12,7 @@ class MapStore extends Exome {
     try {
       const res = await fetch(`/api/map/${name}`)
 
-      if (res.status != 200)  throw new Error(res.statusText)
+      if (res.status != 200 && res.status != 201) throw new Error(res.statusText)
 
       const { map, points } = await res.json()
 
