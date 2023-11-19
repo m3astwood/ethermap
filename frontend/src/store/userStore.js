@@ -12,8 +12,6 @@ class UserStore extends Exome {
       const res = await fetch('/api/user')
       const { user } = await res.json()
 
-      console.log(user)
-
       this.data = user
     } catch (err) {
       console.error(err)
