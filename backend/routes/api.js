@@ -9,7 +9,7 @@ router.get('/map/:id/points', getMapPoints)
 
 // POINTS
 import { createPoint, deletePoint, updatePoint } from '../controllers/points.js'
-router.post('/point/add', createPoint)
+router.post('/point', createPoint)
 router.put('/point/:id', updatePoint)
 router.delete('/point/:id', deletePoint)
 

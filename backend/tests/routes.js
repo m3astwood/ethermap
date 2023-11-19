@@ -37,10 +37,10 @@ test.serial('get "/api/map/:mapName" route to existing mapName should return sam
   t.is(res.body.map.id, 1)
 })
 
-test.serial('post "/api/point/add" body containing a name, location and map_id should return a point with status 201', async t => {
+test.serial('post "/api/point" body containing a name, location and map_id should return a point with status 201', async t => {
   const { body: { map: { id: mapId } } } = await request(App).get('/api/map/bingo')
   const res = await request(App)
-    .post('/api/point/add')
+    .post('/api/point')
     .send({
       mapId,
       point: {
@@ -63,10 +63,10 @@ test.serial('get "/api/map/:mapName" with points should return a map with an arr
   t.is(res.body.points.length, 1)
 })
 
-test.serial('post "/api/point/add" with incorrect data keys throws 400 error', async t => {
+test.serial('post "/api/point" with incorrect data keys throws 400 error', async t => {
   const { body: { map: { id: mapId } } } = await request(App).get('/api/map/bingo')
   const error = await request(App)
-    .post('/api/point/add')
+    .post('/api/point')
     .send({
       mapId,
       point: {
