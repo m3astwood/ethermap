@@ -1,7 +1,6 @@
-import { unsafeCSS, LitElement, html, css, render } from 'lit'
-import { html as staticHtml } from 'lit/static-html.js'
-import leafletCss from 'leaflet/dist/leaflet.css?inline'
-import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
+import { unsafeCSS, LitElement, html, css } from 'lit'
+import leafletCss from 'leaflet/dist/leaflet.css'
+import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
 import * as L from 'leaflet'
 import 'leaflet-contextmenu'
 
@@ -12,10 +11,12 @@ class LeafletMap extends LitElement {
 
   static get properties() {
     return {
-      leaflet: { state: true },
-      markers: { state: true },
       points: { type: Array },
       contextMenu: { type: Array },
+      controls: { type: Boolean },
+
+      leaflet: { state: true },
+      markers: { state: true },
     }
   }
 
@@ -25,6 +26,12 @@ class LeafletMap extends LitElement {
     this.points = []
     this.contextMenu = []
     this.markers = []
+    this.controls = this.controls == undefined ? false : true
+  }
+
+  get slottedChildren() {
+    const slot = this.shadowRoot.querySelector('slot')
+    return slot.assignedElements()
   }
 
   firstUpdated() {
@@ -43,9 +50,20 @@ class LeafletMap extends LitElement {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.leaflet)
 
+    if (!this.controls) {
+      this.leaflet.locate({ setview: true, maxZoom: 19 })
+
+      this.leaflet.on('locationfound', (evt) => {
+        this.leaflet.panTo(evt.latlng)
+      })
+    }
+
+    this.leaflet.on('locationerror', () => {
+      console.error('location cannot be found')
+    })
+
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
-
   }
 
   setBounds() {
@@ -55,9 +73,8 @@ class LeafletMap extends LitElement {
   }
 
   handleSlotChange(evt) {
-    const childNodes = evt.target.assignedNodes({ flatten: true })
-    const points = childNodes.filter(cn => cn.tagName == 'EM-MAP-POINT')
-    points.forEach(p => p.leaflet = this.leaflet)
+    const childElements = evt.target.assignedElements()
+    childElements.forEach(p => p.leaflet = this.leaflet)
   }
 
   render() {
@@ -69,14 +86,17 @@ class LeafletMap extends LitElement {
   }
 
   static get styles() {
-    return [unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
+    return [ unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
       :host {
         flex-grow: 1;
       }
       main {
         height: 100%;
       }
-    `]
+      .leaflet-popup-content {
+        margin: 8px;
+      }
+    ` ]
   }
 }
 

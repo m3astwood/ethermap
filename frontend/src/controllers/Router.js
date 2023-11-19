@@ -3,7 +3,7 @@ import { Router } from '@thepassle/app-tools/router.js'
 
 // views
 import '../views/Map.js'
-import '../components/NewMapModal.js'
+import '../views/Home.js'
 
 if (!globalThis.URLPattern) {
   await import('urlpattern-polyfill')
@@ -16,10 +16,7 @@ export default new Router({
     {
       path: '/',
       title: 'ethermap | index',
-      render: () => html`
-        <map-view></map-view>
-        <newmap-modal></newmap-modal>
-      `
+      render: () => html`<home-view></home-view>`
     },
     {
       path: '/m/:mapId',

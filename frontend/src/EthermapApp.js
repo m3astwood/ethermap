@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit'
-import './components/PointModal.js'
-import './components/UserTool.js'
+
 import Router from './controllers/Router.js'
+
+import './components/UserTool.js'
 
 class EthermapApp extends LitElement {
 
@@ -19,13 +20,7 @@ class EthermapApp extends LitElement {
 
   async firstUpdated() {
     Router.addEventListener('route-changed', () => {
-      console.log('route-changed')
       this.route = Router.render()
-    })
-
-    this.addEventListener('open-modal', (evt) => {
-      const modal = this.shadowRoot.querySelector('point-modal')
-      modal.open(evt.detail.mapId, evt.detail.latlng)
     })
   }
 
@@ -36,7 +31,6 @@ class EthermapApp extends LitElement {
       <user-tool></user-tool>
     </nav>
     ${this.route}
-    <point-modal></point-modal>
     `
   }
 
