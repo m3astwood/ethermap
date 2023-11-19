@@ -65,6 +65,11 @@ class MapView extends LitElement {
       this.map.store.deletePoint(detail.id)
       this.socket.emit('point-delete', detail.id)
     })
+
+    // set bounds
+    const points = this.map.store.points.map(p => [p.location.x, p.location.y])
+    this.lea
+
   }
 
   render() {

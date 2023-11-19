@@ -11,21 +11,19 @@ class LeafletMap extends LitElement {
 
   static get properties() {
     return {
-      points: { type: Array },
+      // props
       contextMenu: { type: Array },
       controls: { type: Boolean },
 
+      // state
       leaflet: { state: true },
-      markers: { state: true },
     }
   }
 
   constructor() {
     super()
     this.leaflet = {}
-    this.points = []
     this.contextMenu = []
-    this.markers = []
     this.controls = this.controls == undefined ? false : true
   }
 
@@ -64,12 +62,6 @@ class LeafletMap extends LitElement {
 
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
-  }
-
-  setBounds() {
-    // zoom map to see all markers
-    const markerGroup = new L.featureGroup(this.points)
-    this.leaflet.fitBounds(markerGroup.getBounds())
   }
 
   handleSlotChange(evt) {
