@@ -36,7 +36,7 @@ class MapStore extends Exome {
       // set location to point for db
       point.location = this._toCoords(point.location)
 
-      const res = await fetch('/api/point/add', {
+      const res = await fetch('/api/point', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
