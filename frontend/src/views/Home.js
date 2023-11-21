@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html } from 'lit'
 
 import '../components/NewMapModal.js'
 import '../components/LeafletMap.js'

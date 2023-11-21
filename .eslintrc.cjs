@@ -1,5 +1,5 @@
 module.exports = {
-  root: true,
+  'root': true,
   'env': {
     'browser': true,
     'node': true,
@@ -7,47 +7,47 @@ module.exports = {
   },
   'extends': [
     'eslint:recommended',
-    'plugin:lit/recommended',
+    'plugin:lit/recommended'
   ],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+  'parserOptions': {
+    'ecmaVersion': 'latest',
+    'sourceType': 'module'
   },
   'rules': {
     'no-var': 'error',
     'semi': [
       'error',
-      'never',
+      'never'
     ],
     'quotes': [
       'error',
-      'single',
+      'single'
     ],
     'object-curly-spacing': [
       'warn',
-      'always',
+      'always'
     ],
     'array-bracket-spacing': [
       'warn',
-      'always',
+      'always'
     ],
     'space-in-parens': [
       'warn',
-      'never',
+      'never'
     ],
     'array-bracket-newline': [
       'warn',
-      'consistent',
+      'consistent'
     ],
     'object-curly-newline': [
       'warn',
       {
-        'consistent': true,
-      },
+        'consistent': true
+      }
     ],
     'space-before-blocks': [
       'warn',
-      'always',
-    ],
-  },
-};
+      'always'
+    ]
+  }
+}

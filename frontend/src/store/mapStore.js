@@ -1,4 +1,4 @@
-import { Exome } from "exome";
+import { Exome } from 'exome'
 
 class MapStore extends Exome {
   data = {}

@@ -5,16 +5,16 @@ class MapModel extends Model {
   static tableName = 'maps'
 
   $beforeInsert() {
-    this.created_at = new Date().toISOString();
+    this.created_at = new Date().toISOString()
   }
 
   $beforeUpdate() {
-    this.updated_at = new Date().toISOString();
+    this.updated_at = new Date().toISOString()
   }
 
   static jsonSchema = {
     type: 'object',
-    required: ['name'],
+    required: [ 'name' ],
     properties: {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1 },

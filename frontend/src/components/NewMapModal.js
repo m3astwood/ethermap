@@ -1,5 +1,5 @@
-import { LitElement, html, css } from "lit";
-import Router from "../controllers/Router";
+import { LitElement, html, css } from 'lit'
+import Router from '../controllers/Router'
 
 class NewMapModal extends LitElement {
   static get properties() {
