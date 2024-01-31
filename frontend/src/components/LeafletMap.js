@@ -14,6 +14,7 @@ class LeafletMap extends LitElement {
       // props
       contextMenu: { type: Array },
       controls: { type: Boolean },
+      bounds: { type: Object },
 
       // state
       leaflet: { state: true },
@@ -25,6 +26,7 @@ class LeafletMap extends LitElement {
     this.leaflet = {}
     this.contextMenu = []
     this.controls = this.controls == undefined ? false : true
+    this.bounds = false
   }
 
   get slottedChildren() {
@@ -54,11 +56,17 @@ class LeafletMap extends LitElement {
       this.leaflet.on('locationfound', (evt) => {
         this.leaflet.panTo(evt.latlng)
       })
+
+      this.leaflet.on('locationerror', () => {
+        console.error('location cannot be found')
+      })
     }
 
-    this.leaflet.on('locationerror', () => {
-      console.error('location cannot be found')
-    })
+    // show all points
+    console.log('bounds :', this.bounds)
+    if (this.bounds) {
+      this.leaflet.fitBounds(this.bounds)
+    }
 
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
