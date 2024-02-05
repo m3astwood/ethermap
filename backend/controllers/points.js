@@ -1,6 +1,7 @@
 import MapModel from '../db/models/map.js'
 import PointModel from '../db/models/point.js'
 import { convertMapPoint } from '../utils/toPoint.js'
+import { Sockets } from '../sockets.js'
 
 const createPoint = async (req, res, next) => {
   try {
@@ -10,6 +11,10 @@ const createPoint = async (req, res, next) => {
     let _point = await map.$relatedQuery('map_points').insertAndFetch(point)
 
     convertMapPoint(_point)
+
+    Sockets[req.sessionID]
+      .to(`map-${mapId}`)
+      .emit('point-create', _point)
 
     res.status(201)
     res.json(_point)
@@ -30,6 +35,10 @@ const updatePoint = async (req, res, next) => {
       throw new Error('No point found with id :', id)
     }
 
+    Sockets[req.sessionID]
+      .to(`map-${_point.map_id}`)
+      .emit('point-update', _point)
+
     res.status(201)
     res.json(_point)
   } catch (err) {
@@ -40,6 +49,7 @@ const updatePoint = async (req, res, next) => {
 const deletePoint = async (req, res, next) => {
   try {
     const { id } = req.params
+    const { map_id: mapId } = await PointModel.query().select('map_id').findById(id)
     const num = await PointModel.query().deleteById(id)
 
     if (!num) {
@@ -47,12 +57,15 @@ const deletePoint = async (req, res, next) => {
       throw new Error('No items deleted with id', id)
     }
 
+    Sockets[req.sessionID]
+      .to(`map-${mapId}`)
+      .emit('point-delete', { id })
+
     res.status(200)
     res.json({})
   } catch (err) {
     next(err)
   }
-
 }
 
 
