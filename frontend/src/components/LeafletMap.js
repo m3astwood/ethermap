@@ -14,7 +14,7 @@ class LeafletMap extends LitElement {
       // props
       contextMenu: { type: Array },
       controls: { type: Boolean },
-      bounds: { type: Object },
+      bounds: { type: Array },
 
       // state
       leaflet: { state: true },
@@ -26,7 +26,7 @@ class LeafletMap extends LitElement {
     this.leaflet = {}
     this.contextMenu = []
     this.controls = this.controls == undefined ? false : true
-    this.bounds = false
+    this.bounds = []
   }
 
   get slottedChildren() {
@@ -62,19 +62,18 @@ class LeafletMap extends LitElement {
       })
     }
 
-    // show all points
-    console.log('bounds :', this.bounds)
-    if (this.bounds) {
-      this.leaflet.fitBounds(this.bounds)
-    }
-
     // track mouse movement
     this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
   }
 
   handleSlotChange(evt) {
     const childElements = evt.target.assignedElements()
-    childElements.forEach(p => p.leaflet = this.leaflet)
+    childElements.forEach(p => { p.leaflet = this.leaflet })
+  }
+
+  setZoom(childElements) {
+    const points = L.latLngBounds(childElements.map(p => p.latlon))
+    this.leaflet.fitBounds(points)
   }
 
   render() {

@@ -18,7 +18,6 @@ class MapView extends LitElement {
       // props
       name: { type: String },
       contextMenu: { type: Array },
-      bounds: { type: Object },
 
       // internal state
       socket: { state: true },
@@ -37,7 +36,6 @@ class MapView extends LitElement {
         }
       }
     ]
-    this.bounds = {}
   }
 
   connectedCallback() {
@@ -67,16 +65,12 @@ class MapView extends LitElement {
       this.map.store.deletePoint(detail.id)
       this.socket.emit('point-delete', detail.id)
     })
-
-    // set bounds
-    const points = this.map.store.points.map(p => L.point(p.location.x, p.location.y))
-    this.bounds = L.bounds(points)
   }
 
   render() {
     return html`
       <!-- map -->
-      <em-leaflet-map .contextMenu=${this.contextMenu} .bounds=${this.bounds} controls>
+      <em-leaflet-map .contextMenu=${this.contextMenu} controls>
 
         <!-- points -->
         ${this.map.store.points.map(point => html`

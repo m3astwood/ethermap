@@ -17,6 +17,7 @@ class Point extends LitElement {
     this.id = {}
     this.latlon = []
     this.slotted = []
+    this.marker = false
   }
 
   willUpdate(att) {
@@ -28,16 +29,18 @@ class Point extends LitElement {
   handleSlotChange(evt) {
     const childElements = evt.target.assignedElements()
 
-    for (let el of childElements) {
-      this.popup = L.popup()
-      this.marker.bindPopup(this.popup)
+    if (this.marker) {
+      for (let el of childElements) {
+        this.popup = L.popup()
+        this.marker.bindPopup(this.popup)
 
-      if (el.tagName == 'EM-MARKER-POPUP') {
-        el.marker = this.marker
+        if (el.tagName == 'EM-MARKER-POPUP') {
+          el.marker = this.marker
+        }
+
+        this.popup.setContent(el)
+        el.remove()
       }
-
-      this.popup.setContent(el)
-      el.remove()
     }
 
   }
