@@ -31,8 +31,12 @@ class MapView extends LitElement {
       {
         text: 'create point',
         callback: async (evt) => {
-          await this.map.store.createPoint({ location: evt.latlng })
-          this.socket.emit('point-create', this.map.store.points)
+          try {
+            const point = await this.map.store.createPoint({ location: evt.latlng })
+            this.socket.emit('point-create', point)
+          } catch (err) {
+            console.error(err)
+          }
         }
       }
     ]
@@ -53,12 +57,12 @@ class MapView extends LitElement {
     this.socket.emit('connect-map', this.map.store.data.id)
 
     // point actions
-    this.socket.on('point-create', this.map.store.setPoints)
-    this.socket.on('point-delete', this.map.store.deletePoint)
+    this.socket.on('point-create', this.map.store.socketUpdatePoint)
+    this.socket.on('point-update', this.map.store.socketUpdatePoint)
+    this.socket.on('point-delete', this.map.store.socketUpdatePoint)
 
     this.addEventListener('em:point-update', ({ detail }) => {
       this.map.store.updatePoint(detail)
-      this.socket.emit('point-update', detail)
     })
 
     this.addEventListener('em:point-delete', ({ detail }) => {
@@ -74,7 +78,7 @@ class MapView extends LitElement {
 
         <!-- points -->
         ${this.map.store.points.map(point => html`
-          <em-point .point=${point} .latlon=${[point.location.x, point.location.y]}>
+          <em-point id=${point.id} .latlng=${[point.location.x, point.location.y]}>
             <em-marker-popup id=${point.id} .point=${point}></em-marker-popup>
           </em-point>
         `)}

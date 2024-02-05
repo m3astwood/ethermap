@@ -15,15 +15,19 @@ class Point extends LitElement {
   constructor() {
     super()
     this.id = {}
-    this.latlon = []
+    this.latlng = []
     this.slotted = []
-    this.marker = false
+    this.marker = L.marker()
   }
 
   willUpdate(att) {
-    if (att.has('leaflet') && this.latlon) {
-      this.marker = L.marker(this.latlon).addTo(this.leaflet)
+    if (att.has('leaflet') && this.latlng) {
+      this.marker.setLatLng(this.latlng).addTo(this.leaflet)
     }
+  }
+
+  disconnectedCallback() {
+    this.marker.remove()
   }
 
   handleSlotChange(evt) {

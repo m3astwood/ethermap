@@ -71,11 +71,6 @@ class LeafletMap extends LitElement {
     childElements.forEach(p => { p.leaflet = this.leaflet })
   }
 
-  setZoom(childElements) {
-    const points = L.latLngBounds(childElements.map(p => p.latlon))
-    this.leaflet.fitBounds(points)
-  }
-
   render() {
     return html`
       <main>

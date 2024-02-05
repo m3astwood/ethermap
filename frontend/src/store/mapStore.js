@@ -27,6 +27,24 @@ class MapStore extends Exome {
     this.points = array
   }
 
+  socketUpdatePoint(point) {
+    const pointIdx = this.points.findIndex(p => p.id == point.id)
+
+    if (pointIdx > -1) {
+      if (point.created_at) {
+        console.log('update point details', pointIdx)
+        this.points = this.points.toSpliced(pointIdx, 1, point)
+      } else {
+        console.log('delete point', pointIdx)
+        this.points = this.points.toSpliced(pointIdx, 1)
+        console.log(this.points.length)
+      }
+    } else {
+      console.log('append point')
+      this.points = [ ...this.points, point ]
+    }
+  }
+
   getPoints() {
     return this.points
   }
@@ -47,7 +65,9 @@ class MapStore extends Exome {
         })
       })
 
-      this.setPoints([ ...this.points, await res.json() ])
+      const createdPoint = await res.json()
+      this.setPoints([ ...this.points, createdPoint ])
+      return createdPoint
     } catch (err) {
       console.error(err)
     }
