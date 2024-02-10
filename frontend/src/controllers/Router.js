@@ -16,17 +16,17 @@ export default new Router({
     {
       path: '/',
       title: 'ethermap | index',
-      render: () => html`<home-view></home-view>`
+      render: () => html`<home-view></home-view>`,
     },
     {
       path: '/m/:mapId',
       title: ({ params }) => `ethermap | ${params.mapId}`,
-      render: ({ params }) => html`<map-view name=${params.mapId}></map-view>`
+      render: ({ params }) => html`<map-view name=${params.mapId}></map-view>`,
     },
     {
       path: '/404',
       title: 'etherpad | 404',
-      render: () => html`<h2>404 : page not found</h2>`
-    }
-  ]
+      render: () => html`<h2>404 : page not found</h2>`,
+    },
+  ],
 })

@@ -42,12 +42,13 @@ class LeafletMap extends LitElement {
       contextmenu: true,
       contextmenuWidth: 140,
       contextmenuItems: this.contextMenu,
-    }).setView([ 51.89190, 4.46920 ], 19)
+    }).setView([51.8919, 4.4692], 19)
 
     // set map tiles
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.leaflet)
 
     if (!this.controls) {
@@ -68,7 +69,9 @@ class LeafletMap extends LitElement {
 
   handleSlotChange(evt) {
     const childElements = evt.target.assignedElements()
-    childElements.forEach(p => { p.leaflet = this.leaflet })
+    childElements.forEach((p) => {
+      p.leaflet = this.leaflet
+    })
   }
 
   render() {
@@ -80,7 +83,10 @@ class LeafletMap extends LitElement {
   }
 
   static get styles() {
-    return [ unsafeCSS(leafletCss), unsafeCSS(leafletContextCss), css`
+    return [
+      unsafeCSS(leafletCss),
+      unsafeCSS(leafletContextCss),
+      css`
       :host {
         flex-grow: 1;
       }
@@ -90,7 +96,8 @@ class LeafletMap extends LitElement {
       .leaflet-popup-content {
         margin: 8px;
       }
-    ` ]
+    `,
+    ]
   }
 }
 

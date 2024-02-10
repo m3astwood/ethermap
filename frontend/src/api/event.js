@@ -18,7 +18,7 @@ export default class EventController {
     const opts = {
       bubbles: true,
       composed: true,
-      ...options
+      ...options,
     }
 
     const e = new CustomEvent(event, opts)

@@ -12,9 +12,7 @@ const createPoint = async (req, res, next) => {
 
     convertMapPoint(_point)
 
-    Sockets[req.sessionID]
-      .to(`map-${mapId}`)
-      .emit('point-create', _point)
+    Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
 
     res.status(201)
     res.json(_point)
@@ -49,7 +47,9 @@ const updatePoint = async (req, res, next) => {
 const deletePoint = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { map_id: mapId } = await PointModel.query().select('map_id').findById(id)
+    const { map_id: mapId } = await PointModel.query()
+      .select('map_id')
+      .findById(id)
     const num = await PointModel.query().deleteById(id)
 
     if (!num) {
@@ -57,9 +57,7 @@ const deletePoint = async (req, res, next) => {
       throw new Error('No items deleted with id', id)
     }
 
-    Sockets[req.sessionID]
-      .to(`map-${mapId}`)
-      .emit('point-delete', { id })
+    Sockets[req.sessionID].to(`map-${mapId}`).emit('point-delete', { id })
 
     res.status(200)
     res.json({})
@@ -67,6 +65,5 @@ const deletePoint = async (req, res, next) => {
     next(err)
   }
 }
-
 
 export { createPoint, updatePoint, deletePoint }

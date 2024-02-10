@@ -10,15 +10,14 @@ const getAllMaps = async (_, res) => {
 const getMapByName = async (req, res, next) => {
   const { name } = req.params
   try {
-    let points, map = await MapModel.query().where({ name }).first()
+    let points,
+      map = await MapModel.query().where({ name }).first()
 
     if (map) {
       points = await map.$relatedQuery('map_points')
       res.status(200)
     } else {
-      map = await MapModel
-        .query()
-        .insertAndFetch({ name })
+      map = await MapModel.query().insertAndFetch({ name })
       points = []
 
       res.status(201)
@@ -46,8 +45,7 @@ const getMapPoints = async (req, res, next) => {
       throw new Error('No map with id', id)
     }
 
-    let points = await map
-      .$relatedQuery('map_points')
+    let points = await map.$relatedQuery('map_points')
 
     points.forEach(convertMapPoint)
 

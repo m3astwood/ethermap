@@ -21,7 +21,7 @@ class MarkerPopup extends LitElement {
       open: { type: Boolean },
 
       // internal state
-      elWidth: { state: true }
+      elWidth: { state: true },
     }
   }
 
@@ -30,7 +30,7 @@ class MarkerPopup extends LitElement {
     this.point = {
       id: '',
       name: '',
-      notes: ''
+      notes: '',
     }
 
     this.id = 0
@@ -38,12 +38,16 @@ class MarkerPopup extends LitElement {
 
   deleteHandler() {
     this.marker.remove()
-    this.eventController.dispatch('em:point-delete', { detail: { id: this.id } })
+    this.eventController.dispatch('em:point-delete', {
+      detail: { id: this.id },
+    })
   }
 
   updateHandler() {
     this.marker.closePopup()
-    this.eventController.dispatch('em:point-update', { detail: { ...this.point } })
+    this.eventController.dispatch('em:point-update', {
+      detail: { ...this.point },
+    })
   }
 
   render() {
@@ -54,7 +58,7 @@ class MarkerPopup extends LitElement {
         name="name"
         .value=${live(this.point.name)}
         placeholder="name"
-        @input=${e => this.point.name = e.target.value}
+        @input=${(e) => (this.point.name = e.target.value)}
       >
       </input>
 
@@ -62,7 +66,7 @@ class MarkerPopup extends LitElement {
         name="notes"
         placeholder="notes"
         .value=${live(this.point.notes)}
-        @input=${e => this.point.notes = e.target.value}
+        @input=${(e) => (this.point.notes = e.target.value)}
       ></textarea>
 
       <div class="controls">

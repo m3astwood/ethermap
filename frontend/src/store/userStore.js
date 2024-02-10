@@ -4,7 +4,7 @@ class UserStore extends Exome {
   data = {}
   settings = {
     name: '',
-    colour: ''
+    colour: '',
   }
 
   async getSettings() {
@@ -25,9 +25,9 @@ class UserStore extends Exome {
       const res = await fetch('/api/user', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user: this.settings })
+        body: JSON.stringify({ user: this.settings }),
       })
 
       if (res.status != 200) {

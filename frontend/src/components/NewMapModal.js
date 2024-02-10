@@ -4,7 +4,7 @@ import Router from '../controllers/Router'
 class NewMapModal extends LitElement {
   static get properties() {
     return {
-      mapName: { state: true }
+      mapName: { state: true },
     }
   }
 
@@ -24,7 +24,8 @@ class NewMapModal extends LitElement {
       <div class="window">
         <form>
           <label for="name">map name</label>
-          <input type="text" name="name" @input=${e => this.mapName = e.target.value}></input>
+          <input type="text" name="name" @input=${(e) =>
+            (this.mapName = e.target.value)}></input>
           <div class="controls">
             <button @click=${this.navigate}>go</button>
           </div>

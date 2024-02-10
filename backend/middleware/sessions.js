@@ -18,14 +18,14 @@ export default session({
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
-  store
+  store,
 })
 
 export const setSessionData = (req, _, next) => {
   if (!req.session.user) {
     req.session.user = {
       name: '',
-      colour: ''
+      colour: '',
     }
   }
   next()

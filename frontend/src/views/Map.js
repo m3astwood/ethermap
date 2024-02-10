@@ -32,13 +32,15 @@ class MapView extends LitElement {
         text: 'create point',
         callback: async (evt) => {
           try {
-            const point = await this.map.store.createPoint({ location: evt.latlng })
+            const point = await this.map.store.createPoint({
+              location: evt.latlng,
+            })
             this.socket.emit('point-create', point)
           } catch (err) {
             console.error(err)
           }
-        }
-      }
+        },
+      },
     ]
   }
 
@@ -77,11 +79,16 @@ class MapView extends LitElement {
       <em-leaflet-map .contextMenu=${this.contextMenu} controls>
 
         <!-- points -->
-        ${this.map.store.points.map(point => html`
-          <em-point id=${point.id} .latlng=${[point.location.x, point.location.y]}>
+        ${this.map.store.points.map(
+          (point) => html`
+          <em-point id=${point.id} .latlng=${[
+            point.location.x,
+            point.location.y,
+          ]}>
             <em-marker-popup id=${point.id} .point=${point}></em-marker-popup>
           </em-point>
-        `)}
+        `,
+        )}
 
       </em-leaflet-map>
     `

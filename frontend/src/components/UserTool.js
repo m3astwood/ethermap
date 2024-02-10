@@ -33,8 +33,14 @@ class UserTool extends LitElement {
       </button>
 
       <div class="dropdown">
-        <input name="name" placeholder="name" value=${live(this.user.store.data.name)} @change=${async e => await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
-        <input name="colour" type="color" value=${live(this.user.store.data.colour)} @change=${async e => await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
+        <input name="name" placeholder="name" value=${live(
+          this.user.store.data.name,
+        )} @change=${async (e) =>
+          await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
+        <input name="colour" type="color" value=${live(
+          this.user.store.data.colour,
+        )} @change=${async (e) =>
+          await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
       </div>
     `
   }

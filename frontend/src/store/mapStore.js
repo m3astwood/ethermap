@@ -12,12 +12,13 @@ class MapStore extends Exome {
     try {
       const res = await fetch(`/api/map/${name}`)
 
-      if (res.status != 200 && res.status != 201) throw new Error(res.statusText)
+      if (res.status != 200 && res.status != 201)
+        throw new Error(res.statusText)
 
       const { map, points } = await res.json()
 
       this.data = { ...map }
-      this.points = [ ...points ]
+      this.points = [...points]
     } catch (err) {
       console.error(err)
     }
@@ -28,7 +29,7 @@ class MapStore extends Exome {
   }
 
   socketUpdatePoint(point) {
-    const pointIdx = this.points.findIndex(p => p.id == point.id)
+    const pointIdx = this.points.findIndex((p) => p.id == point.id)
 
     if (pointIdx > -1) {
       if (point.created_at) {
@@ -41,7 +42,7 @@ class MapStore extends Exome {
       }
     } else {
       console.log('append point')
-      this.points = [ ...this.points, point ]
+      this.points = [...this.points, point]
     }
   }
 
@@ -57,16 +58,16 @@ class MapStore extends Exome {
       const res = await fetch('/api/point', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           mapId: this.data.id,
-          point
-        })
+          point,
+        }),
       })
 
       const createdPoint = await res.json()
-      this.setPoints([ ...this.points, createdPoint ])
+      this.setPoints([...this.points, createdPoint])
       return createdPoint
     } catch (err) {
       console.error(err)
@@ -78,16 +79,16 @@ class MapStore extends Exome {
       const body = {
         point: {
           name: point.name || '',
-          notes: point.notes || ''
-        }
+          notes: point.notes || '',
+        },
       }
 
       await fetch(`/api/point/${point.id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       })
     } catch (err) {
       console.error(err)
@@ -97,7 +98,7 @@ class MapStore extends Exome {
   async deletePoint(id) {
     try {
       let points = this.points
-      const idx = this.points.findIndex(p => p.id == id)
+      const idx = this.points.findIndex((p) => p.id == id)
       const res = await fetch(`/api/point/${id}`, {
         method: 'DELETE',
       })
@@ -107,7 +108,7 @@ class MapStore extends Exome {
       }
 
       points.splice(idx, 1)
-      this.setPoints([ ...points ])
+      this.setPoints([...points])
     } catch (err) {
       console.error(err)
     }

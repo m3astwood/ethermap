@@ -9,7 +9,7 @@ class Point extends LitElement {
 
     marker: { state: true },
     popup: { state: true },
-    slotted: { state: true }
+    slotted: { state: true },
   }
 
   constructor() {
@@ -46,7 +46,6 @@ class Point extends LitElement {
         el.remove()
       }
     }
-
   }
 
   render() {

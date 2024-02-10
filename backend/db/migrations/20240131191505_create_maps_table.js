@@ -3,12 +3,11 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  return knex.schema
-    .createTable('maps', (table) => {
-      table.increments().primary()
-      table.string('name').notNullable().unique()
-      table.timestamps(false, true)
-    })
+  return knex.schema.createTable('maps', (table) => {
+    table.increments().primary()
+    table.string('name').notNullable().unique()
+    table.timestamps(false, true)
+  })
 }
 
 /**
@@ -17,10 +16,8 @@ export function up(knex) {
  */
 export function down(knex) {
   if (knex.client.version === 'pg' || knex.client.version === 'pg-mem') {
-    return knex.schema
-      .raw('DROP TABLE maps CASCADE')
+    return knex.schema.raw('DROP TABLE maps CASCADE')
   } else {
-    return knex.schema
-      .dropTable('maps')
+    return knex.schema.dropTable('maps')
   }
 }

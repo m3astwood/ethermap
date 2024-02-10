@@ -13,14 +13,14 @@ export default {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: __dirname + '/backend/db/development.db'
+      filename: __dirname + '/backend/db/development.db',
     },
     migrations: {
-      directory: __dirname + '/backend/db/migrations'
+      directory: __dirname + '/backend/db/migrations',
     },
     seeds: {
-      directory: __dirname + '/db/seeds'
-    }
+      directory: __dirname + '/db/seeds',
+    },
   },
 
   test: {
@@ -28,11 +28,11 @@ export default {
     connection: ':memory:',
     useNullAsDefault: true,
     migrations: {
-      directory: __dirname + '/backend/db/migrations'
+      directory: __dirname + '/backend/db/migrations',
     },
     seeds: {
-      directory: __dirname + '/backend/db/seeds'
-    }
+      directory: __dirname + '/backend/db/seeds',
+    },
   },
 
   staging: {
@@ -42,15 +42,15 @@ export default {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT
+      port: process.env.DB_PORT,
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   production: {
@@ -60,14 +60,14 @@ export default {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT
+      port: process.env.DB_PORT,
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
+      tableName: 'knex_migrations',
+    },
+  },
 }

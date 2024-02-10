@@ -21,12 +21,21 @@ export default class UserCursor {
 
       // if user is not created, then do so
       if (!this.cursors[user.id]) {
-        const cursorIcon = L.divIcon({ html: SvgCursor(user.colour), iconSize: [ 20, 30 ], iconAnchor: [ 0, 8 ], className: 'user-cursor' })
-        this.cursors[user.id] = L.marker([ pos.lat, pos.lng ], { icon: cursorIcon, interactive: false, zIndexOffset: 1000 }).addTo(this.host.leaflet)
+        const cursorIcon = L.divIcon({
+          html: SvgCursor(user.colour),
+          iconSize: [20, 30],
+          iconAnchor: [0, 8],
+          className: 'user-cursor',
+        })
+        this.cursors[user.id] = L.marker([pos.lat, pos.lng], {
+          icon: cursorIcon,
+          interactive: false,
+          zIndexOffset: 1000,
+        }).addTo(this.host.leaflet)
       }
 
       // update cursor's position
-      this.cursors[user.id].setLatLng([ pos.lat, pos.lng ])
+      this.cursors[user.id].setLatLng([pos.lat, pos.lng])
     })
 
     // track other users on disconnect

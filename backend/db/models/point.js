@@ -13,15 +13,14 @@ class PointModel extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: [ 'location' ],
+    required: ['location'],
     properties: {
       id: { type: 'integer' },
       name: { type: 'string' },
       notes: { type: 'string' },
-      location: { type: 'string' }
-    }
+      location: { type: 'string' },
+    },
   }
-
 }
 
 export default PointModel

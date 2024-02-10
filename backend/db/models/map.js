@@ -14,12 +14,12 @@ class MapModel extends Model {
 
   static jsonSchema = {
     type: 'object',
-    required: [ 'name' ],
+    required: ['name'],
     properties: {
       id: { type: 'integer' },
       name: { type: 'string', minLength: 1 },
-      map_points: { type: 'array', items: { type: 'object' } }
-    }
+      map_points: { type: 'array', items: { type: 'object' } },
+    },
   }
 
   static get relationMappings() {
@@ -30,8 +30,8 @@ class MapModel extends Model {
         join: {
           from: 'maps.id',
           to: 'map_points.map_id',
-        }
-      }
+        },
+      },
     }
   }
 }

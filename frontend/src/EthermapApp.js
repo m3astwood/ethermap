@@ -5,11 +5,10 @@ import Router from './controllers/Router.js'
 import './components/UserTool.js'
 
 class EthermapApp extends LitElement {
-
   static get properties() {
     return {
       route: { state: true },
-      user: { state: true }
+      user: { state: true },
     }
   }
 
