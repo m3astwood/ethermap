@@ -12,7 +12,9 @@ const createPoint = async (req, res, next) => {
 
     convertMapPoint(_point)
 
-    Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
+    if (process.env.NODE_ENV !== 'test') {
+      Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
+    }
 
     res.status(201)
     res.json(_point)
