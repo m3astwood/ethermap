@@ -8,11 +8,13 @@ const createPoint = async (req, res, next) => {
     const { mapId, point } = req.body
 
     const map = await MapModel.query().findById(mapId)
-    let _point = await map.$relatedQuery('map_points').insertAndFetch(point)
+    const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
 
     convertMapPoint(_point)
 
-    Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
+    if (process.env.NODE_ENV !== 'test') {
+      Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
+    }
 
     res.status(201)
     res.json(_point)
@@ -26,16 +28,18 @@ const updatePoint = async (req, res, next) => {
     const { id } = req.params
     const { point } = req.body
 
-    let _point = await PointModel.query().patchAndFetchById(id, point)
+    const _point = await PointModel.query().patchAndFetchById(id, point)
 
     if (!_point) {
       res.status(404)
       throw new Error('No point found with id :', id)
     }
 
-    Sockets[req.sessionID]
-      .to(`map-${_point.map_id}`)
-      .emit('point-update', _point)
+    if (process.env.NODE_ENV !== 'test') {
+      Sockets[req.sessionID]
+        .to(`map-${_point.map_id}`)
+        .emit('point-update', _point)
+    }
 
     res.status(201)
     res.json(_point)
@@ -47,17 +51,21 @@ const updatePoint = async (req, res, next) => {
 const deletePoint = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { map_id: mapId } = await PointModel.query()
+    const point = await PointModel.query()
       .select('map_id')
       .findById(id)
-    const num = await PointModel.query().deleteById(id)
 
-    if (!num) {
+    if (!point) {
       res.status(404)
       throw new Error('No items deleted with id', id)
     }
 
-    Sockets[req.sessionID].to(`map-${mapId}`).emit('point-delete', { id })
+    const { map_id: mapId } = point
+    await PointModel.query().deleteById(id)
+
+    if (process.env.NODE_ENV !== 'test') {
+      Sockets[req.sessionID].to(`map-${mapId}`).emit('point-delete', { id })
+    }
 
     res.status(200)
     res.json({})

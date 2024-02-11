@@ -5,24 +5,19 @@ import request from 'supertest'
 // express app
 import { app } from '../express.js'
 
-// sockets
-import { createServer } from 'http'
-import { Server } from 'socket.io'
-
-import Session from '../middleware/sessions.js'
-import { Socket } from '../sockets.js'
-
-const server = createServer()
-const io = new Server(server)
-Socket(io, Session)
-
 // db
 import db from '../db/DB.js'
 
+// test setup
 test.before(async () => {
   await db.migrate.latest()
 })
 
+test.after(async () => {
+  await db.migrate.down()
+})
+
+// tests
 test.failing('get "/" route should return status code of 200', async (t) => {
   const res = await request(app).get('/')
 
@@ -176,7 +171,3 @@ test.serial(
     t.is(res.status, 200)
   },
 )
-
-test.after(async () => {
-  await db.migrate.down()
-})

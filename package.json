@@ -43,5 +43,10 @@
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
     "vite": "^4.4.9"
+  },
+  "ava": {
+    "environmentVariables": {
+      "NODE_ENV": "test"
+    }
   }
 }
