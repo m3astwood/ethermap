@@ -4,12 +4,13 @@ export const Socket = (io, session) => {
   io.engine.use(session)
 
   io.on('connection', (socket) => {
+    console.log('socket connection', socket.request.sessionID)
+
     let roomId = null
     const session = socket.request.session
     session.user.id = socket.request.sessionID
 
     Sockets[socket.request.sessionID] = socket
-    console.log('client connected with id', session.user.id)
 
     socket.on('connect-map', (mapId) => {
       console.log('connect to map room', mapId)

@@ -5,21 +5,47 @@ import request from 'supertest'
 // express app
 import { app } from '../express.js'
 
+// socket.io
+import { Server } from 'socket.io'
+import { io as ioc } from 'socket.io-client'
+import { Socket } from '../sockets.js'
+import sessions from '../middleware/sessions.js'
+
+// connection variables
+let io
+let clientSocket
+let server
+let agent
+
 // db
 import db from '../db/DB.js'
 
 // test setup
 test.before(async () => {
   await db.migrate.latest()
+
+  server = app.listen(3000)
+  agent = request.agent(server)
+
+  io = new Server(server)
+  Socket(io, sessions)
 })
 
 test.after(async () => {
+  io.close()
+  clientSocket.disconnect()
+
   await db.migrate.down()
+})
+
+test.beforeEach(async () => {
+  await agent.get('/')
+  clientSocket = ioc('http://localhost:3000')
 })
 
 // tests
 test.failing('get "/" route should return status code of 200', async (t) => {
-  const res = await request(app).get('/')
+  const res = await agent.get('/')
 
   t.is(res.status, 200)
 })
@@ -27,7 +53,7 @@ test.failing('get "/" route should return status code of 200', async (t) => {
 test.serial(
   'get "/api/maps" route should return an object containing an array called "maps"',
   async (t) => {
-    const res = await request(app).get('/api/maps')
+    const res = await agent.get('/api/maps')
 
     t.is(res.status, 200)
     t.truthy(res.body.maps?.constructor === Array)
@@ -37,7 +63,7 @@ test.serial(
 test.serial(
   'get "/api/map/:mapName" route to new mapName should return new map with matching name and status 201',
   async (t) => {
-    const res = await request(app).get('/api/map/bingo')
+    const res = await agent.get('/api/map/bingo')
 
     t.is(res.status, 201)
     t.is(res.body.map.name, 'bingo')
@@ -47,7 +73,7 @@ test.serial(
 test.serial(
   'get "/api/map/:mapName" route to existing mapName should return same id with status 200',
   async (t) => {
-    const res = await request(app).get('/api/map/bingo')
+    const res = await agent.get('/api/map/bingo')
 
     t.is(res.status, 200)
     t.is(res.body.map.id, 1)
@@ -61,8 +87,8 @@ test.serial(
       body: {
         map: { id: mapId },
       },
-    } = await request(app).get('/api/map/bingo')
-    const res = await request(app)
+    } = await agent.get('/api/map/bingo')
+    const res = await agent
       .post('/api/point')
       .send({
         mapId,
@@ -82,7 +108,7 @@ test.serial(
 test.serial(
   'get "/api/map/:mapName" with points should return a map with an array of points with status 200',
   async (t) => {
-    const res = await request(app).get('/api/map/bingo')
+    const res = await agent.get('/api/map/bingo')
 
     t.is(res.status, 200)
     t.truthy(res.body.points)
@@ -97,8 +123,8 @@ test.serial(
       body: {
         map: { id: mapId },
       },
-    } = await request(app).get('/api/map/bingo')
-    const error = await request(app)
+    } = await agent.get('/api/map/bingo')
+    const error = await agent
       .post('/api/point')
       .send({
         mapId,
@@ -116,7 +142,7 @@ test.serial(
   'update "/api/point/:id" with valid data will return new point object with status 201',
   async (t) => {
     const body = { point: { name: 'very pointy' } }
-    const res = await request(app).put('/api/point/1').send(body)
+    const res = await agent.put('/api/point/1').send(body)
 
     t.is(res.status, 201)
     t.is(res.body.id, 1)
@@ -128,7 +154,7 @@ test.serial(
   'put "/api/point/:id" with invalid id throws 404 error',
   async (t) => {
     const body = { point: { name: 'dull' } }
-    const res = await request(app).put('/api/point/100').send(body)
+    const res = await agent.put('/api/point/100').send(body)
 
     t.is(res.status, 404)
   },
@@ -137,7 +163,7 @@ test.serial(
 test.serial(
   'get "/api/map/:id/points" will return an array of all points associated with map and status of 200',
   async (t) => {
-    const res = await request(app).get('/api/map/1/points')
+    const res = await agent.get('/api/map/1/points')
 
     t.is(res.status, 200)
     t.truthy(res.body.points?.constructor === Array)
@@ -148,7 +174,7 @@ test.serial(
 test.serial(
   'get "/api/map/:id/points" with invalid id throws a 404 error',
   async (t) => {
-    const res = await request(app).get('/api/map/100/points')
+    const res = await agent.get('/api/map/100/points')
 
     t.is(res.status, 404)
   },
@@ -157,7 +183,7 @@ test.serial(
 test.serial(
   'delete "/api/point/:id" with invalid id throws 404 error',
   async (t) => {
-    const res = await request(app).delete('/api/point/100')
+    const res = await agent.delete('/api/point/100')
 
     t.is(res.status, 404)
   },
@@ -166,7 +192,7 @@ test.serial(
 test.serial(
   'delete "/api/point/:id" with valid id returns 200 status',
   async (t) => {
-    const res = await request(app).delete('/api/point/1')
+    const res = await agent.delete('/api/point/1')
 
     t.is(res.status, 200)
   },
