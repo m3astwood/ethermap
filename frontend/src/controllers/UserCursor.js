@@ -15,8 +15,8 @@ export default class UserCursor {
 
   hostConnected() {
     this.socket.on('mousemove', (data) => {
-      // TODO@suroh check whether user is in view before rendering
-      // TODO@suroh restrict rendering within range of zoom-level
+      // TODO@mx check whether user is in view before rendering
+      // TODO@mx restrict rendering within range of zoom-level
       const { user, pos } = data
 
       // if user is not created, then do so

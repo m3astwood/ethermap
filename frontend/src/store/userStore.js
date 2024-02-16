@@ -30,11 +30,11 @@ class UserStore extends Exome {
         body: JSON.stringify({ user: this.settings }),
       })
 
-      if (res.status != 200) {
+      if (res.status !== 200) {
         throw Error(res)
       }
     } catch (err) {
-      // TODO@m3astwood add feedback of success/error
+      // TODO@mx add feedback of success/error
       console.error(err)
     }
   }
