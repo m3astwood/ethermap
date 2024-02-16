@@ -12,7 +12,7 @@ class MapStore extends Exome {
     try {
       const res = await fetch(`/api/map/${name}`)
 
-      if (res.status != 200 && res.status != 201)
+      if (res.status !== 200 && res.status !== 201)
         throw new Error(res.statusText)
 
       const { map, points } = await res.json()
@@ -29,7 +29,7 @@ class MapStore extends Exome {
   }
 
   socketUpdatePoint(point) {
-    const pointIdx = this.points.findIndex((p) => p.id == point.id)
+    const pointIdx = this.points.findIndex((p) => p.id === point.id)
 
     if (pointIdx > -1) {
       if (point.created_at) {
@@ -97,13 +97,13 @@ class MapStore extends Exome {
 
   async deletePoint(id) {
     try {
-      let points = this.points
-      const idx = this.points.findIndex((p) => p.id == id)
+      const points = this.points
+      const idx = this.points.findIndex((p) => p.id === id)
       const res = await fetch(`/api/point/${id}`, {
         method: 'DELETE',
       })
 
-      if (res.status != 200) {
+      if (res.status !== 200) {
         throw new Error(res)
       }
 

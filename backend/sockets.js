@@ -25,8 +25,14 @@ export default class SocketConnection {
         socket.join(roomId)
       })
 
+      // mouse movement
       socket.on('mousemove', (pos) => {
         socket.to(roomId).emit('mousemove', { user: { ...session.user }, pos })
+      })
+
+      // user settings update
+      socket.on('user-updated', (settings) => {
+        socket.to(roomId).emit('user-updated', { id: session.user.id, ...settings })
       })
 
       socket.on('disconnect', () => {

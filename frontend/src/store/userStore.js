@@ -1,4 +1,5 @@
 import { Exome } from 'exome'
+import io from '../api/socket.js'
 
 class UserStore extends Exome {
   data = {}
@@ -33,6 +34,9 @@ class UserStore extends Exome {
       if (res.status !== 200) {
         throw Error(res)
       }
+
+
+      io.emit('user-updated', this.settings)
     } catch (err) {
       // TODO@mx add feedback of success/error
       console.error(err)

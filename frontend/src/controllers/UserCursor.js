@@ -14,6 +14,17 @@ export default class UserCursor {
   }
 
   hostConnected() {
+    this.socket.on('user-updated', (user) => {
+      const cursorIcon = L.divIcon({
+        html: SvgCursor(user.colour),
+        iconSize: [20, 30],
+        iconAnchor: [0, 8],
+        className: 'user-cursor',
+      })
+
+      this.cursors[user.id].setIcon(cursorIcon)
+    })
+
     this.socket.on('mousemove', (data) => {
       // TODO@mx check whether user is in view before rendering
       // TODO@mx restrict rendering within range of zoom-level
