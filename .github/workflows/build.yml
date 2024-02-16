@@ -1,0 +1,19 @@
+name: Etherpad docker container build
+run-name: Etherpad docker container build
+on:
+  push:
+    branches:
+      - 'main'
+      - 'docker'
+jobs:
+  build:
+    runs-on: docker:dind
+    steps:
+      - name: Clone code to runner
+        uses: actions/checkout@v4
+
+      - name: Move to directory
+        run: cd ${{ github.workspace }}
+
+      - name: Build docker container
+        run: docker build -t m3astwood/ethermap:latest .
