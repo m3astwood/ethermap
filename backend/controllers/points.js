@@ -1,7 +1,7 @@
 import MapModel from '../db/models/map.js'
 import PointModel from '../db/models/point.js'
 import { convertMapPoint } from '../utils/toPoint.js'
-import { Sockets } from '../sockets.js'
+import { socket } from '../sockets.js'
 
 const createPoint = async (req, res, next) => {
   try {
@@ -12,8 +12,13 @@ const createPoint = async (req, res, next) => {
 
     convertMapPoint(_point)
 
-    if (process.env.NODE_ENV !== 'test') {
-      Sockets[req.sessionID].to(`map-${mapId}`).emit('point-create', _point)
+    if (socket.connections.get(req.sessionID)) {
+      socket.connections
+        .get(req.sessionID)
+        .to(`map-${mapId}`)
+        .emit('point-create', _point)
+    } else if (socket.mapRooms[`map-${mapId}`]) {
+      socket.io.to(`map-${mapId}`).emit('point-create', _point)
     }
 
     res.status(201)
@@ -35,10 +40,13 @@ const updatePoint = async (req, res, next) => {
       throw new Error('No point found with id :', id)
     }
 
-    if (process.env.NODE_ENV !== 'test') {
-      Sockets[req.sessionID]
+    if (socket.connections.get(req.sessionID)) {
+      socket.connections
+        .get(req.sessionID)
         .to(`map-${_point.map_id}`)
         .emit('point-update', _point)
+    } else if (socket.mapRooms[`map-${_point.map_id}`]) {
+      socket.io.to(`map-${_point.map_id}`).emit('point-update', _point)
     }
 
     res.status(201)
@@ -51,9 +59,7 @@ const updatePoint = async (req, res, next) => {
 const deletePoint = async (req, res, next) => {
   try {
     const { id } = req.params
-    const point = await PointModel.query()
-      .select('map_id')
-      .findById(id)
+    const point = await PointModel.query().select('map_id').findById(id)
 
     if (!point) {
       res.status(404)
@@ -63,8 +69,13 @@ const deletePoint = async (req, res, next) => {
     const { map_id: mapId } = point
     await PointModel.query().deleteById(id)
 
-    if (process.env.NODE_ENV !== 'test') {
-      Sockets[req.sessionID].to(`map-${mapId}`).emit('point-delete', { id })
+    if (socket.connections.get(req.sessionID)) {
+      socket.connections
+        .get(req.sessionID)
+        .to(`map-${mapId}`)
+        .emit('point-delete', { id })
+    } else if (socket.mapRooms[`map-${mapId}`]) {
+      socket.io.to(`map-${mapId}`).emit('point-delete', { id })
     }
 
     res.status(200)

@@ -1,35 +1,53 @@
-export const Sockets = {}
+import { Server } from "socket.io"
 
-export const Socket = (io, session) => {
-  io.engine.use(session)
+export default class SocketConnection {
+  constructor() {
+    this.io = new Server()
 
-  io.on('connection', (socket) => {
-    console.log('socket connection', socket.request.sessionID)
+    // state
+    this.connections = new Map()
 
-    let roomId = null
-    const session = socket.request.session
-    session.user.id = socket.request.sessionID
+    this.io.on('connection', (socket) => {
+      console.log('socket connection', socket.request.sessionID)
 
-    Sockets[socket.request.sessionID] = socket
+      let roomId = null
+      const session = socket.request.session
+      session.user.id = socket.request.sessionID
 
-    socket.on('connect-map', (mapId) => {
-      console.log('connect to map room', mapId)
+      this.connections.set(socket.request.sessionID, socket)
 
-      roomId = `map-${mapId}`
+      socket.on('connect-map', (mapId) => {
+        console.log('connect to map room', mapId)
 
-      // add socket to map room
-      socket.join(roomId)
+        roomId = `map-${mapId}`
+
+        // add socket to map room
+        socket.join(roomId)
+      })
+
+      socket.on('mousemove', (pos) => {
+        socket.to(roomId).emit('mousemove', { user: { ...session.user }, pos })
+      })
+
+      socket.on('disconnect', () => {
+        console.log('session', session.user.id, 'disconnected')
+
+        this.connections.delete('session.user.id')
+        socket.to(roomId).emit('user-disconnected', session.user.id)
+      })
     })
+  }
 
-    socket.on('mousemove', (pos) => {
-      socket.to(roomId).emit('mousemove', { user: { ...session.user }, pos })
-    })
+  get mapRooms() {
+    return this.io.sockets.adapter.rooms || []
+  }
 
-    socket.on('disconnect', () => {
-      console.log('session', session.user.id, 'disconnected')
-
-      delete Sockets[session.user.id]
-      socket.to(roomId).emit('user-disconnected', session.user.id)
-    })
-  })
+  upgrade(server, session) {
+    this.io.attach(server)
+    if (session) {
+      this.io.engine.use(session)
+    }
+  }
 }
+
+export const socket = new SocketConnection()

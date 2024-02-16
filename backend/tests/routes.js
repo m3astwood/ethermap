@@ -5,16 +5,8 @@ import request from 'supertest'
 // express app
 import { app } from '../express.js'
 
-// socket.io
-import { Server } from 'socket.io'
-import { io as ioc } from 'socket.io-client'
-import { Socket } from '../sockets.js'
-import sessions from '../middleware/sessions.js'
-
-// connection variables
-let io
-let clientSocket
-let server
+// test agent
+// (single request for all tests)
 let agent
 
 // db
@@ -24,23 +16,11 @@ import db from '../db/DB.js'
 test.before(async () => {
   await db.migrate.latest()
 
-  server = app.listen(3000)
-  agent = request.agent(server)
-
-  io = new Server(server)
-  Socket(io, sessions)
+  agent = request.agent(app)
 })
 
 test.after(async () => {
-  io.close()
-  clientSocket.disconnect()
-
   await db.migrate.down()
-})
-
-test.beforeEach(async () => {
-  await agent.get('/')
-  clientSocket = ioc('http://localhost:3000')
 })
 
 // tests
