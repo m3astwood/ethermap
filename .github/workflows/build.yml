@@ -24,4 +24,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           push: true
-          tags: m3astwood/ethermap:latest
+          tags: ghcr.io/m3astwood/ethermap:latest
