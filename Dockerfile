@@ -1,5 +1,7 @@
 FROM node:slim
 
+LABEL org.opencontainers.image.source https://github.com/m3astwood/ethermap
+
 COPY . /app
 
 WORKDIR /app
