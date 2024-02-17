@@ -22,5 +22,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           push: true
           tags: m3astwood/ethermap:latest
