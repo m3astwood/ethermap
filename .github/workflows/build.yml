@@ -1,19 +1,26 @@
-name: Etherpad docker container build
-run-name: Etherpad docker container build
+name: Etherpad docker container build and push
+run-name: Etherpad docker container build and push
 on:
   push:
     branches:
       - 'main'
       - 'docker'
 jobs:
-  build:
-    runs-on: docker:dind
+  build-push-docker:
+    runs-on: ubuntu-latest
     steps:
-      - name: Clone code to runner
-        uses: actions/checkout@v4
+      - name: Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Move to directory
-        run: cd ${{ github.workspace }}
+      - name: Login to github container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build docker container
-        run: docker build -t m3astwood/ethermap:latest .
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: m3astwood/ethermap:latest
