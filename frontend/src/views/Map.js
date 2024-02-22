@@ -56,7 +56,6 @@ class MapView extends LitElement {
   _updatePointMarker(point) {
     const m = this.points.get(point.id)
 
-    console.log(m)
     const div = document.createElement('div')
     render(html`<em-marker-popup .point=${point}></em-marker-popup>`, div)
 
@@ -68,6 +67,7 @@ class MapView extends LitElement {
     m.remove()
     this.points.delete(parseInt(id))
 
+    // TODO@mx deleted point feedback in UI
     console.log('deleted point', id)
   }
 
@@ -114,12 +114,9 @@ class MapView extends LitElement {
     this.addEventListener('em:point-update', async (evt) => {
       const point = evt.detail
       try {
-        console.log(point)
-        const updPoint = await api.put(`/api/point/${point.id}`, { point })
-
-        console.log(updPoint)
+        await api.put(`/api/point/${point.id}`, { point })
       } catch (err) {
-
+        console.error(err)
       }
     })
 
