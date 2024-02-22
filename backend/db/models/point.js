@@ -16,9 +16,15 @@ class PointModel extends Model {
     required: ['location'],
     properties: {
       id: { type: 'integer' },
-      name: { type: 'string' },
-      notes: { type: 'string' },
-      location: { type: 'string' },
+      name: { type: ['string', 'null'] },
+      notes: { type: ['string', 'null'] },
+      location: {
+        type: 'object',
+        properties: {
+          lat: { type: 'number' },
+          lng: { type: 'number' }
+        }
+      },
     },
   }
 }
