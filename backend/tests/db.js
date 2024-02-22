@@ -25,11 +25,11 @@ test.serial('Insert point for existing map returns point', async (t) => {
   const map = await MapModel.query().where({ name: 'milo' }).first()
   const point = await map.$relatedQuery('map_points').insert({
     name: 'pointy',
-    location: '(50.8552,4.3454)',
+    location: { lat: 50.8552, lng: 4.3454 },
   })
 
   t.is(point.name, 'pointy')
-  t.is(point.location, '(50.8552,4.3454)')
+  t.deepEqual(point.location, { lat: 50.8552, lng: 4.3454 })
 })
 
 test.after(async () => {

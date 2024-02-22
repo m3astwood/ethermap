@@ -74,13 +74,14 @@ test.serial(
         mapId,
         point: {
           name: 'pointy',
-          location: '(50.8552,4.3454)',
+          location: { lat: 50.8552, lng: 4.3454 },
         },
       })
 
     t.is(res.status, 201)
     t.is(res.body.id, 1)
     t.is(res.body.map_id, mapId)
+    t.deepEqual(res.body.location, { lat: 50.8552, lng: 4.3454 })
     t.is(res.body.name, 'pointy')
   },
 )
