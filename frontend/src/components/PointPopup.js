@@ -2,49 +2,36 @@ import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
 
 // Stores
-import { StoreController } from 'exome/lit'
-import mapStore from '../store/mapStore.js'
+// import { StoreController } from 'exome/lit'
+// import mapStore from '../store/mapStore.js'
 
 // Controllers
 import EventController from '../api/event.js'
 
 class MarkerPopup extends LitElement {
-  map = new StoreController(this, mapStore)
+  // map = new StoreController(this, mapStore)
   eventController = new EventController(this)
 
-  static get properties() {
-    return {
-      // props
-      id: { type: Number },
-      point: { type: Object },
-      marker: { type: Object },
-      open: { type: Boolean },
-
-      // internal state
-      elWidth: { state: true },
-    }
+  static properties = {
+    // props
+    id: { type: Number },
+    point: { type: Object },
+    marker: { type: Object },
+    open: { type: Boolean },
   }
 
   constructor() {
     super()
-    this.point = {
-      id: '',
-      name: '',
-      notes: '',
-    }
-
-    this.id = 0
+    this.point = {}
   }
 
   deleteHandler() {
-    this.marker.remove()
     this.eventController.dispatch('em:point-delete', {
-      detail: { id: this.id },
+      detail: { id: this.point.id },
     })
   }
 
   updateHandler() {
-    this.marker.closePopup()
     this.eventController.dispatch('em:point-update', {
       detail: { ...this.point },
     })
@@ -52,11 +39,11 @@ class MarkerPopup extends LitElement {
 
   render() {
     return html`
-      <div>id : ${this.id}</div>
+      <div>id : ${this.point.id}</div>
       <input
         type="text"
         name="name"
-        .value=${live(this.point.name)}
+        .value=${live(this.point?.name)}
         placeholder="name"
         @input=${(e) => (this.point.name = e.target.value)}
       >
@@ -65,7 +52,7 @@ class MarkerPopup extends LitElement {
       <textarea
         name="notes"
         placeholder="notes"
-        .value=${live(this.point.notes)}
+        .value=${live(this.point?.notes)}
         @input=${(e) => (this.point.notes = e.target.value)}
       ></textarea>
 

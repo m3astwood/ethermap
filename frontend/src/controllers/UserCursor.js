@@ -1,7 +1,7 @@
 import * as L from 'leaflet'
 import io from '../api/socket.js'
 
-// HACK this needs to be finessed
+// FIX@mx this needs to be finessed
 import SvgCursor from '../components/SvgCursor.js'
 
 export default class UserCursor {

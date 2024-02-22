@@ -1,5 +1,7 @@
 import { html } from 'lit'
 import { Router } from '@thepassle/app-tools/router.js'
+import { data } from '@thepassle/app-tools/router/plugins/data.js'
+import { api } from '@thepassle/app-tools/api.js'
 
 // views
 import '../views/Map.js'
@@ -21,7 +23,10 @@ export default new Router({
     {
       path: '/m/:mapId',
       title: ({ params }) => `ethermap | ${params.mapId}`,
-      render: ({ params }) => html`<map-view name=${params.mapId}></map-view>`,
+      plugins: [
+        data((ctx) => api.get(`/api/map/${ctx.params.mapId}`))
+      ],
+      render: (ctx) => html`<map-view .map=${ctx.data}></map-view>`,
     },
     {
       path: '/404',
