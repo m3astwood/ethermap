@@ -1,6 +1,5 @@
 import MapModel from '../db/models/map.js'
 import PointModel from '../db/models/point.js'
-import { convertMapPoint } from '../utils/toPoint.js'
 import { socket } from '../sockets.js'
 
 const createPoint = async (req, res, next) => {
@@ -9,8 +8,6 @@ const createPoint = async (req, res, next) => {
 
     const map = await MapModel.query().findById(mapId)
     const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
-
-    convertMapPoint(_point)
 
     if (socket.connections.get(req.sessionID)) {
       socket.connections
@@ -73,9 +70,9 @@ const deletePoint = async (req, res, next) => {
       socket.connections
         .get(req.sessionID)
         .to(`map-${mapId}`)
-        .emit('point-delete', { id })
+        .emit('point-delete', id)
     } else if (socket.mapRooms[`map-${mapId}`]) {
-      socket.io.to(`map-${mapId}`).emit('point-delete', { id })
+      socket.io.to(`map-${mapId}`).emit('point-delete', id)
     }
 
     res.status(200)
