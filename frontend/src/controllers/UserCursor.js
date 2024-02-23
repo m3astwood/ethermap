@@ -1,4 +1,4 @@
-import * as L from 'leaflet'
+import L from 'leaflet'
 import io from '../api/socket.js'
 
 // FIX@mx this needs to be finessed
@@ -42,7 +42,7 @@ export default class UserCursor {
           icon: cursorIcon,
           interactive: false,
           zIndexOffset: 1000,
-        }).addTo(this.host.leaflet)
+        }).addTo(this.host.leafletMap)
       }
 
       // update cursor's position

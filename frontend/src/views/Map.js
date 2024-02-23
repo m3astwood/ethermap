@@ -10,9 +10,12 @@ import 'leaflet-contextmenu'
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
 import leafletCss from 'leaflet/dist/leaflet.css'
 
+import UserCursor from '../controllers/UserCursor'
 import '../components/PointPopup.js'
 
 class MapView extends LitElement {
+  userCursor = new UserCursor(this)
+
   static properties = {
     map: { type: Object },
     mapId: { state: true },
@@ -32,18 +35,30 @@ class MapView extends LitElement {
 
       // io connect to map
       io.emit('connect-map', this.mapId)
+      const latlngs = []
 
       for (const point of m.points) {
+        latlngs.push(point.location)
         this.points.set(point.id, this._createPointMarker(point))
+      }
+
+      if (latlngs.length > 0) {
+        this.leafletMap
+          .fitBounds(latlngs, {
+            paddingTopLeft: [20, 20],
+            paddingBottomRight: [20, 20],
+          })
+      } else {
+        this.leafletMap
+          .fitWorld()
+          .setZoom(3)
       }
     },
     args: () => [this.map],
   })
 
   _createPointMarker(point) {
-    const m = L.marker(point.location).addTo(
-      this.leafletMap,
-    )
+    const m = L.marker(point.location).addTo(this.leafletMap)
 
     const div = document.createElement('div')
     render(html`<em-marker-popup .point=${point}></em-marker-popup>`, div)
@@ -93,7 +108,7 @@ class MapView extends LitElement {
           },
         },
       ],
-    }).setView([51.8919, 4.4692], 19)
+    })
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(
       this.leafletMap,
@@ -122,17 +137,23 @@ class MapView extends LitElement {
 
     // io listeners
     io.on('point-create', (point) => {
-      this.points.set(
-        point.id,
-        this._createPointMarker(point)
-      )
+      this.points.set(point.id, this._createPointMarker(point))
     })
     io.on('point-update', (point) => {
       this._updatePointMarker(point)
     })
-    io.on('point-delete', (id) => {
-      this._deletePointMarker(id)
-    }, this)
+    io.on(
+      'point-delete',
+      (id) => {
+        this._deletePointMarker(id)
+      },
+      this,
+    )
+
+    // track mouse movement
+    this.leafletMap.on('mousemove', (evt) =>
+      this.userCursor.mouseMove(evt.latlng),
+    )
   }
 
   render() {
