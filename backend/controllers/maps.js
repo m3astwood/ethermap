@@ -24,9 +24,9 @@ const getMapByName = async (req, res, next) => {
     }
 
     // convert location from string to point
-    if (points.length > 0) {
-      points.forEach(convertMapPoint)
-    }
+    // if (points.length > 0) {
+    //   points.forEach(convertMapPoint)
+    // }
 
     res.json({ map, points })
   } catch (err) {

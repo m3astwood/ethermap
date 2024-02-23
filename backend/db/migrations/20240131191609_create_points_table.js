@@ -18,9 +18,5 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-  if (knex.client.version === 'pg' || knex.client.version === 'pg-mem') {
-    return knex.schema.dropTable('map_points')
-  } else {
-    return knex.schema.dropTable('map_points')
-  }
+  return knex.schema.dropTable('map_points')
 }

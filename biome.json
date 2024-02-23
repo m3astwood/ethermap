@@ -12,5 +12,14 @@
       "semicolons": "asNeeded",
       "quoteStyle": "single"
     }
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": [ "node_modules" ]
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   }
 }

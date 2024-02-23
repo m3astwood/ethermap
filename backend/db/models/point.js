@@ -25,6 +25,8 @@ class PointModel extends Model {
           lng: { type: 'number' }
         }
       },
+      created_by: { type: 'string' },
+      updated_by: { type: 'string' }
     },
   }
 }

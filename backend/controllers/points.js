@@ -6,6 +6,9 @@ const createPoint = async (req, res, next) => {
   try {
     const { mapId, point } = req.body
 
+    point.created_by = req.session.id
+    point.updated_by = req.session.id
+
     const map = await MapModel.query().findById(mapId)
     const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
 
@@ -29,6 +32,8 @@ const updatePoint = async (req, res, next) => {
   try {
     const { id } = req.params
     const { point } = req.body
+
+    point.updated_by = req.session.id
 
     const _point = await PointModel.query().patchAndFetchById(id, point)
 
