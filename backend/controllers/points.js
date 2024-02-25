@@ -87,4 +87,23 @@ const deletePoint = async (req, res, next) => {
   }
 }
 
-export { createPoint, updatePoint, deletePoint }
+const getPointById = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const point = await PointModel.query()
+      .findById(id)
+      .withGraphJoined({ created_by_user: true })
+
+    if (!point) {
+      res.status(404)
+      throw new Error(`Point with id ${id} cannot be found`)
+    }
+
+    res.status(200)
+    res.json(point)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export { createPoint, updatePoint, deletePoint, getPointById }
