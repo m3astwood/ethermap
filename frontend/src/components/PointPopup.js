@@ -18,11 +18,20 @@ class MarkerPopup extends LitElement {
     point: { type: Object },
     marker: { type: Object },
     open: { type: Boolean },
+    updated_by: { type: Object }
   }
 
   constructor() {
     super()
     this.point = {}
+    this.updated_by = {}
+  }
+
+  firstUpdated() {
+    const { user } = JSON.parse(this.point.updated_by_user.sess)
+    this.updated_by = user
+
+    console.log(this.updated_by)
   }
 
   deleteHandler() {
@@ -59,6 +68,10 @@ class MarkerPopup extends LitElement {
       <div class="controls">
         <button name="delete" @click=${this.deleteHandler}>delete</button>
         <button name="save" @click=${this.updateHandler}>save</button>
+      </div>
+
+      <div class="updated_by">
+        Last updated by : ${this.updated_by?.name ?? ''}
       </div>
     `
   }

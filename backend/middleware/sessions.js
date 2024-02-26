@@ -15,6 +15,7 @@ export default session({
   secret: 'supersessionstoresecretsauce',
   resave: false,
   saveUninitialized: true,
+  httpOnly: true,
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },

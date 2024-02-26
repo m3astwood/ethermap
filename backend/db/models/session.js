@@ -1,5 +1,7 @@
 import { Model } from 'objection'
 
+// TODO@mx types as strings not ideal?
+
 // biome-ignore lint/complexity/noStaticOnlyClass: Objection.js model
 class  SessionModel extends Model {
   static tableName = 'sessions'
@@ -9,8 +11,8 @@ class  SessionModel extends Model {
     required: [ 'sid' ],
     properties: {
       sid: { type: 'string' },
-      sess: { type: 'json' },
-      expired: { type: 'datetime' }
+      sess: { type: 'string' },
+      expired: { type: 'string' }
     }
   }
 }
