@@ -1,4 +1,5 @@
 import { Server } from "socket.io"
+import PointModel from "./db/models/point.js"
 
 export default class SocketConnection {
   constructor() {
@@ -23,6 +24,15 @@ export default class SocketConnection {
 
         // add socket to map room
         socket.join(roomId)
+      })
+
+      // update point data
+      socket.on('client-point-update', async (point) => {
+        point.updated_by = socket.request.sessionID
+        const _point = await PointModel.query()
+          .patchAndFetchById(point.id, point)
+
+        socket.to(roomId).emit('point-update', _point)
       })
 
       // mouse movement
