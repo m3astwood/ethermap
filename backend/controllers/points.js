@@ -10,7 +10,18 @@ const createPoint = async (req, res, next) => {
     point.updated_by = req.session.id
 
     const map = await MapModel.query().findById(mapId)
-    const _point = await map.$relatedQuery('map_points').insertAndFetch(point)
+
+    if (!map) {
+      res.status(404)
+      throw new Error(`Map with id ${mapId} does not exist`)
+    }
+
+    const _point = await map
+      .$relatedQuery('map_points')
+      .insertGraphAndFetch(point, {
+        created_by_user: true,
+        updated_by_user: true,
+      })
 
     if (socket.connections.get(req.sessionID)) {
       socket.connections
@@ -35,7 +46,13 @@ const updatePoint = async (req, res, next) => {
 
     point.updated_by = req.session.id
 
-    const _point = await PointModel.query().patchAndFetchById(id, point)
+    const patched = await PointModel.query()
+      .patch(point)
+      .findById(id)
+
+    const _point = await PointModel.query()
+      .findById(id)
+      .withGraphJoined({ updated_by_user: true, created_by_user: true })
 
     if (!_point) {
       res.status(404)
@@ -51,7 +68,11 @@ const updatePoint = async (req, res, next) => {
       socket.io.to(`map-${_point.map_id}`).emit('point-update', _point)
     }
 
-    res.status(201)
+    if (patched < 1) {
+      res.status(200)
+    } else {
+      res.status(201)
+    }
     res.json(_point)
   } catch (err) {
     next(err)
@@ -87,4 +108,23 @@ const deletePoint = async (req, res, next) => {
   }
 }
 
-export { createPoint, updatePoint, deletePoint }
+const getPointById = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const point = await PointModel.query()
+      .findById(id)
+      .withGraphJoined('[ created_by_user, updated_by_user ]')
+
+    if (!point) {
+      res.status(404)
+      throw new Error(`Point with id ${id} cannot be found`)
+    }
+
+    res.status(200)
+    res.json(point)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export { createPoint, updatePoint, deletePoint, getPointById }

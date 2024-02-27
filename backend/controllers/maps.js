@@ -1,5 +1,4 @@
 import MapModel from '../db/models/map.js'
-import { convertMapPoint } from '../utils/toPoint.js'
 
 const getAllMaps = async (_, res) => {
   const maps = await MapModel.query()
@@ -7,6 +6,7 @@ const getAllMaps = async (_, res) => {
   res.json({ maps })
 }
 
+// FIX@mx is returning the session of other user's per point an issue??
 const getMapByName = async (req, res, next) => {
   const { name } = req.params
   try {
@@ -15,6 +15,7 @@ const getMapByName = async (req, res, next) => {
 
     if (map) {
       points = await map.$relatedQuery('map_points')
+        .withGraphJoined('[created_by_user, updated_by_user]')
       res.status(200)
     } else {
       map = await MapModel.query().insertAndFetch({ name })
@@ -22,11 +23,6 @@ const getMapByName = async (req, res, next) => {
 
       res.status(201)
     }
-
-    // convert location from string to point
-    // if (points.length > 0) {
-    //   points.forEach(convertMapPoint)
-    // }
 
     res.json({ map, points })
   } catch (err) {
@@ -38,16 +34,9 @@ const getMapPoints = async (req, res, next) => {
   try {
     const { id } = await req.params
 
-    const map = await MapModel.query().findById(id)
-
-    if (!map) {
-      res.status(404)
-      throw new Error('No map with id', id)
-    }
-
-    const points = await map.$relatedQuery('map_points')
-
-    points.forEach(convertMapPoint)
+    const points = await MapModel.relatedQuery('map_points')
+      .withGraphJoined('[created_by_user, updated_by_user]')
+      .for(id)
 
     res.status(200)
     res.json({ points })

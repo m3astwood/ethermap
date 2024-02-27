@@ -4,8 +4,8 @@
  */
 export const up = (knex) => {
   return knex.schema.table('map_points', (table) => {
-    table.string('created_by')
-    table.string('updated_by')
+    table.string('created_by').references('sid').inTable('sessions')
+    table.string('updated_by').references('sid').inTable('sessions')
   })
 }
 
@@ -16,6 +16,6 @@ export const up = (knex) => {
 export const down = (knex) => {
   return knex.schema.table('map_points', (table) => {
     table.dropColumn('created_by')
-    table.dropColumnn('updated_by')
+    table.dropColumn('updated_by')
   })
 }
