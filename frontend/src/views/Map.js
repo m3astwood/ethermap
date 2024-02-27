@@ -12,6 +12,7 @@ import leafletCss from 'leaflet/dist/leaflet.css'
 
 import UserCursor from '../controllers/UserCursor'
 import '../components/PointPopup.js'
+import '../components/PointPane.js'
 
 class MapView extends LitElement {
   userCursor = new UserCursor(this)
@@ -21,6 +22,7 @@ class MapView extends LitElement {
     mapId: { state: true },
     leafletMap: { state: true },
     points: { state: true },
+    selectedPoint: { state: true }
   }
 
   constructor() {
@@ -40,6 +42,7 @@ class MapView extends LitElement {
       for (const point of m.points) {
         latlngs.push(point.location)
         this.points.set(point.id, this._createPointMarker(point))
+
       }
 
       if (latlngs.length > 0) {
@@ -60,27 +63,31 @@ class MapView extends LitElement {
   _createPointMarker(point) {
     const m = L.marker(point.location).addTo(this.leafletMap)
 
-    const div = document.createElement('div')
-    render(html`<em-marker-popup .point=${point}></em-marker-popup>`, div)
+    m.properties = point
 
-    m.bindPopup(div)
+    m.addEventListener('click', () => {
+      this.selectedPoint = this.points.get(point.id).properties
+      console.log(this.points.get(point.id))
+    })
 
     return m
   }
 
   _updatePointMarker(point) {
-    const m = this.points.get(point.id)
+    const p = this.points.get(point.id)
+    p.properties = point
 
-    const div = document.createElement('div')
-    render(html`<em-marker-popup .point=${point}></em-marker-popup>`, div)
-
-    m.setPopupContent(div)
+    if (this.selectedPoint?.id == point.id) {
+      this.selectedPoint = p.properties
+    }
   }
 
   _deletePointMarker(id) {
     const m = this.points.get(parseInt(id))
     m.remove()
     this.points.delete(parseInt(id))
+
+    this.selectedPoint = null
 
     // TODO@mx deleted point feedback in UI
     console.log('deleted point', id)
@@ -102,6 +109,7 @@ class MapView extends LitElement {
               })
 
               this.points.set(newPoint.id, this._createPointMarker(newPoint))
+              this.selectedPoint = this.points.get(newPoint.id).properties
             } catch (err) {
               console.error(err)
             }
@@ -117,6 +125,7 @@ class MapView extends LitElement {
     // listeners
     this.addEventListener('em:point-delete', (evt) => {
       const { id } = evt.detail
+      console.log('delete', id)
       try {
         api.delete(`/api/point/${id}`)
 
@@ -129,26 +138,21 @@ class MapView extends LitElement {
     this.addEventListener('em:point-update', async (evt) => {
       const point = evt.detail
       try {
-        await api.put(`/api/point/${point.id}`, { point })
+        io.emit('client-point-update', point)
       } catch (err) {
         console.error(err)
       }
     })
 
+    this.addEventListener('em:close-pane', () => this.selectedPoint = null)
+
     // io listeners
     io.on('point-create', (point) => {
       this.points.set(point.id, this._createPointMarker(point))
+
     })
-    io.on('point-update', (point) => {
-      this._updatePointMarker(point)
-    })
-    io.on(
-      'point-delete',
-      (id) => {
-        this._deletePointMarker(id)
-      },
-      this,
-    )
+    io.on('point-update', this._updatePointMarker.bind(this))
+    io.on('point-delete', this._deletePointMarker.bind(this))
 
     // track mouse movement
     this.leafletMap.on('mousemove', (evt) =>
@@ -158,7 +162,9 @@ class MapView extends LitElement {
 
   render() {
     return html`
-      <main></main>
+      <main>
+        <em-point-pane ?active=${this.selectedPoint} .point=${this.selectedPoint}></em-point-pane>
+      </main>
     `
   }
 
