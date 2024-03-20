@@ -1,4 +1,4 @@
-import { LitElement, html, css, unsafeCSS, render } from 'lit'
+import { LitElement, html, css, unsafeCSS } from 'lit'
 
 import io from '../api/socket.js'
 
@@ -77,7 +77,7 @@ class MapView extends LitElement {
     const p = this.points.get(point.id)
     p.properties = point
 
-    if (this.selectedPoint?.id == point.id) {
+    if (this.selectedPoint?.id === point.id) {
       this.selectedPoint = p.properties
     }
   }

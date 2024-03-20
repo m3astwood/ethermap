@@ -29,10 +29,17 @@ export default class SocketConnection {
       // update point data
       socket.on('client-point-update', async (point) => {
         point.updated_by = socket.request.sessionID
-        const _point = await PointModel.query()
-          .patchAndFetchById(point.id, point)
+        const patched = await PointModel.query()
+          .findById(point.id)
+          .patch(point)
 
-        socket.to(roomId).emit('point-update', _point)
+        if (patched > 0) {
+          const _point = await PointModel.query()
+            .findById(point.id)
+            .withGraphJoined({ updated_by_user: true, created_by_user: true })
+
+          socket.to(roomId).emit('point-update', _point)
+        }
       })
 
       // mouse movement

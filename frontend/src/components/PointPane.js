@@ -27,6 +27,14 @@ class PointPane extends LitElement {
   firstUpdated() {
     const form = this.shadowRoot.querySelector('form')
     form.addEventListener('input', this._inputUpdate.bind(this))
+
+    if (this.point) {
+      const ubu = JSON.parse(this.point.updated_by_user.sess)
+      const cbu = JSON.parse(this.point.created_by_user.sess)
+
+      this.meta.updated_by = ubu.user
+      this.meta.created_by = cbu.user
+    }
   }
 
   _inputUpdate(evt) {
@@ -55,6 +63,11 @@ class PointPane extends LitElement {
         <input type="text" name="name" .value=${live(this.point?.name)} placeholder="name">
         <textarea name="notes" .value=${live(this.point?.notes)} placeholder="notes"></textarea>
       </form>
+
+      <div class="meta">
+        <p>updated by : ${this.meta.updated_by.name}</p>
+        <p>created by : ${this.meta.created_by.name}</p>
+      </div>
 
       <div class="controls">
         <button class="delete" @click=${this._delete.bind(this)}>delete</button>
