@@ -3,19 +3,13 @@ import { LitElement, html, css } from 'lit'
 import Router from './controllers/Router.js'
 
 import './components/UserTool.js'
+import { customElement, property } from 'lit/decorators.js'
 
-class EthermapApp extends LitElement {
-  static get properties() {
-    return {
-      route: { state: true },
-      user: { state: true },
-    }
-  }
+@customElement('ethermap-app')
+export class EthermapApp extends LitElement {
 
-  constructor() {
-    super()
-    this.route = Router.render()
-  }
+  @property({ state: true })
+  route = Router.render()
 
   async firstUpdated() {
     Router.addEventListener('route-changed', () => {
@@ -54,5 +48,3 @@ class EthermapApp extends LitElement {
     `
   }
 }
-
-window.customElements.define('ethermap-app', EthermapApp)

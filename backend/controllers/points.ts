@@ -1,8 +1,9 @@
-import MapModel from '../db/models/map.js'
-import PointModel from '../db/models/point.js'
-import { socket } from '../sockets.js'
+import type { NextFunction, Request, Response } from 'express'
+import MapModel from '../db/models/map'
+import PointModel from '../db/models/point'
+import { socket } from '../sockets'
 
-const createPoint = async (req, res, next) => {
+const createPoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { mapId, point } = req.body
 
@@ -19,14 +20,13 @@ const createPoint = async (req, res, next) => {
     const _point = await map
       .$relatedQuery('map_points')
       .insertGraphAndFetch(point, {
-        created_by_user: true,
-        updated_by_user: true,
+        relate: ['created_by_user', 'updated_by_user' ]
       })
 
-    if (socket.connections.get(req.sessionID)) {
+    if (socket.connections?.get(req.sessionID)) {
       socket.connections
         .get(req.sessionID)
-        .to(`map-${mapId}`)
+        ?.to(`map-${mapId}`)
         .emit('point-create', _point)
     } else if (socket.mapRooms[`map-${mapId}`]) {
       socket.io.to(`map-${mapId}`).emit('point-create', _point)
@@ -39,16 +39,14 @@ const createPoint = async (req, res, next) => {
   }
 }
 
-const updatePoint = async (req, res, next) => {
+const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
     const { point } = req.body
 
     point.updated_by = req.session.id
 
-    const patched = await PointModel.query()
-      .patch(point)
-      .findById(id)
+    // const patched = await PointModel.query().patch(point).findById(id)
 
     const _point = await PointModel.query()
       .findById(id)
@@ -56,37 +54,37 @@ const updatePoint = async (req, res, next) => {
 
     if (!_point) {
       res.status(404)
-      throw new Error('No point found with id :', id)
+      throw new Error(`No point found with id : ${id}`)
     }
 
     if (socket.connections.get(req.sessionID)) {
       socket.connections
         .get(req.sessionID)
-        .to(`map-${_point.map_id}`)
+        ?.to(`map-${_point.map_id}`)
         .emit('point-update', _point)
     } else if (socket.mapRooms[`map-${_point.map_id}`]) {
       socket.io.to(`map-${_point.map_id}`).emit('point-update', _point)
     }
 
-    if (patched < 1) {
-      res.status(200)
-    } else {
-      res.status(201)
-    }
+    // if (patched && patched < 1) {
+    //   res.status(200)
+    // } else {
+    //   res.status(201)
+    // }
     res.json(_point)
   } catch (err) {
     next(err)
   }
 }
 
-const deletePoint = async (req, res, next) => {
+const deletePoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
     const point = await PointModel.query().select('map_id').findById(id)
 
     if (!point) {
       res.status(404)
-      throw new Error('No items deleted with id', id)
+      throw new Error('No items deleted with id : ${id}')
     }
 
     const { map_id: mapId } = point
@@ -95,7 +93,7 @@ const deletePoint = async (req, res, next) => {
     if (socket.connections.get(req.sessionID)) {
       socket.connections
         .get(req.sessionID)
-        .to(`map-${mapId}`)
+        ?.to(`map-${mapId}`)
         .emit('point-delete', id)
     } else if (socket.mapRooms[`map-${mapId}`]) {
       socket.io.to(`map-${mapId}`).emit('point-delete', id)
@@ -108,7 +106,7 @@ const deletePoint = async (req, res, next) => {
   }
 }
 
-const getPointById = async (req, res, next) => {
+const getPointById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
     const point = await PointModel.query()

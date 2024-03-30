@@ -1,16 +1,23 @@
 {
   "name": "ethermap",
+  "private": true,
   "version": "1.0.0",
   "description": "> This is very much a janky _earlydays_ project. All help is welcome!",
-  "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js -w backend/",
-    "test": "ava",
-    "test:routes": "ava ./backend/tests/routes.js",
-    "test:db": "ava ./backend/tests/db.js",
-    "migrate:latest": "knex migrate:latest",
-    "migrate:drop": "knex migrate:down"
+    "dev": "nodemon server.ts -w backend/ --exec ts-node",
+    "build:backend": "tsc && tsc-alias",
+    "build:frontend": "vite build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "ava": "npm run build:backend && ava",
+    "test:all": "npm run ava",
+    "test:routes": "npm run test -- ./dist/backend/tests/routes.js && rm -r ./dist",
+    "test:db": "npm run test -- ./dist/backend/tests/db.js && rm -r ./dist",
+    "knex:run": "npx ts-node ./node_modules/.bin/knex --knexfile knexfile.ts",
+    "migrate:latest": "npm run knex:run -- migrate:latest",
+    "migrate:rollback": "npm run knex:run -- migrate:rollback",
+    "migrate:down": "npm run knex:run -- migrate:down",
+    "migrate:drop": "npm run knex:run -- migrate:rollback --all"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +31,7 @@
     "exome": "^2.0.2",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
-    "knex": "^3.1.0",
+    "knex": "^2.1.0",
     "leaflet": "^1.9.4",
     "leaflet-contextmenu": "^1.4.0",
     "lit": "^3.0.0",
@@ -37,16 +44,33 @@
     "vite-express": "^0.10.0"
   },
   "devDependencies": {
+    "@ava/typescript": "^4.1.0",
+    "@types/express": "^4.17.21",
+    "@types/express-session": "^1.18.0",
     "ava": "^5.3.1",
     "eslint": "^8.48.0",
     "eslint-plugin-lit": "^1.10.1",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.2.2",
     "vite": "^4.4.9"
   },
   "ava": {
+    "typescript": {
+      "rewritePaths": {
+        "backend/tests/": "dist/backend/tests/"
+      },
+      "compile": false
+    },
     "environmentVariables": {
       "NODE_ENV": "test"
+    }
+  },
+  "nodemon": {
+    "execMap": {
+      "ts": "ts-node"
     }
   }
 }

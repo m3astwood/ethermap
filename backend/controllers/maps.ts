@@ -1,16 +1,18 @@
-import MapModel from '../db/models/map.js'
+import type { NextFunction, Request, Response } from 'express'
+import MapModel from '../db/models/map'
+import type PointModel from '../db/models/point'
 
-const getAllMaps = async (_, res) => {
+const getAllMaps = async (_: Request, res: Response) => {
   const maps = await MapModel.query()
 
   res.json({ maps })
 }
 
 // FIX@mx is returning the session of other user's per point an issue??
-const getMapByName = async (req, res, next) => {
+const getMapByName = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
   try {
-    let points
+    let points: Array<PointModel>
     let map = await MapModel.query().where({ name }).first()
 
     if (map) {
@@ -30,9 +32,9 @@ const getMapByName = async (req, res, next) => {
   }
 }
 
-const getMapPoints = async (req, res, next) => {
+const getMapPoints = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = await req.params
+    const { id } = req.params
 
     const points = await MapModel.relatedQuery('map_points')
       .withGraphJoined('[created_by_user, updated_by_user]')

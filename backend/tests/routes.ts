@@ -3,24 +3,26 @@ import test from 'ava'
 import request from 'supertest'
 
 // express app
-import { app } from '../express.js'
+import { app } from '../httpServer'
 
 // test agent
 // (single request for all tests)
 let agent
 
 // db
-import db from '../db/DB.js'
+import db from '../db/DB'
 
 // test setup
 test.before(async () => {
   await db.migrate.latest()
+})
 
+test.beforeEach(() => {
   agent = request.agent(app)
 })
 
 test.after(async () => {
-  await db.migrate.down()
+  await db.migrate.rollback({}, true)
 })
 
 // tests

@@ -1,8 +1,6 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function up(knex) {
+import type { Knex } from "knex"
+
+export function up(knex: Knex): Knex.SchemaBuilder {
   return knex.schema.createTable('maps', (table) => {
     table.increments().primary()
     table.string('name').notNullable().unique()
@@ -10,14 +8,9 @@ export function up(knex) {
   })
 }
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function down(knex) {
+export function down(knex: Knex): Knex.SchemaBuilder {
   if (knex.client.version === 'pg' || knex.client.version === 'pg-mem') {
     return knex.schema.raw('DROP TABLE maps CASCADE')
-  } else {
-    return knex.schema.dropTable('maps')
   }
+  return knex.schema.dropTable('maps')
 }

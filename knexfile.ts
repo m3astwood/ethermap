@@ -1,25 +1,30 @@
 // Update with your config settings.
 import 'dotenv/config'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { Knex } from 'knex'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+interface KnexConfig {
+  [key: string]: Knex.Config
+}
 
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-export default {
+const config: KnexConfig = {
   development: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: __dirname + '/backend/db/development.db',
+      filename: `${__dirname}/backend/db/development.db`,
     },
     migrations: {
-      directory: __dirname + '/backend/db/migrations',
+      directory: `${__dirname}/backend/db/migrations`,
     },
     seeds: {
-      directory: __dirname + '/db/seeds',
+      directory: `${__dirname}/db/seeds`,
     },
   },
 
@@ -28,10 +33,10 @@ export default {
     connection: ':memory:',
     useNullAsDefault: true,
     migrations: {
-      directory: __dirname + '/backend/db/migrations',
+      directory: `${__dirname}/backend/db/migrations`,
     },
     seeds: {
-      directory: __dirname + '/backend/db/seeds',
+      directory: `${__dirname}/backend/db/seeds`,
     },
   },
 
@@ -42,7 +47,7 @@ export default {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
+      port: Number.parseInt(process.env.DB_PORT || ''),
     },
     pool: {
       min: 2,
@@ -60,7 +65,7 @@ export default {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
+      port: Number.parseInt(process.env.DB_PORT || ''),
     },
     pool: {
       min: 2,
@@ -71,3 +76,5 @@ export default {
     },
   },
 }
+
+export default config

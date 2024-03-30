@@ -1,9 +1,9 @@
-import { app } from './backend/express.js'
+import { app } from './backend/httpServer'
 import ViteExpress from 'vite-express'
 import 'dotenv/config'
 
-import Session from './backend/middleware/sessions.js'
-import { socket } from './backend/sockets.js'
+import Session from './backend/middleware/sessions'
+import { socket } from './backend/sockets'
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Ethermap listening for connections on port ${process.env.PORT}`)

@@ -1,8 +1,6 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function up(knex) {
+import type { Knex } from "knex"
+
+export function up(knex: Knex): Knex.SchemaBuilder {
   return knex.schema.createTable('map_points', (table) => {
     table.increments().primary()
     table.string('name')
@@ -13,10 +11,6 @@ export function up(knex) {
   })
 }
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function down(knex) {
+export function down(knex: Knex): Knex.SchemaBuilder {
   return knex.schema.dropTable('map_points')
 }

@@ -1,8 +1,14 @@
 import { Model } from 'objection'
-import Point from './point.js'
+import Point from './point'
 
 class MapModel extends Model {
   static tableName = 'maps'
+
+  id: number
+  name: string
+  map_points: Array<Point>
+  created_at: string
+  updated_at: string
 
   $beforeInsert() {
     this.created_at = new Date().toISOString()

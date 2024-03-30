@@ -1,8 +1,18 @@
-import SessionModel from './session.js'
 import { Model } from 'objection'
+import SessionModel from './session'
 
 class PointModel extends Model {
   static tableName = 'map_points'
+
+  id: number
+  name: string
+  notes: string
+  location: { lat: number, lng: number }
+  map_id: number
+  created_by: string
+  created_at: string
+  updated_by: string
+  updated_at: string
 
   $beforeInsert() {
     this.created_at = new Date().toISOString()
@@ -26,6 +36,7 @@ class PointModel extends Model {
           lng: { type: 'number' }
         }
       },
+      map_id: { type: 'integer' },
       created_by: { type: 'string' },
       updated_by: { type: 'string' }
     },
