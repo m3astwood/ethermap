@@ -36,6 +36,13 @@ const getMapPoints = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const { id } = req.params
 
+    const map = await MapModel.query().findById(id)
+
+    if (!map) {
+      res.status(404)
+      throw new Error(`Map not found with id ${id}`)
+    }
+
     const points = await MapModel.relatedQuery('map_points')
       .withGraphJoined('[created_by_user, updated_by_user]')
       .for(id)

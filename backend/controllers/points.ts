@@ -46,7 +46,7 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
 
     point.updated_by = req.session.id
 
-    // const patched = await PointModel.query().patch(point).findById(id)
+    const patched = await PointModel.query().patch(point).findById(id)
 
     const _point = await PointModel.query()
       .findById(id)
@@ -66,11 +66,11 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
       socket.io.to(`map-${_point.map_id}`).emit('point-update', _point)
     }
 
-    // if (patched && patched < 1) {
-    //   res.status(200)
-    // } else {
-    //   res.status(201)
-    // }
+    if (patched) {
+      res.status(201)
+    } else {
+      res.status(200)
+    }
     res.json(_point)
   } catch (err) {
     next(err)
@@ -111,7 +111,7 @@ const getPointById = async (req: Request, res: Response, next: NextFunction) => 
     const { id } = req.params
     const point = await PointModel.query()
       .findById(id)
-      .withGraphJoined('[ created_by_user, updated_by_user ]')
+      .withGraphJoined({ created_by_user: true, updated_by_user: true })
 
     if (!point) {
       res.status(404)

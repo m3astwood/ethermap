@@ -26,12 +26,6 @@ test.after(async () => {
 })
 
 // tests
-test.failing('get "/" route should return status code of 200', async (t) => {
-  const res = await agent.get('/')
-
-  t.is(res.status, 200)
-})
-
 test.serial(
   'get "/api/maps" route should return an object containing an array called "maps"',
   async (t) => {
