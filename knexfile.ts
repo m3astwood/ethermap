@@ -1,10 +1,6 @@
 // Update with your config settings.
 import 'dotenv/config'
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { Knex } from 'knex'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 interface KnexConfig {
   [key: string]: Knex.Config
@@ -18,13 +14,13 @@ const config: KnexConfig = {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: `${__dirname}/backend/db/development.db`,
+      filename: './backend/db/development.db',
     },
     migrations: {
-      directory: `${__dirname}/backend/db/migrations`,
+      directory: './backend/db/migrations',
     },
     seeds: {
-      directory: `${__dirname}/db/seeds`,
+      directory: './backend/db/seeds',
     },
   },
 
@@ -33,10 +29,10 @@ const config: KnexConfig = {
     connection: ':memory:',
     useNullAsDefault: true,
     migrations: {
-      directory: `${__dirname}/backend/db/migrations`,
+      directory: './backend/db/migrations',
     },
     seeds: {
-      directory: `${__dirname}/backend/db/seeds`,
+      directory: './backend/db/seeds',
     },
   },
 
@@ -54,13 +50,17 @@ const config: KnexConfig = {
       max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations',
+      directory: './backend/db/migrations',
+    },
+    seeds: {
+      directory: './backend/db/seeds',
     },
   },
 
   production: {
     client: process.env.DB_PROVIDER,
     connection: {
+      filename: process.env.DB_FILE,
       database: process.env.DB_NAME,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
@@ -72,7 +72,10 @@ const config: KnexConfig = {
       max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations',
+      directory: './backend/db/migrations',
+    },
+    seeds: {
+      directory: './backend/db/seeds',
     },
   },
 }

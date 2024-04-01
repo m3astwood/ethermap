@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - ${PORT}:3000
+    command: npm run dev
+    environment:
+      - NODE_ENV=${ENV}
+

@@ -1,17 +1,27 @@
-FROM node:slim
-
-COPY . /app
+# => BASE CONTAINER
+FROM node:20-slim as base
 
 WORKDIR /app
 
+COPY package*.json .
+
 RUN npm install
 
-RUN cp .env.template .env
+FROM base as copy
 
+COPY . /app
+
+# => DEV CONTAINER
+FROM copy as dev
+# RUN cp .env.template .env
 RUN npm run migrate:latest
 
-EXPOSE 3000
+# => BUILD CONTAINER
+FROM copy as build
 
-VOLUME /app/backend/db
+RUN npm run build
 
-ENTRYPOINT ["npm", "run", "dev"]
+# => PRODUCTION CONTAINER
+FROM base as production
+
+COPY --from=build /app/dist /app

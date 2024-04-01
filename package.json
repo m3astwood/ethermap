@@ -5,7 +5,8 @@
   "description": "> This is very much a janky _earlydays_ project. All help is welcome!",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.ts -w backend/ --exec ts-node",
+    "start": "tsx server.ts",
+    "dev": "nodemon -e js,ts,json --exec npm start",
     "build:backend": "tsc && tsc-alias",
     "build:frontend": "vite build",
     "build": "npm run build:backend && npm run build:frontend",
@@ -13,7 +14,7 @@
     "test:all": "npm run ava",
     "test:routes": "npm run ava -- ./dist/backend/tests/routes.js",
     "test:db": "npm run ava -- ./dist/backend/tests/db.js",
-    "knex:run": "npx ts-node ./node_modules/.bin/knex --knexfile knexfile.ts",
+    "knex:run": "tsx ./node_modules/.bin/knex --knexfile knexfile.ts",
     "migrate:latest": "npm run knex:run -- migrate:latest",
     "migrate:rollback": "npm run knex:run -- migrate:rollback",
     "migrate:down": "npm run knex:run -- migrate:down",
@@ -52,9 +53,9 @@
     "eslint-plugin-lit": "^1.10.1",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
-    "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
-    "typescript": "^5.2.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3",
     "vite": "^4.4.9"
   },
   "ava": {

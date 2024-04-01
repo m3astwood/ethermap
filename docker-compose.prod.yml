@@ -1,0 +1,20 @@
+services:
+  ethermap:
+    container_name: ethermap
+    build:
+      context: .
+      target: production
+    command: >
+      sh -c "npx knex migrate:latest && node server.js"
+    ports:
+      - ${PORT}:3000
+    environment:
+      - NODE_ENV=production
+      - DB_PROVIDER=sqlite3
+      - DB_FILE=./backend/db/production.db
+      - PORT=${PORT}
+      # - DB_HOST=${DB_HOST}
+      # - DB_USER=${DB_USER}
+      # - DB_PASS=${DB_PASS}
+      # - DB_NAME=${DB_NAME}
+      # - DB_PORT=${DB_PORT}

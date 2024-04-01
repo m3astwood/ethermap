@@ -2,6 +2,7 @@
 import express from 'express'
 import cors from 'cors'
 
+import path from 'node:path'
 import type UserSession from './interfaces/UserSession'
 
 // Augment express-session with a custom SessionData object
