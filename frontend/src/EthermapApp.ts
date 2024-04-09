@@ -1,14 +1,14 @@
 import { LitElement, html, css } from 'lit'
+import { customElement, state } from 'lit/decorators.js'
 
-import Router from './controllers/Router.js'
+import Router from './controllers/Router'
 
-import './components/UserTool.js'
-import { customElement, property } from 'lit/decorators.js'
+import './components/UserTool'
 
 @customElement('ethermap-app')
 export class EthermapApp extends LitElement {
 
-  @property({ state: true })
+  @state()
   route = Router.render()
 
   async firstUpdated() {

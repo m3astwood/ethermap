@@ -1,11 +1,9 @@
 import { html } from 'lit'
 import { Router } from '@thepassle/app-tools/router.js'
-import { data } from '@thepassle/app-tools/router/plugins/data.js'
-import { api } from '@thepassle/app-tools/api.js'
 
 // views
-import '../views/Map.js'
-import '../views/Home.js'
+import '../views/Map'
+import '../views/Home'
 
 if (!globalThis.URLPattern) {
   await import('urlpattern-polyfill')
@@ -21,12 +19,9 @@ export default new Router({
       render: () => html`<home-view></home-view>`,
     },
     {
-      path: '/m/:mapId',
-      title: ({ params }) => `ethermap | ${params.mapId}`,
-      plugins: [
-        data((ctx) => api.get(`/api/map/${ctx.params.mapId}`))
-      ],
-      render: (ctx) => html`<map-view .map=${ctx.data}></map-view>`,
+      path: '/m/:mapName',
+      title: ({ params }) => `ethermap | ${params.mapName}`,
+      render: (ctx) => html`<map-view .mapName=${ctx.params.mapName}></map-view>`,
     },
     {
       path: '/404',

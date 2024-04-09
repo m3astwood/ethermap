@@ -4,17 +4,13 @@ import { live } from 'lit/directives/live.js'
 
 // store
 import { StoreController } from 'exome/lit'
-import userStore from '../store/userStore.js'
+import userStore from '../state/userStore.js'
 
 class UserTool extends LitElement {
   user = new StoreController(this, userStore)
 
   static get properties() {
     return {}
-  }
-
-  constructor() {
-    super()
   }
 
   firstUpdated() {

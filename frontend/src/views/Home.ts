@@ -1,15 +1,9 @@
 import { LitElement, css, html } from 'lit'
 
-import '../components/NewMapModal.js'
-import '../components/LeafletMap.js'
+import '../components/NewMapModal'
+import '../components/LeafletMap'
 
 class HomeView extends LitElement {
-  static properties = {}
-
-  constructor() {
-    super()
-  }
-
   render() {
     return html`
       <em-leaflet-map></em-leaflet-map>
