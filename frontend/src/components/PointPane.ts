@@ -1,64 +1,90 @@
-import { LitElement, css, html } from 'lit'
+import { LitElement, type PropertyValueMap, css, html } from 'lit'
 import { live } from 'lit/directives/live.js'
 import EventController from '../api/event.js'
+import { customElement, property, state } from 'lit/decorators.js'
+import type { Point } from '../interfaces/Point.js'
 
+// state & effects
+import { dispatch } from '@ngneat/effects'
+import '../state/effects/map'
+import '../state/effects/point'
+import { deletePoint } from '../state/actions/point.js'
 // TODO@mx
 // - room per point per map to see who is currently looking at point
-// - deleting point warns other's
+// - deleting point warns others
 
-class PointPane extends LitElement {
+@customElement('em-point-pane')
+export class PointPane extends LitElement {
   eventController = new EventController(this)
 
-  static properties = {
-    active: { type: Boolean },
-    point: { type: Object },
-    meta: { type: Object }
+  @property({ type: Boolean })
+  active: boolean
+
+  @property({ type: Object })
+  point: Point = {} as Point
+
+  @state()
+  meta: {
+    created_by: any,
+    updated_by: any
+  }
+
+  @state()
+  updatedDetails: {
+    name?: string
+    notes?: string
   }
 
   constructor() {
     super()
-    this.point = {}
     this.meta = {
       updated_by: {},
       created_by: {}
     }
+
+    this.updatedDetails = {}
   }
 
   firstUpdated() {
-    const form = this.shadowRoot.querySelector('form')
-    form.addEventListener('input', this._inputUpdate.bind(this))
+    const form = this.shadowRoot?.querySelector('form')
+    form?.addEventListener('input', this.inputUpdate.bind(this))
+  }
 
-    if (this.point) {
-      const ubu = JSON.parse(this.point.updated_by_user.sess)
-      const cbu = JSON.parse(this.point.created_by_user.sess)
+  private inputUpdate(evt) {
+    const input = evt.target.getAttribute('name')
+    this.updatedDetails[input] = evt.target.value
 
-      this.meta.updated_by = ubu.user
-      this.meta.created_by = cbu.user
+    this.eventController.dispatch('em:point-update', {
+      detail: {
+        id: this.point.id,
+        ...this.updatedDetails
+      }
+    })
+  }
+
+  protected willUpdate(changedProperties: PropertyValueMap<this> | Map<PropertyKey, unknown>): void {
+    if (changedProperties.has('point') && this.point) {
+      this.meta.updated_by = this.point.updated_by_user.sess?.user ?? { name: 'unknown' }
+      this.meta.created_by = this.point.created_by_user.sess?.user ?? { name: 'unknown' }
     }
   }
 
-  _inputUpdate(evt) {
-    const input = evt.target.getAttribute('name')
-    this.point[input] = evt.target.value
-
-    this.eventController.dispatch('em:point-update', { detail: this.point })
-  }
-
-  _close() {
+  private close() {
     this.eventController.dispatch('em:close-pane')
   }
 
-  _delete() {
+  private delete() {
     const { id } = this.point
-    this.eventController.dispatch('em:point-delete', { detail: { id } } )
+    dispatch(deletePoint({ id }))
   }
 
   render() {
     return html`
     <aside class=${this.active ? 'active' : ''}>
       <div class="controls">
-        <button @click=${this._close}>close</button>
+        <button @click=${this.close}>close</button>
       </div>
+      <p>${this.point?.id}</p>
       <form>
         <input type="text" name="name" .value=${live(this.point?.name)} placeholder="name">
         <textarea name="notes" .value=${live(this.point?.notes)} placeholder="notes"></textarea>
@@ -70,7 +96,7 @@ class PointPane extends LitElement {
       </div>
 
       <div class="controls">
-        <button class="delete" @click=${this._delete.bind(this)}>delete</button>
+        <button class="delete" @click=${this.delete.bind(this)}>delete</button>
       </div>
     </aside>`
   }
@@ -123,4 +149,3 @@ class PointPane extends LitElement {
   `
 }
 
-customElements.define('em-point-pane', PointPane)

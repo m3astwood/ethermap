@@ -1,5 +1,10 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
+  "files": {
+    "include": [
+      "./**/*.ts", "./**/*.js", "./**/*.css"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": true,
@@ -10,11 +15,19 @@
       "enabled": true,
       "jsxQuoteStyle": "single",
       "semicolons": "asNeeded",
-      "quoteStyle": "single"
+      "quoteStyle": "single",
+      "lineWidth": 170
     }
   },
   "linter": {
     "enabled": true,
+    "rules": {
+      "all": true,
+      "style": {
+        "recommended": true,
+        "noDefaultExport": "off"
+      }
+    },
     "ignore": [ "node_modules" ]
   },
   "vcs": {

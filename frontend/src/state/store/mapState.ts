@@ -5,12 +5,20 @@ import { withEntities } from '@ngneat/elf-entities'
 
 export interface MapStateProps {
   map: MapModel
+  user: {
+    name: string
+    colour: string
+  }
 }
 
 export const mapState = createStore(
   { name: 'map' },
   withProps<MapStateProps>({
     map: {} as MapModel,
+    user: {
+      name: '',
+      colour: ''
+    }
   }),
   withEntities<Point>()
 )

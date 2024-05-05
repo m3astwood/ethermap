@@ -1,29 +1,26 @@
-import L, { LeafletMouseEvent, Map, Marker, Popup } from 'leaflet'
-import { LitElement, html } from 'lit'
+import L, { type LeafletMouseEvent, type Map as LMap, type Marker, type Popup } from 'leaflet'
+import { LitElement, type PropertyValueMap, html } from 'lit'
 import EventController from '../api/event'
 import { customElement, property, state } from 'lit/decorators.js'
 
 @customElement('em-point')
-export class Point extends LitElement {
+export class EtherPoint extends LitElement {
   event = new EventController(this)
 
-  @property({ type: Number })
-  id: number
+  @property({ type: String })
+  id: string
 
   @property({ type: Number })
   latlng: { lat: number, lng: number } = { lat: 0, lng: 0 }
 
   @property({ type: Object })
-  leaflet: Map
+  leaflet: LMap
 
   @state()
   marker: Marker = L.marker(this.latlng)
 
   @state()
-  popup: Popup
-
-  @state()
-  slotted: Array<HTMLElement> = []
+  added = false
 
   firstUpdated() {
     this.marker.addEventListener('click', (event: LeafletMouseEvent) => {
@@ -31,38 +28,21 @@ export class Point extends LitElement {
     })
   }
 
-  willUpdate(att: Set<string>) {
+  protected willUpdate(att: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
     if (att.has('leaflet')) {
       this.marker.setLatLng(this.latlng).addTo(this.leaflet)
+      this.added = true
     }
   }
 
-  disconnectedCallback() {
-    this.marker.remove()
-  }
-
-  handleSlotChange(evt) {
-    const childElements = evt.target.assignedElements()
-
-    if (this.marker) {
-
-      for (let el of childElements) {
-        this.popup = L.popup()
-        this.marker.bindPopup(this.popup)
-
-        if (el.tagName == 'EM-MARKER-POPUP') {
-          el.marker = this.marker
-        }
-
-        this.popup.setContent(el)
-        el.remove()
-      }
-    }
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    this.marker.removeFrom(this.leaflet)
   }
 
   render() {
     return html`
-      <slot @slotchange=${this.handleSlotChange}></slot>
+      <slot></slot>
     `
   }
 }

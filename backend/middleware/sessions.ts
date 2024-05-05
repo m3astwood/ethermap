@@ -2,7 +2,7 @@
 import session from 'express-session'
 
 // database
-import DB from '../db/DB'
+import { DB } from '../db/DB'
 
 // knex connections
 import KnexSessionStore from 'connect-session-knex'

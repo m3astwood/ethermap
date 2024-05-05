@@ -1,16 +1,17 @@
 import { html } from 'lit'
-import { Router } from '@thepassle/app-tools/router.js'
+import { type Context, Router } from '@thepassle/app-tools/router.js'
 
 // views
 import '../views/Map'
 import '../views/Home'
 
+// @ts-ignore
 if (!globalThis.URLPattern) {
   await import('urlpattern-polyfill')
 }
 
 // router
-export default new Router({
+const router: Router = new Router({
   fallback: '/404',
   routes: [
     {
@@ -20,8 +21,8 @@ export default new Router({
     },
     {
       path: '/m/:mapName',
-      title: ({ params }) => `ethermap | ${params.mapName}`,
-      render: (ctx) => html`<map-view .mapName=${ctx.params.mapName}></map-view>`,
+      title: (ctx: Partial<Context>) => `ethermap | ${ctx.params?.mapName}`,
+      render: (ctx: Context) => html`<map-view .mapName=${ctx.params.mapName}></map-view>`,
     },
     {
       path: '/404',
@@ -30,3 +31,5 @@ export default new Router({
     },
   ],
 })
+
+export default router

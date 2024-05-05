@@ -1,20 +1,25 @@
 import L from 'leaflet'
 import io from '../api/socket.js'
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
 // FIX@mx this needs to be finessed
-import SvgCursor from '../components/SvgCursor.js'
+import SvgCursor from '../components/SvgCursor'
+import type { UserData, UserServerData } from '../interfaces/User.js'
 
-export default class UserCursor {
-  constructor(host) {
+export default class UserCursor implements ReactiveController {
+  host: ReactiveControllerHost
+  socket = io
+  cursors: L.Marker[] = []
+  leafletMap: L.Map
+
+  constructor(host: ReactiveControllerHost, leafletMap: L.Map) {
     this.host = host
     this.host.addController(this)
-
-    this.socket = io
-    this.cursors = []
+    this.leafletMap = leafletMap
   }
 
   hostConnected() {
-    this.socket.on('user-updated', (user) => {
+    this.socket.on('user-updated', (user: UserData) => {
       const cursorIcon = L.divIcon({
         html: SvgCursor(user.colour),
         iconSize: [20, 30],
@@ -25,7 +30,7 @@ export default class UserCursor {
       this.cursors[user.id].setIcon(cursorIcon)
     })
 
-    this.socket.on('mousemove', (data) => {
+    this.socket.on('mousemove', (data: UserServerData) => {
       // TODO@mx check whether user is in view before rendering
       // TODO@mx restrict rendering within range of zoom-level
       const { user, pos } = data
@@ -38,11 +43,12 @@ export default class UserCursor {
           iconAnchor: [0, 8],
           className: 'user-cursor',
         })
+
         this.cursors[user.id] = L.marker([pos.lat, pos.lng], {
           icon: cursorIcon,
           interactive: false,
           zIndexOffset: 1000,
-        }).addTo(this.host.leafletMap)
+        }).addTo(this.leafletMap)
       }
 
       // update cursor's position
@@ -50,13 +56,13 @@ export default class UserCursor {
     })
 
     // track other users on disconnect
-    this.socket.on('user-disconnected', (id) => {
+    this.socket.on('user-disconnected', (id: number) => {
       this.cursors[id].remove()
       delete this.cursors[id]
     })
   }
 
-  mouseMove(latlng) {
+  mouseMove(latlng: L.LatLng) {
     this.socket.emit('mousemove', latlng)
   }
 }

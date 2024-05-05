@@ -1,9 +1,9 @@
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects';
 import { createPoint, createPointSuccess, deletePoint, deletePointSuccess, pointError, updatePoint } from '../actions/point';
-import { switchMap } from 'rxjs'
+import { switchMap, tap } from 'rxjs'
 import type { Action } from '@ngneat/effects/src/lib/actions.types';
 import type { Point } from '../../interfaces/Point';
-import { setPoint, removePoint } from '../reducers/point';
+import { setPoint, removePoint } from '../reducers/map';
 import { api } from '../../api/httpApi';
 
 export const createPoint$ = createEffect((actions$) =>
@@ -37,7 +37,11 @@ export const createPointSuccess$ = createEffect((actions$) =>
 export const updatePoint$ = createEffect((actions$) =>
   actions$.pipe(
     ofType(updatePoint),
-    tapResult(console.log, console.error)
+    switchMap((action: Action) =>
+      api.put(`/api/point/${action.point.id}`, { point: action.point }).pipe(
+        tapResult(() => {}, console.error)
+      )
+    )
   )
 )
 
@@ -57,7 +61,7 @@ export const deletePoint$ = createEffect((actions$) =>
 
 export const deletePointSuccess$ = createEffect((actions$) =>
   actions$.pipe(
-    ofType(deletePoint),
+    ofType(deletePointSuccess),
     tapResult((response) => {
       removePoint(response.id)
     }, console.error)

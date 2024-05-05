@@ -1,12 +1,12 @@
 // testing tools
 import test from 'ava'
-import db from '../db/DB'
+import { DB } from '../db/DB'
 
 // db model
 import MapModel from '../db/models/map'
 
 test.before(async () => {
-  await db.migrate.latest()
+  await DB.migrate.latest()
 })
 
 test.serial('Selecting maps should return array', async (t) => {
@@ -33,5 +33,5 @@ test.serial('Insert point for existing map returns point', async (t) => {
 })
 
 test.after(async () => {
-  await db.migrate.rollback({}, true)
+  await DB.migrate.rollback({}, true)
 })

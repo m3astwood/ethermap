@@ -2,9 +2,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "sourceMap": true,
-    "target": "esnext",
+    "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,7 +15,7 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["backend/**/*.ts", "./server.ts", "./knexfile.ts"],
+  "exclude": ["node_modules"],
   "tsc-alias": {
     "resolveFullPaths": true,
     "verbose": false

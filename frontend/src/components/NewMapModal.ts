@@ -1,12 +1,11 @@
 import { LitElement, html, css } from 'lit'
 import Router from '../controllers/Router'
+import { customElement, state } from 'lit/decorators.js'
 
-class NewMapModal extends LitElement {
-  static get properties() {
-    return {
-      mapName: { state: true },
-    }
-  }
+@customElement('newmap-modal')
+export class NewMapModal extends LitElement {
+  @state()
+  mapName: string
 
   constructor() {
     super()
@@ -24,8 +23,7 @@ class NewMapModal extends LitElement {
       <div class="window">
         <form>
           <label for="name">map name</label>
-          <input type="text" name="name" @input=${(e) =>
-            (this.mapName = e.target.value)}></input>
+          <input type="text" name="name" @input=${(e) => (this.mapName = e.target.value)}></input>
           <div class="controls">
             <button @click=${this.navigate}>go</button>
           </div>
@@ -69,5 +67,3 @@ class NewMapModal extends LitElement {
     `
   }
 }
-
-window.customElements.define('newmap-modal', NewMapModal)

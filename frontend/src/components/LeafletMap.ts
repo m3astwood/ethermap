@@ -1,24 +1,30 @@
 import { unsafeCSS, LitElement, html, css } from 'lit'
-import leafletCss from 'leaflet/dist/leaflet.css'
-import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
+// @ts-ignore : this is a Vite feature
+import leafletCss from 'leaflet/dist/leaflet.css?inline'
+// @ts-ignore : this is a Vite feature
+import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
 import L, { type Map as LeafletMap } from 'leaflet'
 import 'leaflet-contextmenu'
 
-import UserCursor from '../controllers/UserCursor'
+import type { EtherPoint } from './EmPoint'
+
+// import UserCursor from '../controllers/UserCursor'
 import { customElement, property, state } from 'lit/decorators.js'
+
+import { devTools } from '@ngneat/elf-devtools'
 
 @customElement('em-leaflet-map')
 export class LeafletMapElement extends LitElement {
   // userCursor = new UserCursor(this)
 
   @property({ type: Array })
-  contextMenu: Array<{text: string, callback(event: L.LeafletMouseEvent): void }> = []
+  contextMenu: Array<{ text: string; callback(event: L.LeafletMouseEvent): void }> = []
 
   @property({ type: Boolean })
-  controls: Boolean | undefined
+  controls: boolean | undefined
 
   @property({ type: Array })
-  bounds: Array<number> = []
+  bounds: number[] = []
 
   @state()
   leaflet: LeafletMap = {} as LeafletMap
@@ -26,11 +32,8 @@ export class LeafletMapElement extends LitElement {
   constructor() {
     super()
     this.controls = this.controls !== undefined
-  }
 
-  get slottedChildren() {
-    const slot = this.shadowRoot?.querySelector('slot')
-    return slot?.assignedElements()
+    devTools();
   }
 
   firstUpdated() {
@@ -51,8 +54,7 @@ export class LeafletMapElement extends LitElement {
       // set map tiles
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(this.leaflet)
 
       if (!this.controls) {
@@ -73,10 +75,13 @@ export class LeafletMapElement extends LitElement {
   }
 
   handleSlotChange(evt: Event) {
-    const childElements = evt.target?.assignedElements()
-    childElements.forEach((p) => {
-      p.leaflet = this.leaflet
-    })
+    const childElements = (evt.target as HTMLSlotElement)?.assignedElements()
+    for (const point of childElements) {
+      // @ts-ignore
+      if (!point.leaflet) {
+        (point as unknown as EtherPoint).leaflet = this.leaflet
+      }
+    }
   }
 
   render() {
@@ -105,4 +110,3 @@ export class LeafletMapElement extends LitElement {
     ]
   }
 }
-

@@ -6,7 +6,7 @@ class MapModel extends Model {
 
   id: number
   name: string
-  map_points: Array<Point>
+  map_points: Point[]
   created_at: string
   updated_at: string
 

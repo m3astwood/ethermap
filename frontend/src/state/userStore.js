@@ -1,5 +1,5 @@
 import { Exome } from 'exome'
-import io from '../api/socket.js'
+import io from '../api/socket'
 
 class UserStore extends Exome {
   data = {}
