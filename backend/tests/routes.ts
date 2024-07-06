@@ -1,136 +1,136 @@
 // testing tools
-import test from 'ava'
-import request from 'supertest'
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from '@jest/globals'
+import request, { type Agent } from 'supertest'
 
 // express app
 import { app } from '../httpServer'
 
-// test agent
-// (single request for all tests)
-let agent
+// test agent (single request for all tests)
+let agent: Agent
 
 // db
 import { DB } from '../db/DB'
 
-// test setup
-test.before(async () => {
-  await DB.migrate.latest()
-})
-
-test.beforeEach(() => {
-  agent = request.agent(app)
-})
-
-test.after(async () => {
-  await DB.migrate.rollback({}, true)
-})
-
-// tests
-test.serial('get "/api/maps" route should return an object containing an array called "maps"', async (t) => {
-  const res = await agent.get('/api/maps')
-
-  t.is(res.status, 200)
-  t.truthy(res.body.maps?.constructor === Array)
-})
-
-test.serial('get "/api/map/:mapName" route to new mapName should return new map with matching name and status 201', async (t) => {
-  const res = await agent.get('/api/map/bingo')
-
-  t.is(res.status, 201)
-  t.is(res.body.map.name, 'bingo')
-})
-
-test.serial('get "/api/map/:mapName" route to existing mapName should return same id with status 200', async (t) => {
-  const res = await agent.get('/api/map/bingo')
-
-  t.is(res.status, 200)
-  t.is(res.body.map.id, 1)
-})
-
-test.serial('post "/api/point" body containing a name, location and map_id should return a point with status 201', async (t) => {
-  const {
-    body: {
-      map: { id: mapId },
-    },
-  } = await agent.get('/api/map/bingo')
-  const res = await agent.post('/api/point').send({
-    mapId,
-    point: {
-      name: 'pointy',
-      location: { lat: 50.8552, lng: 4.3454 },
-    },
+describe('Routes tests', () => {
+  // test setup
+  beforeAll(async () => {
+    await DB.migrate.latest()
   })
 
-  t.is(res.status, 201)
-  t.is(res.body.id, 1)
-  t.is(res.body.map_id, mapId)
-  t.deepEqual(res.body.location, { lat: 50.8552, lng: 4.3454 })
-  t.is(res.body.name, 'pointy')
-})
-
-test.serial('get "/api/map/:mapName" with points should return a map with an array of points with status 200', async (t) => {
-  const res = await agent.get('/api/map/bingo')
-
-  t.is(res.status, 200)
-  t.truthy(res.body.points)
-  t.is(res.body.points.length, 1)
-})
-
-test.serial('post "/api/point" with incorrect data keys throws 400 error', async (t) => {
-  const {
-    body: {
-      map: { id: mapId },
-    },
-  } = await agent.get('/api/map/bingo')
-  const error = await agent.post('/api/point').send({
-    mapId,
-    point: {
-      title: 'pointy',
-      coords: '(50.8552,4.3454)',
-    },
+  beforeEach(() => {
+    agent = request.agent(app)
   })
 
-  t.is(error.status, 400)
-})
+  afterAll(async () => {
+    await DB.migrate.rollback({}, true)
+  })
 
-test.serial('update "/api/point/:id" with valid data will return new point object with status 201', async (t) => {
-  const body = { point: { name: 'very pointy' } }
-  const res = await agent.put('/api/point/1').send(body)
+  // tests
+  it('should return an object containing an array called "maps" on GET "/api/maps" route', async () => {
+    const res = await agent.get('/api/maps')
 
-  t.is(res.status, 201)
-  t.is(res.body.id, 1)
-  t.is(res.body.name, 'very pointy')
-})
+    expect(res.status).toEqual(200)
+    expect(res.body.maps?.constructor).toEqual(Array)
+  })
 
-test.serial('put "/api/point/:id" with invalid id throws 404 error', async (t) => {
-  const body = { point: { name: 'dull' } }
-  const res = await agent.put('/api/point/100').send(body)
+  it('should return new map with matching name and status 201 on GET "/api/map/:mapName" route to new mapName', async () => {
+    const res = await agent.get('/api/map/bingo')
 
-  t.is(res.status, 404)
-})
+    expect(res.status).toEqual(201)
+    expect(res.body.map.name).toEqual('bingo')
+  })
 
-test.serial('get "/api/map/:id/points" will return an array of all points associated with map and status of 200', async (t) => {
-  const res = await agent.get('/api/map/1/points')
+  it('should return same id with status 200 on GET "/api/map/:mapName" route to existing mapName', async () => {
+    const res = await agent.get('/api/map/bingo')
 
-  t.is(res.status, 200)
-  t.truthy(res.body.points?.constructor === Array)
-  t.is(res.body.points[0].name, 'very pointy')
-})
+    expect(res.status).toEqual(200)
+    expect(res.body.map.id).toEqual(1)
+  })
 
-test.serial('get "/api/map/:id/points" with invalid id throws a 404 error', async (t) => {
-  const res = await agent.get('/api/map/100/points')
+  it('should return a point with status 201 on POST "/api/point" body containing a name, location and map_id', async () => {
+    const {
+      body: {
+        map: { id: mapId },
+      },
+    } = await agent.get('/api/map/bingo')
+    const res = await agent.post('/api/point').send({
+      mapId,
+      point: {
+        name: 'pointy',
+        location: { lat: 50.8552, lng: 4.3454 },
+      },
+    })
 
-  t.is(res.status, 404)
-})
+    expect(res.status).toEqual(201)
+    expect(res.body.id).toEqual(1)
+    expect(res.body.map_id).toEqual(mapId)
+    expect(res.body.location).toEqual({ lat: 50.8552, lng: 4.3454 })
+    expect(res.body.name).toEqual('pointy')
+  })
 
-test.serial('delete "/api/point/:id" with invalid id throws 404 error', async (t) => {
-  const res = await agent.delete('/api/point/100')
+  it('should return a map with an array of points with status 200 on GET "/api/map/:mapName"', async () => {
+    const res = await agent.get('/api/map/bingo')
 
-  t.is(res.status, 404)
-})
+    expect(res.status).toEqual(200)
+    expect(res.body.points).toBeTruthy()
+    expect(res.body.points.length).toEqual(1)
+  })
 
-test.serial('delete "/api/point/:id" with valid id returns 200 status', async (t) => {
-  const res = await agent.delete('/api/point/1')
+  it('should throw 400 error on POST "/api/point" with incorrect data keys', async () => {
+    const {
+      body: {
+        map: { id: mapId },
+      },
+    } = await agent.get('/api/map/bingo')
+    const error = await agent.post('/api/point').send({
+      mapId,
+      point: {
+        title: 'pointy',
+        coords: '(50.8552,4.3454)',
+      },
+    })
 
-  t.is(res.status, 200)
+    expect(error.status).toEqual(400)
+  })
+
+  it('should return new point object with status 201 on PUT "/api/point/:id" with valid data', async () => {
+    const body = { point: { name: 'very pointy' } }
+    const res = await agent.put('/api/point/1').send(body)
+
+    expect(res.status).toEqual(201)
+    expect(res.body.name).toEqual('very pointy')
+  })
+
+  it('should throw 404 error on PUT "/api/point/:id" with invalid id', async () => {
+    const body = { point: { name: 'dull' } }
+    const res = await agent.put('/api/point/100').send(body)
+
+    expect(res.status).toEqual(404)
+  })
+
+  it('should return an array of all points associated with map and status of 200 on GET "/api/map/:id/points"', async () => {
+    const res = await agent.get('/api/map/1/points')
+
+    expect(res.status).toEqual(200)
+    expect(res.body.points?.constructor).toEqual(Array)
+    expect(res.body.points[0].name).toEqual('very pointy')
+  })
+
+  it('should throw a 404 error on GET "/api/map/:id/points" with invalid id', async () => {
+    const res = await agent.get('/api/map/100/points')
+
+    expect(res.status).toEqual(404)
+  })
+
+  it('should throw 404 error on DELETE "/api/point/:id" with invalid id', async () => {
+    const res = await agent.delete('/api/point/100')
+
+    expect(res.status).toEqual(404)
+  })
+
+  it('should returns 200 status DELETE "/api/point/:id" with valid id', async () => {
+    const res = await agent.delete('/api/point/1')
+
+    expect(res.status).toEqual(200)
+  })
 })

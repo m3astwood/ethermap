@@ -2,9 +2,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "sourceMap": true,
-    "target": "ESNext",
+    "target": "esnext",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,13 +15,9 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules"],
+  "include": ["backend/**/*.ts", "./server.ts", "./knexfile.ts"],
   "tsc-alias": {
     "resolveFullPaths": true,
     "verbose": false
-  },
-  "references": [
-    { "path": "./backend/tsconfig.back.json" },
-    { "path": "./frontend/tsconfig.front.json" }
-  ],
+  }
 }

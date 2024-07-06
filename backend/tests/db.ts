@@ -1,37 +1,37 @@
-// testing tools
-import test from 'ava'
-import { DB } from '../db/DB'
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'
 
-// db model
+import { DB } from '../db/DB'
 import MapModel from '../db/models/map'
 
-test.before(async () => {
-  await DB.migrate.latest()
-})
-
-test.serial('Selecting maps should return array', async (t) => {
-  const maps = await MapModel.query()
-
-  t.truthy(maps)
-})
-
-test.serial('Inserting map returns map object', async (t) => {
-  const map = await MapModel.query().insert({ name: 'milo' })
-
-  t.is(map.name, 'milo')
-})
-
-test.serial('Insert point for existing map returns point', async (t) => {
-  const map = await MapModel.query().where({ name: 'milo' }).first()
-  const point = await map?.$relatedQuery('map_points').insert({
-    name: 'pointy',
-    location: { lat: 50.8552, lng: 4.3454 },
+describe('Database Tests', () => {
+  beforeAll(async () => {
+    await DB.migrate.latest()
   })
 
-  t.is(point?.name, 'pointy')
-  t.deepEqual(point?.location, { lat: 50.8552, lng: 4.3454 })
-})
+  afterAll(async () => {
+    await DB.migrate.rollback({}, true)
+  })
 
-test.after(async () => {
-  await DB.migrate.rollback({}, true)
+  it('should return array of maps when querying all maps', async () => {
+    const maps = await MapModel.query()
+
+    expect(maps).toBeTruthy()
+  })
+
+  it('should return map object when inserting a new map', async () => {
+    const map = await MapModel.query().insert({ name: 'milo' })
+
+    expect(map.name).toEqual('milo')
+  })
+
+  it('should returns point on inserting point for existing map', async () => {
+    const map = await MapModel.query().where({ name: 'milo' }).first()
+    const point = await map?.$relatedQuery('map_points').insert({
+      name: 'pointy',
+      location: { lat: 50.8552, lng: 4.3454 },
+    })
+
+    expect(point?.name).toEqual('pointy')
+    expect(point?.location).toEqual({ lat: 50.8552, lng: 4.3454 })
+  })
 })

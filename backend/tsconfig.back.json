@@ -2,5 +2,10 @@
   "extends": "../tsconfig.base.json",
   "include": [
     "./**/*.ts", "../*.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "types": [
+      "jest", "node"
+    ]
+  }
 }

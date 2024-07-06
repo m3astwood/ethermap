@@ -19,7 +19,7 @@ const createPoint = async (req: Request, res: Response, next: NextFunction) => {
 
     const _point = await map
       .$relatedQuery('map_points')
-      .insertGraphAndFetch({ location: point, created_by, updated_by }, {
+      .insertGraphAndFetch({ ...point, created_by, updated_by }, {
         relate: ['created_by_user', 'updated_by_user' ]
       })
 
