@@ -36,17 +36,17 @@ Database models, and queries are handled by [objection.js](https://vincit.github
 
 Live data is shared with the client using [socket.io](https://socket.io/).
 
-Tests are written with [AVA](https://github.com/avajs/ava) and route testing uses [supertest](https://github.com/ladjs/supertest).
+Tests are written with [Jest](https://jestjs.io) and route testing uses [supertest](https://github.com/ladjs/supertest).
 
 ### Frontend
 
-Frontend is an SPA using [lit](https://lit.dev/) element, and some [utilities](https://github.com/thepassle/app-tools) by [Pascal Schilp](https://github.com/thepassle).
+Frontend is an SPA using [lit](https://lit.dev/) element, state with [ngneat/elf](https://ngneat.github.io/elf/) and some [utilities](https://github.com/thepassle/app-tools) by [Pascal Schilp](https://github.com/thepassle).
 
 Map rendering is done with [leaflet](https://leafletjs.com/).
 
-Live rendering of users is done with [socket.io-client](https://socket.io/docs/v4/client-api/).
+> On hold : Live rendering of users is done with [socket.io-client](https://socket.io/docs/v4/client-api/).
 
-For the developer environment and future building, the frontend is managed by [Vite](https://vitejs.dev/).
+For the developer environment and building, the frontend is managed by [Vite](https://vitejs.dev/).
 
 ### Docker
 

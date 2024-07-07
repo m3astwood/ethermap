@@ -17,6 +17,9 @@ class UserTool extends LitElement {
   @state()
   userForm: HTMLFormElement
 
+  @state()
+  cursorWithin = false
+
   firstUpdated() {
     this.userForm = this.shadowRoot?.querySelector('.dropdown') as HTMLFormElement
     fromEvent(this.userForm, 'change').pipe(
@@ -28,6 +31,20 @@ class UserTool extends LitElement {
         dispatch(updateUser({ user }))
       })
     ).subscribe()
+
+    this.addEventListener('mouseleave', () => {
+      this.cursorWithin = false
+    })
+
+    this.addEventListener('mouseenter', () => {
+      this.cursorWithin = true
+    })
+
+    window.addEventListener('mousedown', () => {
+      if (!this.cursorWithin) {
+        this.userForm.classList.remove('active')
+      }
+    })
   }
 
   toggleDropdown() {
@@ -41,8 +58,8 @@ class UserTool extends LitElement {
       </button>
 
       <form class="dropdown">
-        <input name="name" placeholder="name" value=${live(this.user.value.name)}></input>
-        <input name="colour" type="color" value=${live(this.user.value.colour)}></input>
+        <input name="name" placeholder="name" value=${live(this.user?.value?.name)}></input>
+        <input name="colour" type="color" value=${live(this.user?.value?.colour)}></input>
       </form>
     `
   }

@@ -8,7 +8,8 @@ export interface MapStateProps {
   user: {
     name: string
     colour: string
-  }
+  },
+  selectedPoint: Point | undefined
 }
 
 export const mapState = createStore(
@@ -18,7 +19,8 @@ export const mapState = createStore(
     user: {
       name: '',
       colour: ''
-    }
+    },
+    selectedPoint: undefined
   }),
   withEntities<Point>()
 )

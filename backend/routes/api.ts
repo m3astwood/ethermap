@@ -19,4 +19,8 @@ import { updateUserSession, getUserSession } from '../controllers/user'
 router.get('/user', getUserSession)
 router.post('/user', updateUserSession)
 
+// SERVER SENT EVENTS
+import { mapEvents } from '../controllers/maps'
+router.get('/events/map/:id', mapEvents)
+
 export default router

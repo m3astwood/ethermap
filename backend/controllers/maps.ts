@@ -1,6 +1,9 @@
 import type { NextFunction, Request, Response } from 'express'
 import MapModel from '../db/models/map'
 import type PointModel from '../db/models/point'
+import { MapEvent$ } from '../utils/emitter'
+import { filter } from 'rxjs'
+import type { MapEvent } from '../interfaces/MapEvent'
 
 const getAllMaps = async (_: Request, res: Response) => {
   const maps = await MapModel.query()
@@ -53,6 +56,22 @@ const getMapPoints = async (req: Request, res: Response, next: NextFunction) => 
   } catch (err) {
     next(err)
   }
+}
+
+export const mapEvents = (req: Request, res: Response) => {
+  res.set({
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream',
+    Connection: 'keep-alive',
+  })
+  res.flushHeaders();
+
+  MapEvent$.pipe(
+    filter((event: MapEvent) => event.mapId === Number.parseInt(req.params.id)),
+    filter((event: MapEvent) => event.sessionID !== req.sessionID)
+  ).subscribe({
+    next: (event) => res.write(`event:${event.type}\ndata: ${JSON.stringify(event.body)}\n\n`)
+  })
 }
 
 export { getMapByName, getAllMaps, getMapPoints }

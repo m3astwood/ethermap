@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import MapModel from '../db/models/map'
 import PointModel from '../db/models/point'
-import { socket } from '../sockets'
+import { emitMapEvent } from '../utils/emitter'
 
 const createPoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,18 +19,13 @@ const createPoint = async (req: Request, res: Response, next: NextFunction) => {
 
     const _point = await map
       .$relatedQuery('map_points')
-      .insertGraphAndFetch({ ...point, created_by, updated_by }, {
-        relate: ['created_by_user', 'updated_by_user' ]
+      .insertGraphAndFetch({ ...point, created_by, updated_by }
+        , {
+        relate: [ 'created_by_user', 'updated_by_user' ]
       })
+      .withGraphFetched({ updated_by_user: true, created_by_user: true })
 
-    if (socket.connections?.get(req.sessionID)) {
-      socket.connections
-        .get(req.sessionID)
-        ?.to(`map-${mapId}`)
-        .emit('point-create', _point)
-    } else if (socket.mapRooms[`map-${mapId}`]) {
-      socket.io.to(`map-${mapId}`).emit('point-create', _point)
-    }
+    emitMapEvent({ type: 'point-create', sessionID: req.sessionID, mapId, body: _point })
 
     res.status(201)
     res.json(_point)
@@ -57,14 +52,9 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error(`No point found with id : ${id}`)
     }
 
-    if (socket.connections.get(req.sessionID)) {
-      socket.connections
-        .get(req.sessionID)
-        ?.to(`map-${_point.map_id}`)
-        .emit('point-update', _point)
-    } else if (socket.mapRooms[`map-${_point.map_id}`]) {
-      socket.io.to(`map-${_point.map_id}`).emit('point-update', _point)
-    }
+    const { map_id: mapId } = _point
+
+    emitMapEvent({ type: 'point-update', sessionID: req.sessionID, mapId, body: _point })
 
     if (patched) {
       res.status(201)
@@ -90,14 +80,7 @@ const deletePoint = async (req: Request, res: Response, next: NextFunction) => {
     const { map_id: mapId } = point
     await PointModel.query().deleteById(id)
 
-    if (socket.connections.get(req.sessionID)) {
-      socket.connections
-        .get(req.sessionID)
-        ?.to(`map-${mapId}`)
-        .emit('point-delete', id)
-    } else if (socket.mapRooms[`map-${mapId}`]) {
-      socket.io.to(`map-${mapId}`).emit('point-delete', id)
-    }
+    emitMapEvent({ type: 'point-delete', sessionID: req.sessionID, mapId, body: { id } })
 
     res.status(200)
     res.json({})

@@ -1,9 +1,9 @@
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects'
-import { createPoint, createPointSuccess, deletePoint, deletePointSuccess, pointError, updatePoint } from '../actions/point'
+import { createPoint, createPointSuccess, deletePoint, deletePointSuccess, pointError, selectPoint, updatePoint, updatePointSuccess } from '../actions/point'
 import { switchMap } from 'rxjs'
 import type { Action } from '@ngneat/effects/src/lib/actions.types'
 import type { Point } from '../../interfaces/Point'
-import { setPoint, removePoint } from '../reducers/map'
+import { setPoint, updatePoint as updatePointReducer, selectPoint as selPoint, removePoint } from '../reducers/point'
 import { api } from '../../api/httpApi'
 
 const effects = {
@@ -24,8 +24,7 @@ const effects = {
     actions$.pipe(
       ofType(createPointSuccess),
       tapResult(
-        (pointData) => {
-          const { point } = pointData
+        ({ point }) => {
           setPoint(point)
         },
         (error: Error) => dispatch(pointError({ error })),
@@ -36,8 +35,22 @@ const effects = {
   updatePoint$: createEffect((actions$) =>
     actions$.pipe(
       ofType(updatePoint),
-      switchMap((action: Action) => api.put(`/api/point/${action.point.id}`, { point: action.point }).pipe(tapResult(() => {}, console.error))),
+      switchMap(
+        (action: Action) =>
+          api.put(`/api/point/${action.point.id}`, { point: action.point }).pipe(
+            tapResult((point) => dispatch(updatePointSuccess({ point })), console.error)
+          )
+      ),
     ),
+  ),
+
+  updatePointSuccess$: createEffect((actions$) =>
+    actions$.pipe(
+      ofType(updatePointSuccess),
+      tapResult(
+        ({ point }) => updatePointReducer(point)
+      )
+    )
   ),
 
   deletePoint$: createEffect((actions$) =>
@@ -62,6 +75,14 @@ const effects = {
       }, console.error),
     ),
   ),
+
+  selectPoint$: createEffect((actions$) =>
+    actions$.pipe(
+      ofType(selectPoint),
+      tapResult(({ id }) => selPoint(id))
+    )
+  ),
+
   pointError$: createEffect((actions$) => actions$.pipe(ofType(pointError), tapResult(console.log, console.error))),
 }
 

@@ -25,8 +25,12 @@ export class PointPane extends LitElement {
 
   @state()
   meta: {
-    created_by: any,
-    updated_by: any
+    created_by: {
+      name: string
+    },
+    updated_by: {
+      name: string
+    }
   }
 
   @state()
@@ -64,8 +68,8 @@ export class PointPane extends LitElement {
 
   protected willUpdate(changedProperties: PropertyValueMap<this> | Map<PropertyKey, unknown>): void {
     if (changedProperties.has('point') && this.point) {
-      this.meta.updated_by = this.point.updated_by_user.sess?.user ?? { name: 'unknown' }
-      this.meta.created_by = this.point.created_by_user.sess?.user ?? { name: 'unknown' }
+      this.meta.updated_by = this.point.updated_by_user.sess?.user ?? { name: '' }
+      this.meta.created_by = this.point.created_by_user.sess?.user ?? { name: '' }
     }
   }
 
@@ -76,6 +80,7 @@ export class PointPane extends LitElement {
   private delete() {
     const { id } = this.point
     dispatch(deletePoint({ id }))
+    this.close()
   }
 
   render() {

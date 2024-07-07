@@ -1,7 +1,6 @@
 import { setEntities } from '@ngneat/elf-entities'
 import { mapState } from '../store/mapState'
 import type { Point } from '../../interfaces/Point'
-import { addEntities, deleteEntities } from '@ngneat/elf-entities'
 
 export function setMap({ mapData }) {
   const { map, points } = mapData
@@ -30,10 +29,3 @@ export function setMap({ mapData }) {
   mapState.update(setEntities(pointsSession))
 }
 
-export function setPoint(point: Point) {
-  mapState.update(addEntities(point))
-}
-
-export function removePoint(id: number) {
-  mapState.update(deleteEntities(id))
-}
