@@ -16,11 +16,11 @@ export default session({
   secret: 'supersessionstoresecretsauce',
   resave: false,
   saveUninitialized: true,
-  // httpOnly: true,
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 365 * 24 * 60 * 60 * 1000,
   },
   store,
+  rolling: true,
 })
 
 export const setSessionData = (req: Request, _res: Response, next: NextFunction) => {

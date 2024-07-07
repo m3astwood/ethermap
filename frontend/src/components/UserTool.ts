@@ -1,25 +1,37 @@
 import AccountIcon from '/icons/AccountUserPersonSquare.svg'
 import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
+import { fromEvent, debounceTime, tap, map } from 'rxjs'
+import { dispatch } from '@ngneat/effects'
 
 // store
-import { StoreController } from 'exome/lit'
-import userStore from '../state/userStore.js'
+import { updateUser } from '../state/actions/user'
+import { state } from 'lit/decorators.js'
+import ObserveCtrl from '../controllers/Observable'
+import { mapState } from '../state/store/mapState'
 
 class UserTool extends LitElement {
-  user = new StoreController(this, userStore)
+  @state()
+  user = new ObserveCtrl(this, mapState.pipe(map(mapState => mapState.user)))
 
-  static get properties() {
-    return {}
-  }
+  @state()
+  userForm: HTMLFormElement
 
   firstUpdated() {
-    this.user.store.getSettings()
+    this.userForm = this.shadowRoot?.querySelector('.dropdown') as HTMLFormElement
+    fromEvent(this.userForm, 'change').pipe(
+      debounceTime(500),
+      tap(() => {
+        const formData = new FormData(this.userForm)
+        const user = Object.fromEntries(formData)
+        // @ts-ignore: user has required properties
+        dispatch(updateUser({ user }))
+      })
+    ).subscribe()
   }
 
   toggleDropdown() {
-    const dropdownEl = this.shadowRoot.querySelector('.dropdown')
-    dropdownEl.classList.toggle('active')
+    this.userForm.classList.toggle('active')
   }
 
   render() {
@@ -28,16 +40,10 @@ class UserTool extends LitElement {
         <img src=${AccountIcon}>
       </button>
 
-      <div class="dropdown">
-        <input name="name" placeholder="name" value=${live(
-          this.user.store.data.name,
-        )} @change=${async (e) =>
-          await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
-        <input name="colour" type="color" value=${live(
-          this.user.store.data.colour,
-        )} @change=${async (e) =>
-          await this.user.store.updateSettings(e.target.name, e.target.value)}></input>
-      </div>
+      <form class="dropdown">
+        <input name="name" placeholder="name" value=${live(this.user.value.name)}></input>
+        <input name="colour" type="color" value=${live(this.user.value.colour)}></input>
+      </form>
     `
   }
 

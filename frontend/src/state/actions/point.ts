@@ -4,7 +4,7 @@ import type { Point } from '../../interfaces/Point'
 initEffects()
 
 export const pointActions = actionsFactory('POINT')
-export const createPoint = pointActions.create('Create', props<{ mapId: number, point: { lat: number, lng: number } }>())
+export const createPoint = pointActions.create('Create', props<{ mapId: number, point: { name?: string, location: { lat: number, lng: number } } }>())
 export const updatePoint = pointActions.create('Update', props<{ point: Point }>())
 export const deletePoint = pointActions.create('Delete', props<{ id: number }>())
 

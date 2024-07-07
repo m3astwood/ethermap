@@ -59,7 +59,7 @@ export class MapView extends LitElement {
       {
         text: 'create point',
         callback: (evt: LeafletMouseEvent) => {
-          dispatch(createPoint({ mapId: this.mapId, point: evt.latlng }))
+          dispatch(createPoint({ mapId: this.mapId, point: { location: evt.latlng } }))
         },
       },
     ]

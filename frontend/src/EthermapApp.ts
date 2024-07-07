@@ -4,6 +4,9 @@ import { customElement, state } from 'lit/decorators.js'
 import Router from './controllers/Router'
 
 import './components/UserTool'
+import { dispatch } from '@ngneat/effects'
+import { getUser } from './state/actions/user'
+import './state/effects/user'
 
 @customElement('ethermap-app')
 export class EthermapApp extends LitElement {
@@ -15,6 +18,8 @@ export class EthermapApp extends LitElement {
     Router.addEventListener('route-changed', () => {
       this.route = Router.render()
     })
+
+    dispatch(getUser())
   }
 
   render() {
