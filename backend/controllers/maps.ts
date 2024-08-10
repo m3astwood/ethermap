@@ -11,7 +11,7 @@ const getAllMaps = async (_: Request, res: Response) => {
   res.json({ maps })
 }
 
-// FIX@mx is returning the session of other user's per point an issue??
+// FIX: is returning the session of other user's per point an issue??
 const getMapByName = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
   try {

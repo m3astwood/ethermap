@@ -2,7 +2,7 @@ import L from 'leaflet'
 import io from '../api/socket.js'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
-// FIX@mx this needs to be finessed
+// FIX: this needs to be finessed
 import SvgCursor from '../components/SvgCursor'
 import type { UserData, UserServerData } from '../interfaces/User.js'
 
@@ -31,8 +31,9 @@ export default class UserCursor implements ReactiveController {
     })
 
     this.socket.on('mousemove', (data: UserServerData) => {
-      // TODO@mx check whether user is in view before rendering
-      // TODO@mx restrict rendering within range of zoom-level
+      // TODO:
+      // - check whether user is in view before rendering
+      // - restrict rendering within range of zoom-level
       const { user, pos } = data
 
       // if user is not created, then do so

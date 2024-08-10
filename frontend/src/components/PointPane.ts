@@ -9,10 +9,10 @@ import { dispatch } from '@ngneat/effects'
 import '../state/effects/map'
 import '../state/effects/point'
 import { deletePoint } from '../state/actions/point.js'
-// TODO@mx
+
+// TODO:
 // - room per point per map to see who is currently looking at point
 // - deleting point warns others
-
 @customElement('em-point-pane')
 export class PointPane extends LitElement {
   eventController = new EventController(this)

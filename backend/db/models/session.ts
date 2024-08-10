@@ -1,6 +1,6 @@
 import { Model } from 'objection'
 
-// TODO@mx types as strings not ideal?
+// TODO: types as strings not ideal?
 
 // biome-ignore lint/complexity/noStaticOnlyClass: Objection.js model
 class  SessionModel extends Model {
