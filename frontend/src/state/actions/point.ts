@@ -13,6 +13,6 @@ export const createPointSuccess = pointActions.create('Create success', props<{ 
 export const updatePointSuccess = pointActions.create('Update success', props<{ point: Point }>())
 export const deletePointSuccess = pointActions.create('Delete success', props<{ id: number }>())
 
-export const selectPoint = pointActions.create('Select point', props<{ id: number }>())
+export const selectPoint = pointActions.create('Select point', props<{ id: number | undefined }>())
 
 export const pointError = pointActions.create('Error', props<{ error: Error }>())

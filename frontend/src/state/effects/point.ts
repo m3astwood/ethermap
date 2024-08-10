@@ -20,6 +20,7 @@ const effects = {
       ),
     ),
   ),
+
   createPointSuccess$: createEffect((actions$) =>
     actions$.pipe(
       ofType(createPointSuccess),
@@ -79,7 +80,9 @@ const effects = {
   selectPoint$: createEffect((actions$) =>
     actions$.pipe(
       ofType(selectPoint),
-      tapResult(({ id }) => selPoint(id))
+      tapResult(({ id }) => {
+        return selPoint(id)
+      })
     )
   ),
 
