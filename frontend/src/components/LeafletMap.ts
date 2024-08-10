@@ -41,6 +41,10 @@ export class LeafletMapElement extends LitElement {
     this.initMap()
   }
 
+  navigateToPoint(location: { lat: number; lng: number }) {
+    this.leaflet.panTo(location)
+  }
+
   initMap() {
     const mapEl = this.shadowRoot?.querySelector('main')
 

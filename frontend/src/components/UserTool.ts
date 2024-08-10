@@ -1,8 +1,9 @@
-import AccountIcon from '/icons/AccountUserPersonSquare.svg'
 import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
 import { fromEvent, debounceTime, tap, map } from 'rxjs'
 import { dispatch } from '@ngneat/effects'
+
+import AccountIcon from '/icons/AccountUserPersonSquare.svg'
 
 // store
 import { updateUser } from '../state/actions/user'

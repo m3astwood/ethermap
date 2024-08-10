@@ -3,7 +3,6 @@ import { customElement, state } from 'lit/decorators.js'
 
 import Router from './controllers/Router'
 
-import './components/UserTool'
 import { dispatch } from '@ngneat/effects'
 import { getUser } from './state/actions/user'
 import './state/effects/user'
@@ -23,13 +22,7 @@ export class EthermapApp extends LitElement {
   }
 
   render() {
-    return html`
-    <nav>
-      <span>toolbar</span>
-      <user-tool></user-tool>
-    </nav>
-    ${this.route}
-    `
+    return this.route
   }
 
   static get styles() {
@@ -38,18 +31,9 @@ export class EthermapApp extends LitElement {
         display: flex;
         flex-direction: column;
         height: 100vh;
+        background: lightgrey;
       }
 
-      nav {
-        display: flex;
-        align-items: center;
-        padding-inline: 1em;
-        padding-block: 0.75em 0.5em;
-      }
-
-      user-tool {
-        margin-inline-start: auto;
-      }
     `
   }
 }

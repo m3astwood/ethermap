@@ -11,7 +11,9 @@ import 'leaflet/dist/leaflet.css'
 
 // import UserCursor from '../controllers/UserCursor'
 import ObserveCtrl from '../controllers/Observable'
+import '../components/Navigation'
 import '../components/EmPoint'
+import '../components/MapMetaPane'
 import '../components/PointPane'
 import { loadMap } from '../state/actions/map'
 import { createPoint, createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
@@ -26,8 +28,10 @@ import '../state/effects/point'
 
 // interfaces
 import type MapModel from '../../../backend/db/models/map'
-import type { Point } from '../interfaces/Point'
 import { selectAllEntities } from '@ngneat/elf-entities'
+import EventController from '../api/event'
+import { LeafletMapElement } from '../components/LeafletMap'
+import { Point } from '../interfaces/Point'
 
 @customElement('map-view')
 export class MapView extends LitElement {
@@ -35,6 +39,7 @@ export class MapView extends LitElement {
   // userCursor = new UserCursor(this)
   points = new ObserveCtrl(this, mapState.pipe(selectAllEntities()))
   selectedPoint = new ObserveCtrl(this, mapState.pipe(select(state => state.selectedPoint)))
+  eventController = new EventController(this)
 
   @property({ type: String })
   mapName = ''
@@ -49,7 +54,13 @@ export class MapView extends LitElement {
   private map$: Observable<MapModel>
 
   @state()
+  private showMeta = false
+
+  @state()
   private eventSource: EventSource
+
+  @state()
+  private leafletMap: LeafletMapElement
 
   constructor() {
     super()
@@ -67,6 +78,8 @@ export class MapView extends LitElement {
   }
 
   async firstUpdated() {
+    this.leafletMap = this.shadowRoot?.querySelector('em-leaflet-map')
+
     this.map$.subscribe((map) => {
       this.mapId = map.id
 
@@ -91,6 +104,7 @@ export class MapView extends LitElement {
     dispatch(loadMap({ mapName: this.mapName }))
 
     this.addEventListener('em:close-pane', () => dispatch(selectPoint({ id: undefined })))
+    this.addEventListener('em:toggle-meta', () => { this.showMeta = !this.showMeta })
 
     fromEvent<CustomEvent>(this, 'em:point-update').pipe(
       debounceTime(500),
@@ -109,28 +123,62 @@ export class MapView extends LitElement {
     dispatch(selectPoint({ id: event.detail.id }))
   }
 
+  navigateAndOpenPoint(point: Point): void {
+    dispatch(selectPoint({ id: point.id }))
+    this.leafletMap.navigateToPoint(point.location)
+  }
+
   render() {
     return html`
+      <em-nav mapName=${this.mapName}></em-nav>
       <main>
+        <em-map-pane ?aria-expanded=${this.showMeta}>
+          <h2>Points</h2>
+          <ul>
+          ${this.points?.value ? repeat(this.points?.value, (point) => point.id,
+            p => html`<li class="mapPoint" @click=${() => this.navigateAndOpenPoint(p)}>${p.id} : ${p.name ?? 'unnamed point'}</li>`
+          ): 'no points in map'}
+          </ul>
+        </em-map-pane>
+
         <em-leaflet-map .contextMenu="${this.contextMenu}" controls>
           ${this.points?.value ? repeat(this.points?.value, (point) => point.id,
             p => html`<em-point id=${p.id} .latlng=${p.location} @click=${this.pointClick}></em-point>`
           ): ''}
         </em-leaflet-map>
+
         <em-point-pane ?active=${!!this.selectedPoint.value} .point=${this.selectedPoint.value}></em-point-pane>
       </main>
     `
   }
-
   static styles = [
     css`
     :host {
       flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     main {
-      height: 100%;
+      flex-grow: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      inset: 0;
       background: pink;
+    }
+
+    ul {
+      display: grid;
+      gap: 0.5em;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li.mapPoint {
+          text-decoration: underline;
+          color: blue;
+        }
     }
   `,
   ]
