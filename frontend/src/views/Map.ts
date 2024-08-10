@@ -14,7 +14,7 @@ import ObserveCtrl from '../controllers/Observable'
 import '../components/EmPoint'
 import '../components/PointPane'
 import { loadMap } from '../state/actions/map'
-import { createPoint, createPointSuccess, deletePointSuccess, updatePoint, updatePointSuccess } from '../state/actions/point'
+import { createPoint, createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
 
 // state & effects
 import { select } from '@ngneat/elf'
@@ -28,7 +28,6 @@ import '../state/effects/point'
 import type MapModel from '../../../backend/db/models/map'
 import type { Point } from '../interfaces/Point'
 import { selectAllEntities } from '@ngneat/elf-entities'
-import { selectPoint } from '../state/reducers/point'
 
 @customElement('map-view')
 export class MapView extends LitElement {
@@ -49,11 +48,13 @@ export class MapView extends LitElement {
   @state()
   private map$: Observable<MapModel>
 
+  @state()
+  private eventSource: EventSource
+
   constructor() {
     super()
 
     this.map$ = mapState.pipe(select((state) => state.map))
-
 
     this.contextMenu = [
       {
@@ -70,17 +71,17 @@ export class MapView extends LitElement {
       this.mapId = map.id
 
       if (this.mapId) {
-        const eventSource = new EventSource(`/api/events/map/${this.mapId}`)
+        this.eventSource = new EventSource(`/api/events/map/${this.mapId}`)
 
-        eventSource.addEventListener('point-create', ({ data }) => {
+        this.eventSource.addEventListener('point-create', ({ data }) => {
           const point = JSON.parse(data)
           dispatch(createPointSuccess({ point }))
         })
-        eventSource.addEventListener('point-update', ({ data }) => {
+        this.eventSource.addEventListener('point-update', ({ data }) => {
           const point = JSON.parse(data)
           dispatch(updatePointSuccess({ point }))
         })
-        eventSource.addEventListener('point-delete', ({ data }) => {
+        this.eventSource.addEventListener('point-delete', ({ data }) => {
           const { id } = JSON.parse(data)
           dispatch(deletePointSuccess({ id: Number.parseInt(id) }))
         })
@@ -89,7 +90,7 @@ export class MapView extends LitElement {
 
     dispatch(loadMap({ mapName: this.mapName }))
 
-    this.addEventListener('em:close-pane', () => dispatch(selectPoint()))
+    this.addEventListener('em:close-pane', () => dispatch(selectPoint({ id: undefined })))
 
     fromEvent<CustomEvent>(this, 'em:point-update').pipe(
       debounceTime(500),
@@ -99,8 +100,13 @@ export class MapView extends LitElement {
     ).subscribe()
   }
 
+  disconnectedCallback(): void {
+    this.eventSource.close()
+  }
+
   private pointClick(event: CustomEvent) {
-    dispatch(selectPoint(event.detail.id))
+    event.preventDefault()
+    dispatch(selectPoint({ id: event.detail.id }))
   }
 
   render() {
