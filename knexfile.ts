@@ -1,6 +1,7 @@
 // Update with your config settings.
 import 'dotenv/config'
 import type { Knex } from 'knex'
+import env from './backend/lib/env'
 
 interface KnexConfig {
   [key: string]: Knex.Config
@@ -37,13 +38,13 @@ const config: KnexConfig = {
   },
 
   staging: {
-    client: process.env.DB_PROVIDER,
+    client: env.DB_PROVIDER,
     connection: {
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST,
-      port: Number.parseInt(process.env.DB_PORT || ''),
+      database: env.DB_NAME,
+      user: env.DB_USER,
+      password: env.DB_PASS,
+      host: env.DB_HOST,
+      port: env.DB_PORT,
     },
     pool: {
       min: 2,
@@ -58,14 +59,14 @@ const config: KnexConfig = {
   },
 
   production: {
-    client: process.env.DB_PROVIDER,
+    client: env.DB_PROVIDER,
     connection: {
-      filename: process.env.DB_FILE,
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST,
-      port: Number.parseInt(process.env.DB_PORT || ''),
+      filename: env.DB_FILE,
+      database: env.DB_NAME,
+      user: env.DB_USER,
+      password: env.DB_PASS,
+      host: env.DB_HOST,
+      port: env.DB_PORT,
     },
     pool: {
       min: 2,
