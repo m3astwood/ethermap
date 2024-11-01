@@ -6,9 +6,10 @@ import path from 'node:path'
 import Session from './backend/middleware/sessions'
 import { socket } from './backend/sockets'
 import express, { type Request, type Response } from 'express'
+import env from './backend/lib/env'
 
-const server = app.listen(process.env.PORT, () => {
-  console.log(`Ethermap listening for connections on port ${process.env.PORT}`)
+const server = app.listen(env.PORT, () => {
+  console.log(`Ethermap listening for connections on port ${env.PORT}`)
 })
 
 // sockets

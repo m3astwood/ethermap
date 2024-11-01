@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx server.ts",
-    "dev": "nodemon -e js,ts,json --exec npm start",
+    "dev": "NODE_ENV=development nodemon -e js,ts,json --exec npm start",
     "build:backend": "tsc --project ./backend/tsconfig.back.json && tsc-alias -p ./backend/tsconfig.back.json",
     "build:frontend": "vite build",
     "build": "npm run build:backend && npm run build:frontend",
@@ -47,7 +47,8 @@
     "socket.io-client": "^4.7.2",
     "sqlite3": "^5.1.6",
     "urlpattern-polyfill": "^9.0.0",
-    "vite-express": "^0.10.0"
+    "vite-express": "^0.10.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@ngneat/elf-devtools": "^1.3.0",
