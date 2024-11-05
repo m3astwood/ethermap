@@ -25,11 +25,11 @@ export class PointPane extends LitElement {
 
   @state()
   meta: {
-    created_by: {
-      name: string
+    createdBy: {
+      name?: string
     },
-    updated_by: {
-      name: string
+    updatedBy: {
+      name?: string
     }
   }
 
@@ -42,8 +42,8 @@ export class PointPane extends LitElement {
   constructor() {
     super()
     this.meta = {
-      updated_by: {},
-      created_by: {}
+      updatedBy: {},
+      createdBy: {},
     }
 
     this.updatedDetails = {}
@@ -68,8 +68,8 @@ export class PointPane extends LitElement {
 
   protected willUpdate(changedProperties: PropertyValueMap<this> | Map<PropertyKey, unknown>): void {
     if (changedProperties.has('point') && this.point) {
-      this.meta.updated_by = this.point.updated_by_user.sess?.user ?? { name: '' }
-      this.meta.created_by = this.point.created_by_user.sess?.user ?? { name: '' }
+      this.meta.updatedBy = this.point.updatedBy.sess?.user ?? { name: '' }
+      this.meta.createdBy = this.point.createdBy.sess?.user ?? { name: '' }
     }
   }
 
@@ -96,8 +96,8 @@ export class PointPane extends LitElement {
       </form>
 
       <div class="meta">
-        <p>updated by : ${this.meta.updated_by.name}</p>
-        <p>created by : ${this.meta.created_by.name}</p>
+        <p>updated by : ${this.meta.updatedBy.name}</p>
+        <p>created by : ${this.meta.createdBy.name}</p>
       </div>
 
       <div class="controls">

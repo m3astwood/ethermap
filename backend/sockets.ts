@@ -1,5 +1,5 @@
 import { Server, type Socket } from 'socket.io'
-import PointModel from './db/models/point'
+import db from './db'
 import type { Request } from 'express'
 
 export default class SocketConnection {
@@ -26,9 +26,9 @@ export default class SocketConnection {
       })
 
       // update point data
-      socket.on('client-point-update', async (point: PointModel) => {
+      socket.on('client-point-update', async (point) => {
         point.updated_by = req.session.id
-        const patched = await PointModel.query().findById(point.id).patch(point)
+        // const patched = await PointModel.query().findById(point.id).patch(point)
 
         if (patched > 0) {
           const _point = await PointModel.query()

@@ -2,15 +2,15 @@
 import session from 'express-session'
 
 // database
-import { DB } from '../db/DB'
+import db from '../db'
+import { sessions } from '../db/schema'
 
 // knex connections
-import KnexSessionStore from 'connect-session-knex'
+import { DrizzlePostgresSessionStore } from '../lib/sessionStore'
 import type { NextFunction, Request, Response } from 'express'
-const KSS = KnexSessionStore(session)
 
 // set session store
-const store = new KSS({ knex: DB, createtable: false })
+const store = new DrizzlePostgresSessionStore({ db, table: sessions })
 
 export default session({
   secret: 'supersessionstoresecretsauce',

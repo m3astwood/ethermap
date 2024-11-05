@@ -1,29 +1,29 @@
 import type { NextFunction, Request, Response } from 'express'
-import MapModel from '../db/models/map'
-import PointModel from '../db/models/point'
 import { emitMapEvent } from '../utils/emitter'
+import db from '../db'
+import { eq } from 'drizzle-orm'
+import { maps, points } from '../db/schema'
 
 const createPoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { mapId, point } = req.body
 
-    const created_by = req.session.id
-    const updated_by = req.session.id
+    const createdBy = req.session.id
+    const updatedBy = req.session.id
 
-    const map = await MapModel.query().findById(mapId)
+    const map = await db.query.maps.findFirst({
+      where: eq(maps.id, Number.parseInt(mapId)),
+    })
 
     if (!map) {
       res.status(404)
       throw new Error(`Map with id ${mapId} does not exist`)
     }
 
-    const _point = await map
-      .$relatedQuery('map_points')
-      .insertGraphAndFetch({ ...point, created_by, updated_by }
-        , {
-        relate: [ 'created_by_user', 'updated_by_user' ]
-      })
-      .withGraphFetched({ updated_by_user: true, created_by_user: true })
+    const [_point] = await db
+      .insert(points)
+      .values({ ...point, mapId, createdBy, updatedBy })
+      .returning()
 
     emitMapEvent({ type: 'point-create', sessionID: req.sessionID, mapId, body: _point })
 
@@ -39,28 +39,31 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
     const { point } = req.body
 
-    point.updated_by = req.session.id
+    point.updatedBy = req.session.id
 
-    const patched = await PointModel.query().patch(point).findById(id)
+    await db
+      .update(points)
+      .set(point)
+      .where(eq(points.id, Number.parseInt(id)))
 
-    const _point = await PointModel.query()
-      .findById(id)
-      .withGraphJoined({ updated_by_user: true, created_by_user: true })
+    const _point = await db.query.points.findFirst({
+      where: eq(points.id, Number.parseInt(id)),
+      with: {
+        createdBy: true,
+        updatedBy: true
+      }
+    })
 
     if (!_point) {
       res.status(404)
       throw new Error(`No point found with id : ${id}`)
     }
 
-    const { map_id: mapId } = _point
+    const { mapId } = _point
 
     emitMapEvent({ type: 'point-update', sessionID: req.sessionID, mapId, body: _point })
 
-    if (patched) {
-      res.status(201)
-    } else {
-      res.status(200)
-    }
+    res.status(200)
     res.json(_point)
   } catch (err) {
     next(err)
@@ -70,15 +73,14 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
 const deletePoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
-    const point = await PointModel.query().select('map_id').findById(id)
+    const [ point ] = await db.delete(points).where(eq(points.id, Number.parseInt(id))).returning()
 
     if (!point) {
       res.status(404)
       throw new Error('No items deleted with id : ${id}')
     }
 
-    const { map_id: mapId } = point
-    await PointModel.query().deleteById(id)
+    const { mapId } = point
 
     emitMapEvent({ type: 'point-delete', sessionID: req.sessionID, mapId, body: { id } })
 
@@ -92,9 +94,13 @@ const deletePoint = async (req: Request, res: Response, next: NextFunction) => {
 const getPointById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
-    const point = await PointModel.query()
-      .findById(id)
-      .withGraphJoined({ created_by_user: true, updated_by_user: true })
+    const point = await db.query.points.findFirst({
+      where: eq(points.id, Number.parseInt(id)),
+      with: {
+        createdBy: true,
+        updatedBy: true
+      }
+    })
 
     if (!point) {
       res.status(404)

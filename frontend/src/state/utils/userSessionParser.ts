@@ -8,7 +8,7 @@ export function userSessionParser(userSession) {
 export function pointUserParser(point) {
   return {
     ...point,
-    created_by_user: userSessionParser(point.created_by_user),
-    updated_by_user: userSessionParser(point.updated_by_user),
+    createdBy: userSessionParser(point.createdBy),
+    updatedBy: userSessionParser(point.updatedBy),
   }
 }

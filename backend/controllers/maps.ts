@@ -1,35 +1,47 @@
 import type { NextFunction, Request, Response } from 'express'
-import MapModel from '../db/models/map'
-import type PointModel from '../db/models/point'
+import db from '../db'
 import { MapEvent$ } from '../utils/emitter'
 import { filter } from 'rxjs'
 import type { MapEvent } from '../interfaces/MapEvent'
+import { eq } from 'drizzle-orm'
+
+import { maps, points } from '../db/schema'
+import type { PointSchema } from '../db/schema/point.schema'
 
 const getAllMaps = async (_: Request, res: Response) => {
-  const maps = await MapModel.query()
+  const maps = await db.query.maps.findMany()
 
   res.json({ maps })
 }
 
-// FIX: is returning the session of other user's per point an issue??
 const getMapByName = async (req: Request, res: Response, next: NextFunction) => {
+  let returnMap
   const { name } = req.params
   try {
-    let points: PointModel[]
-    let map = await MapModel.query().where({ name }).first()
+    let points: PointSchema[]
+    const existingMap = await db.query.maps.findFirst({
+      where: eq(maps.name, name),
+    })
 
-    if (map) {
-      points = await map.$relatedQuery('map_points')
-        .withGraphJoined('[created_by_user, updated_by_user]')
+    if (existingMap) {
+      returnMap = existingMap
+      points = await db.query.points.findMany({
+        with: {
+          createdBy: true,
+          updatedBy: true,
+        }
+      })
       res.status(200)
     } else {
-      map = await MapModel.query().insertAndFetch({ name })
+      const [ newMap ] = await db.insert(maps).values({ name }).returning()
       points = []
+
+      returnMap = newMap
 
       res.status(201)
     }
 
-    res.json({ map, points })
+    res.json({ map: returnMap, points })
   } catch (err) {
     next(err)
   }
@@ -39,20 +51,21 @@ const getMapPoints = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const { id } = req.params
 
-    const map = await MapModel.query().findById(id)
+    const mapPoints = await db.query.points.findMany({
+      where: eq(points.mapId, Number.parseInt(id)),
+      with: {
+        createdBy: true,
+        updatedBy: true
+      }
+    })
 
-    if (!map) {
+    if (!mapPoints) {
       res.status(404)
       throw new Error(`Map not found with id ${id}`)
     }
 
-    const points = await MapModel
-      .relatedQuery('map_points')
-      .withGraphJoined({ created_by_user: true, updated_by_user: true })
-      .for(id)
-
     res.status(200)
-    res.json({ points })
+    res.json({ points: mapPoints })
   } catch (err) {
     next(err)
   }

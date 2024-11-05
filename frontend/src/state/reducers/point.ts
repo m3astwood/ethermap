@@ -1,21 +1,16 @@
 import { mapState } from '../store/mapState'
 import type { Point } from '../../interfaces/Point'
 import { addEntities, deleteEntities, getEntity, updateEntities } from '@ngneat/elf-entities'
-import { pointUserParser } from '../utils/userSessionParser'
 
 export function setPoint(point: Point) {
   mapState.update(
-    addEntities({
-      ...pointUserParser(point),
-    }),
+    addEntities(point),
   )
 }
 
 export function updatePoint(point: Point) {
   mapState.update(
-    updateEntities(point.id, {
-      ...pointUserParser(point),
-    }),
+    updateEntities(point.id, point),
   )
 }
 

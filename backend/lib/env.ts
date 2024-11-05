@@ -1,15 +1,14 @@
 import { z } from 'zod'
+import 'dotenv/config'
 
 const EnvSchema = z.object({
   SITE_NAME: z.string(),
   PORT: z.coerce.number().int().default(3000),
-  DB_PROVIDER: z.string(),
-  DB_HOST: z.string().optional().optional(),
-  DB_FILE: z.string().optional(),
+  DB_HOST: z.string(),
   DB_PORT: z.coerce.number().int().optional(),
   DB_NAME: z.string(),
-  DB_USER: z.string().optional(),
-  DB_PASS: z.string().optional()
+  DB_USER: z.string(),
+  DB_PASS: z.string(),
 })
 
 export type env = z.infer<typeof EnvSchema>
