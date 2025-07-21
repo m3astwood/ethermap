@@ -30,9 +30,9 @@ You should now be able to access ethermaps on [http://localhost:3000](http://loc
 
 ### Backend
 
-Backend is running on [express.js](https://expressjs.com/) with [ViteExpress](https://github.com/szymmis/vite-express) bridging the gap between the fron and backends.
+Backend is running on [express.js](https://expressjs.com/) with [ViteExpress](https://github.com/szymmis/vite-express) bridging the gap between the front and backends.
 
-Database models, and queries are handled by [objection.js](https://vincit.github.io/objection.js/) ORM built on top of [knex](https://knexjs.org/). During dev the database defaults to an Sqlite3 db, and then during production it will be able to handle whichever database you choose. For now it has only been setup to work with PostgreSQL.
+Database is setup with [Drizzle](https://orm.drizzle.team) and [Postgres](https://www.postgresql.org/).
 
 Live data is shared with the client using [socket.io](https://socket.io/).
 
@@ -48,7 +48,27 @@ Map rendering is done with [leaflet](https://leafletjs.com/).
 
 For the developer environment and building, the frontend is managed by [Vite](https://vitejs.dev/).
 
+## Setup
+
+### Dev
+
+To setup the dev environment you will need a postgres database running, and a `.env` file filled out as per the `.env.sample`. Then do the following :
+
+```sh
+$ npm i
+
+$ npm run db:up
+
+$ npm run db:migrate
+
+$ npm run
+```
+
+This should have you running ethermap with an empty postgres database.
+
 ### Docker
+
+<!-- TODO[MF] These instructions are out of date -->
 
 You can build a development image & run it with the following:
 
