@@ -5,8 +5,8 @@ import { filter } from 'rxjs'
 import type { MapEvent } from '../interfaces/MapEvent'
 import { eq } from 'drizzle-orm'
 
-import { maps, points } from '../db/schema'
-import type { PointSchema } from '../db/schema/point.schema'
+import { type SelectMapSchema, maps } from '../db/schema/map.schema'
+import { points, type SelectPointSchema } from '../db/schema/point.schema'
 
 const getAllMaps = async (_: Request, res: Response) => {
   const maps = await db.query.maps.findMany()
@@ -15,10 +15,10 @@ const getAllMaps = async (_: Request, res: Response) => {
 }
 
 const getMapByName = async (req: Request, res: Response, next: NextFunction) => {
-  let returnMap
+  let returnMap: SelectMapSchema
   const { name } = req.params
   try {
-    let points: PointSchema[]
+    let points: SelectPointSchema[]
     const existingMap = await db.query.maps.findFirst({
       where: eq(maps.name, name),
     })

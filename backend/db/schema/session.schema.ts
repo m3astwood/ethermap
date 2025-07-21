@@ -1,4 +1,4 @@
-import { json, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
+import { json, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 export const sessions = pgTable('sessions', {
   sid: varchar().notNull().primaryKey(),
@@ -6,4 +6,4 @@ export const sessions = pgTable('sessions', {
   expired: timestamp(),
 })
 
-export type SessionsTable = typeof sessions
+export type SessionsSchema = typeof sessions

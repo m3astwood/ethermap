@@ -41,5 +41,9 @@ export const insertPointSchema = createInsertSchema(points).omit({
   updatedAt: true,
   updatedBy: true,
 })
+export const patchPointSchema = insertPointSchema.partial()
 
-export type PointSchema = z.infer<typeof selectPointSchema>
+export type SelectPointSchema = z.infer<typeof selectPointSchema>
+export type InsertPointSchema = z.infer<typeof insertPointSchema>
+export type PatchPointSchema = z.infer<typeof patchPointSchema>
+

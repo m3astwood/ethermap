@@ -1,13 +1,13 @@
 import session from 'express-session'
 import type { Db } from '../db'
-import { sessions, type SessionsTable } from '../db/schema/session.schema'
+import { sessions, type SessionsSchema } from '../db/schema/session.schema'
 import { eq } from 'drizzle-orm'
 
 export class DrizzlePostgresSessionStore extends session.Store {
   db: Db
-  sessionTable: SessionsTable
+  sessionTable: SessionsSchema
 
-  constructor(options: { db: Db; table: SessionsTable }) {
+  constructor(options: { db: Db; table: SessionsSchema }) {
     super()
     this.db = options.db
     this.sessionTable = options.table
