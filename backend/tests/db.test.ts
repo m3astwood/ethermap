@@ -6,7 +6,7 @@ import db from '../db'
 import { maps } from '../db/schema/map.schema'
 import { points } from '../db/schema/index'
 
-describe('Database Tests', () => {
+describe.sequential('Database Tests', () => {
   beforeAll(async () => {
     await migrate(db, { migrationsFolder: './backend/db/migrations/' })
   })

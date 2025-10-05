@@ -12,7 +12,7 @@ let agent: Agent
 // db
 import db, { type Db } from '../db'
 
-describe('Routes tests', () => {
+describe.sequential('Routes tests', () => {
   // test setup
   beforeAll(async () => {
     await migrate(db, { migrationsFolder: './backend/db/migrations'})
