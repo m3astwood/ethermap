@@ -13,6 +13,7 @@
     "test:all": "vitest",
     "test:routes": "vitest ./backend/tests/routes.ts",
     "test:db": "vitest ./backend/tests/db.ts",
+    "test:ci": "vitest --watch=false",
     "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
     "db:up": "drizzle-kit up",
