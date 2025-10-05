@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+
+jobs:
+
+  test:
+    runs-on: docker-cli
+
+    strategy:
+      matrix:
+        node-version: [ 20.x, 21.x, 22.x ]
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm run test:all
