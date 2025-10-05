@@ -116,8 +116,6 @@ describe('Routes tests', () => {
   it('should throw a 404 error on GET "/api/map/:id/points" with invalid id', async () => {
     const res = await agent.get('/api/map/100/points')
 
-    console.log(res.body)
-
     expect(res.status).toEqual(404)
   })
 
