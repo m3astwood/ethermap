@@ -6,7 +6,7 @@ on:
 jobs:
 
   test:
-    runs-on: node-bookworm
+    runs-on: docker-cli
 
     steps:
       - name: Checkout repository
