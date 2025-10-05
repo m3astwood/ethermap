@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { eq } from 'drizzle-orm'
-import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import { migrate } from 'drizzle-orm/pglite/migrator'
 
 import db from '../db'
-import { maps } from '../db/schema/map.schema.ts'
-import { points } from '../db/schema/index.ts'
+import { maps } from '../db/schema/map.schema'
+import { points } from '../db/schema/index'
 
 describe('Database Tests', () => {
   beforeAll(async () => {
