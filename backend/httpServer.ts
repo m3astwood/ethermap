@@ -1,6 +1,7 @@
 // web server
 import express from 'express'
 import cors from 'cors'
+import pino from 'pino-http'
 
 import type UserSession from './interfaces/UserSession'
 
@@ -16,10 +17,18 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-//middleware
-import Session, { setSessionData } from './middleware/sessions'
+// logger
+app.use(pino({
+  level: 'error',
+  transport: {
+    target: 'pino-pretty'
+  }
+}))
 
-app.use(Session)
+//middleware
+import session, { setSessionData } from './middleware/sessions'
+
+app.use(session)
 app.use(setSessionData)
 
 // routes

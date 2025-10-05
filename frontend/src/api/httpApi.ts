@@ -53,4 +53,4 @@ export class Api {
   patch = (url: string, data, opts?) => this.fetch(url, 'PATCH', opts, data);
 }
 
-export const api = new Api({ baseUrl: 'http://localhost:3000/'})
+export const api = new Api({ baseUrl: `${location.origin}/`})

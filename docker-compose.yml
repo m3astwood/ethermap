@@ -2,10 +2,20 @@ services:
   app:
     build:
       context: .
-      target: dev
+      target: production
     ports:
-      - ${PORT}:3000
-    command: npm run dev
+      - 3000:${PORT}
+    command: node server.js
+    env_file: .env
     environment:
-      - NODE_ENV=${ENV}
+      - NODE_ENV=production
+    depends_on:
+      - db
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
 

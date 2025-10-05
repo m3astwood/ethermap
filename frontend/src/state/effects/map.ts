@@ -1,7 +1,7 @@
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects'
 import type { Action } from '@ngneat/effects/src/lib/actions.types'
 import { type Observable, switchMap, tap } from 'rxjs'
-import type MapModel from '../../../../backend/db/models/map'
+import type { SelectMapSchema } from '../../../../backend/db/schema/map.schema'
 import { loadMap, loadMapError, loadMapSuccess } from '../actions/map'
 import { setMap } from '../reducers/map'
 import { api } from '../../api/httpApi'
@@ -11,14 +11,16 @@ const effects = {
   loadMap$: createEffect((actions$) =>
     actions$.pipe(
       ofType(loadMap),
-      switchMap(
-        (action: Action): Observable<{ map: MapModel; points: Point[] }> =>
-          api.get(`/api/map/${action.mapName}`).pipe(
-            tapResult(
-              (mapData) => dispatch(loadMapSuccess({ mapData })),
-              (error: Error) => dispatch(loadMapError({ error })),
-            ),
-          ),
+      switchMap((action: Action): Observable<{ map: SelectMapSchema; points: Point[] } | undefined> => api.get(`/api/map/${action.mapName}`)),
+      tapResult(
+        (mapData) => {
+          if (mapData) {
+            return dispatch(loadMapSuccess({ mapData }))
+          }
+
+          throw Error('Failed to load map from server')
+        },
+        (error: Error) => dispatch(loadMapError({ error })),
       ),
     ),
   ),

@@ -9,6 +9,7 @@ const EnvSchema = z.object({
   DB_NAME: z.string(),
   DB_USER: z.string(),
   DB_PASS: z.string(),
+  NODE_ENV: z.string().optional(),
 })
 
 export type env = z.infer<typeof EnvSchema>
@@ -17,7 +18,7 @@ const { data: env, error } = EnvSchema.safeParse(process.env)
 
 if (error) {
   console.error('Invalid env:')
-  console.error(JSON.stringify(error.flatten().fieldErrors, null, 2))
+  console.error(JSON.stringify(z.treeifyError(error).properties, null, 2))
   process.exit(1)
 }
 

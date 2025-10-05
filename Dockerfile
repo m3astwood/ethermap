@@ -1,20 +1,18 @@
 # => BASE CONTAINER
-FROM node:20-slim as base
+FROM node:lts-slim as base
 
 WORKDIR /app
 
-COPY package*.json .
+COPY . .
 
 RUN npm install
 
 FROM base as copy
 
-COPY . /app
+# COPY . /app
 
 # => DEV CONTAINER
 FROM copy as dev
-# RUN cp .env.template .env
-RUN npm run migrate:latest
 
 # => BUILD CONTAINER
 FROM copy as build
