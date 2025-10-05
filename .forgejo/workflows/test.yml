@@ -6,15 +6,18 @@ on:
 jobs:
 
   test:
-    runs-on: docker-cli
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [ lts ]
+        node-version: [ 'lts/*' ]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
