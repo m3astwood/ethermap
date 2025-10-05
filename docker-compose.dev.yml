@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - 3000:${PORT}
+    command: npm run dev
+    env_file: .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+
