@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -8,4 +9,7 @@ export default defineConfig({
     target: ['esnext', 'edge100', 'firefox100', 'chrome100', 'safari18'],
     outDir: './dist/frontend/'
   },
+  test: {
+    root: './',
+  }
 })

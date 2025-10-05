@@ -36,7 +36,7 @@ Database is setup with [Drizzle](https://orm.drizzle.team) and [Postgres](https:
 
 Live data is shared with the client using [socket.io](https://socket.io/).
 
-Tests are written with [Jest](https://jestjs.io) and route testing uses [supertest](https://github.com/ladjs/supertest).
+Tests are written with [Vitest](https://vitest.dev) and route testing uses [supertest](https://github.com/ladjs/supertest).
 
 ### Frontend
 

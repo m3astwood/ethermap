@@ -21,27 +21,28 @@ const getMapByName = async (req: Request, res: Response, next: NextFunction) => 
     let points: SelectPointSchema[]
     const existingMap = await db.query.maps.findFirst({
       where: eq(maps.name, name),
+      with: {
+        mapPoints: {
+          with: {
+            createdBy: true,
+            updatedBy: true
+          }
+        }
+      }
     })
 
     if (existingMap) {
       returnMap = existingMap
-      points = await db.query.points.findMany({
-        with: {
-          createdBy: true,
-          updatedBy: true,
-        }
-      })
       res.status(200)
     } else {
       const [ newMap ] = await db.insert(maps).values({ name }).returning()
-      points = []
 
       returnMap = newMap
 
       res.status(201)
     }
 
-    res.json({ map: returnMap, points })
+    res.json(returnMap)
   } catch (err) {
     next(err)
   }
@@ -51,6 +52,15 @@ const getMapPoints = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const { id } = req.params
 
+    const map = await db.query.maps.findFirst({
+      where: eq(maps.id, Number.parseInt(id))
+    })
+
+    if (!map) {
+      res.status(404)
+      throw new Error(`Map not found with id ${id}`)
+    }
+
     const mapPoints = await db.query.points.findMany({
       where: eq(points.mapId, Number.parseInt(id)),
       with: {
@@ -58,11 +68,6 @@ const getMapPoints = async (req: Request, res: Response, next: NextFunction) => 
         updatedBy: true
       }
     })
-
-    if (!mapPoints) {
-      res.status(404)
-      throw new Error(`Map not found with id ${id}`)
-    }
 
     res.status(200)
     res.json({ points: mapPoints })

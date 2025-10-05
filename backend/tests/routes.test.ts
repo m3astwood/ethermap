@@ -1,5 +1,6 @@
 // testing tools
-import { describe, it, expect, beforeAll, beforeEach, afterAll } from '@jest/globals'
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest'
+import { migrate } from 'drizzle-orm/pglite/migrator'
 import request, { type Agent } from 'supertest'
 
 // express app
@@ -9,20 +10,16 @@ import { app } from '../httpServer'
 let agent: Agent
 
 // db
-import { DB } from '../db/DB'
+import db, { type Db } from '../db'
 
 describe('Routes tests', () => {
   // test setup
   beforeAll(async () => {
-    await DB.migrate.latest()
+    await migrate(db, { migrationsFolder: './backend/db/migrations'})
   })
 
   beforeEach(() => {
     agent = request.agent(app)
-  })
-
-  afterAll(async () => {
-    await DB.migrate.rollback({}, true)
   })
 
   // tests
@@ -37,20 +34,20 @@ describe('Routes tests', () => {
     const res = await agent.get('/api/map/bingo')
 
     expect(res.status).toEqual(201)
-    expect(res.body.map.name).toEqual('bingo')
+    expect(res.body.name).toEqual('bingo')
   })
 
   it('should return same id with status 200 on GET "/api/map/:mapName" route to existing mapName', async () => {
     const res = await agent.get('/api/map/bingo')
 
     expect(res.status).toEqual(200)
-    expect(res.body.map.id).toEqual(1)
+    expect(res.body.id).toEqual(1)
   })
 
   it('should return a point with status 201 on POST "/api/point" body containing a name, location and map_id', async () => {
     const {
       body: {
-        map: { id: mapId },
+        id: mapId,
       },
     } = await agent.get('/api/map/bingo')
     const res = await agent.post('/api/point').send({
@@ -63,7 +60,7 @@ describe('Routes tests', () => {
 
     expect(res.status).toEqual(201)
     expect(res.body.id).toEqual(1)
-    expect(res.body.map_id).toEqual(mapId)
+    expect(res.body.mapId).toEqual(mapId)
     expect(res.body.location).toEqual({ lat: 50.8552, lng: 4.3454 })
     expect(res.body.name).toEqual('pointy')
   })
@@ -72,14 +69,14 @@ describe('Routes tests', () => {
     const res = await agent.get('/api/map/bingo')
 
     expect(res.status).toEqual(200)
-    expect(res.body.points).toBeTruthy()
-    expect(res.body.points.length).toEqual(1)
+    expect(res.body.mapPoints).toBeTruthy()
+    expect(res.body.mapPoints.length).toEqual(1)
   })
 
   it('should throw 400 error on POST "/api/point" with incorrect data keys', async () => {
     const {
       body: {
-        map: { id: mapId },
+        id: mapId,
       },
     } = await agent.get('/api/map/bingo')
     const error = await agent.post('/api/point').send({
@@ -118,6 +115,8 @@ describe('Routes tests', () => {
 
   it('should throw a 404 error on GET "/api/map/:id/points" with invalid id', async () => {
     const res = await agent.get('/api/map/100/points')
+
+    console.log(res.body)
 
     expect(res.status).toEqual(404)
   })

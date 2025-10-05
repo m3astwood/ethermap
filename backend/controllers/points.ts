@@ -8,6 +8,11 @@ const createPoint = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { mapId, point } = req.body
 
+    if (!point?.location) {
+      res.status(400)
+      res.json({ error: 'Point structure invalid' })
+    }
+
     const createdBy = req.session.id
     const updatedBy = req.session.id
 
@@ -63,7 +68,7 @@ const updatePoint = async (req: Request, res: Response, next: NextFunction) => {
 
     emitMapEvent({ type: 'point-update', sessionID: req.sessionID, mapId, body: _point })
 
-    res.status(200)
+    res.status(201)
     res.json(_point)
   } catch (err) {
     next(err)

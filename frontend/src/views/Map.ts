@@ -68,7 +68,8 @@ export class MapView extends LitElement {
 
   async firstUpdated() {
     this.map$.subscribe((map) => {
-      this.mapId = map.id
+      console.log(map)
+      this.mapId = map?.id ?? null
 
       if (this.mapId) {
         this.eventSource = new EventSource(`/api/events/map/${this.mapId}`)
