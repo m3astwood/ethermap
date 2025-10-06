@@ -1,6 +1,8 @@
 import { Server, type Socket } from 'socket.io'
 import db from './db'
 import type { Request } from 'express'
+import { eq } from 'drizzle-orm'
+import { points } from './db/schema/point.schema'
 
 export default class SocketConnection {
   io: Server
@@ -28,12 +30,19 @@ export default class SocketConnection {
       // update point data
       socket.on('client-point-update', async (point) => {
         point.updated_by = req.session.id
-        // const patched = await PointModel.query().findById(point.id).patch(point)
+        const patched = await db.update(points)
+          .set(point)
+          .where(eq(points.id, point.id))
+          .returning()
 
-        if (patched > 0) {
-          const _point = await PointModel.query()
-            .findById(point.id)
-            .withGraphJoined({ updated_by_user: true, created_by_user: true })
+        if (patched.length > 0) {
+          const _point = await db.query.points.findFirst({
+            where: eq(points.id, point.id),
+            with: {
+              updatedBy: true,
+              createdBy: true,
+            }
+          })
 
           socket.to(roomId).emit('point-update', _point)
         }
