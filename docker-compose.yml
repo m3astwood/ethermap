@@ -5,17 +5,21 @@ services:
       target: production
     ports:
       - 3000:${PORT}
-    command: node server.js
     env_file: .env
     environment:
       - NODE_ENV=production
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:18-alpine
     environment:
-      - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_DB=${DB_NAME}
-
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      interval: 10s
+      timeout: 20s
+      retries: 3

@@ -4,8 +4,6 @@
     "./**/*.ts", "../*.ts"
   ],
   "compilerOptions": {
-    "types": [
-      "jest", "node"
-    ]
+    "types": [ "node", "pino-http" ]
   }
 }

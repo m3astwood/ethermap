@@ -1,25 +1,30 @@
 # => BASE CONTAINER
-FROM node:lts-slim as base
+FROM node:lts-slim as dev
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json .
 
 RUN npm install
 
-FROM base as copy
-
-# COPY . /app
-
-# => DEV CONTAINER
-FROM copy as dev
+COPY . .
 
 # => BUILD CONTAINER
-FROM copy as build
+FROM dev as build
 
 RUN npm run build
 
 # => PRODUCTION CONTAINER
-FROM base as production
+FROM node:lts-slim as production
 
-COPY --from=build /app/dist /app
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm ci --omit=dev
+
+COPY --from=build /app/dist .
+
+COPY --from=build /app/backend/db/migrations ./backend/db/migrations
+
+CMD [ "node", "server.js"]

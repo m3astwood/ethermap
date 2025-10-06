@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
     target: ['esnext', 'edge100', 'firefox100', 'chrome100', 'safari18'],
-    outDir: './dist/frontend/'
+    outDir: '../dist/frontend'
   },
   test: {
     root: './',

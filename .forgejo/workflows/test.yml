@@ -12,5 +12,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - run: npm i
+      - run: npm install
       - run: npm run test:ci
