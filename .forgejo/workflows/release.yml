@@ -28,6 +28,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Git
+        run: apk --update add git
+
       - name: Configure Git
         run: |
           git config user.name "Forgejo Actions"
