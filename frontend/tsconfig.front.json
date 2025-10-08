@@ -3,6 +3,11 @@
   "include": [
     "./**/*.ts"
   ],
+  "compilerOptions": {
+    "types": [
+      "@types/leaflet"
+    ]
+  },
   "outDir": "../dist/frontend/"
 }
 
