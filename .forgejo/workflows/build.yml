@@ -35,7 +35,7 @@ jobs:
         id: meta
         run: |
           DOCKER_TAGS=""
-          IMAGE_NAME="${{ vars.DOCKER_REGISTRY }}/ethermap"
+          IMAGE_NAME="${{ env.FORGEJO_REPOSITORY }}"
 
           # If generating image for a tag
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
