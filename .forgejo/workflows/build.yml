@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 'main'
+    tags:
+      - 'v*'
 
 jobs:
 
@@ -29,6 +31,34 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Determine Docker tags
+        id: meta
+        run: |
+          DOCKER_TAGS=""
+          IMAGE_NAME="${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}"
+
+          # Check if the trigger was a tag push (e.g., v1.2.3)
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            # Strip the 'v' prefix from the tag name (v1.2.3 -> 1.2.3)
+            VERSION=${{ github.ref_name }}
+            VERSION=${VERSION#v}
+            # Create two tags: one for the specific version and one for 'latest'
+            DOCKER_TAGS="$IMAGE_NAME:$VERSION,$IMAGE_NAME:latest"
+
+          # Check if the trigger was a push to the 'main' branch
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            # Read the version from package.json (e.g., 1.2.4-alpha.0)
+            VERSION=$(node -p "require('./package.json').version")
+            # Strip the trailing pre-release increment (1.2.4-alpha.0 -> 1.2.4-alpha)
+            VERSION_NO_INCREMENT=$(echo $VERSION | sed 's/\.[^.]*$//')
+            # Create a single tag for the pre-release version
+            DOCKER_TAGS="$IMAGE_NAME:$VERSION_NO_INCREMENT"
+          fi
+
+          # Output the generated tags for the next step
+          echo "tags=${DOCKER_TAGS}" >> $FORGEJO_OUTPUT
+          echo "Generated tags: ${DOCKER_TAGS}"
+
       - name: Build and push the Docker image
         uses: docker/build-push-action@v6
         with:
@@ -36,5 +66,4 @@ jobs:
           file: ./Dockerfile
           target: production
           push: true
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
-
+          tags: ${{ steps.meta.outputs.tags }}

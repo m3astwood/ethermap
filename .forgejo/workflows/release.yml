@@ -1,0 +1,61 @@
+name: Manual Release & Build
+
+workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'The type of stable version bump (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      pre_id:
+        description: 'The identifier for the next pre-release (e.g., SNAPSHOT, alpha, beta)'
+        required: true
+        default: 'SNAPSHOT'
+        type: string
+
+jobs:
+  tag-and-release:
+    runs-on: node-lts
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FORGEJO_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "Forgejo Actions"
+          git config user.email "actions@forgejo"
+
+      - name: Create stable release version
+        id: release_version
+        run: |
+          # Bumps version (e.g., 1.2.3-SNAPSHOT.0 -> 1.2.3) and creates a commit.
+          # --no-git-tag-version prevents npm from creating its own tag.
+          npm version ${{ github.event.inputs.version_type }} --no-git-tag-version -m "chore(release): release v%s"
+          # Read the new version from package.json and set it as an output.
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=${VERSION}" >> $FORGEJO_OUTPUT
+
+      - name: Create Git tag for the release
+        run: |
+          # Use the version from the previous step to create the tag.
+          git tag v${{ steps.release_version.outputs.version }}
+
+      - name: Push release commit and tag to trigger build
+        run: |
+          # This push will trigger your 'build.yml' workflow.
+          git push --follow-tags
+
+      - name: Create next pre-release version
+        run: |
+          npm version prepatch --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
+
+      - name: Push next development version
+        run: git push
