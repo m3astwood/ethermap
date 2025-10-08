@@ -37,7 +37,7 @@ export class EthermapApp extends LitElement {
       :host {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        height: 100svh;
       }
 
       nav {

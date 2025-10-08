@@ -107,19 +107,22 @@ export class PointPane extends LitElement {
   }
 
   static styles = css`
+    :host {
+      max-width: 0px;
+      transition: max-width 0.125s ease-in-out;
+    }
+
+    :host([active]) {
+      max-width: 100vw;
+    }
 
     aside {
-      position: absolute;
       display: flex;
       flex-direction: column;
       padding: 1em;
-      top: 0;
-      bottom: 0;
-      right: 0;
       width: 20vw;
       background-color: white;
       z-index: 10000;
-      transform: translateX(100%);
     }
 
     aside.active {

@@ -132,6 +132,8 @@ export class MapView extends LitElement {
 
     main {
       height: 100%;
+      display: flex;
+      overflow: hidden;
     }
   `,
   ]
