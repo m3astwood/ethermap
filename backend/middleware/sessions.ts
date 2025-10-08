@@ -5,11 +5,9 @@ import session from 'express-session'
 import db from '../db'
 import { sessions } from '../db/schema'
 
-// knex connections
+// session store
 import { DrizzlePostgresSessionStore } from '../lib/sessionStore'
 import type { NextFunction, Request, Response } from 'express'
-
-// set session store
 const store = new DrizzlePostgresSessionStore({ db, table: sessions })
 
 export default session({

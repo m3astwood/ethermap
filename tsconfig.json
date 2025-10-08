@@ -15,7 +15,7 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["backend/**/*.ts", "./server.ts", "./knexfile.ts"],
+  "include": ["backend/**/*.ts", "./server.ts"],
   "tsc-alias": {
     "resolveFullPaths": true,
     "verbose": false

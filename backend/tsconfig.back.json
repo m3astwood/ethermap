@@ -4,6 +4,6 @@
     "./**/*.ts", "../*.ts"
   ],
   "compilerOptions": {
-    "types": [ "node", "pino-http" ]
+    "types": [ "node", "pino-http", "express" ]
   }
 }
