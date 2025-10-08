@@ -1,6 +1,7 @@
 name: Manual Release & Build
 
-workflow_dispatch:
+on:
+  workflow_dispatch:
     inputs:
       version_type:
         description: 'The type of stable version bump (patch, minor, major)'
@@ -23,10 +24,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ secrets.FORGEJO_TOKEN }}
 
       - name: Configure Git
         run: |
