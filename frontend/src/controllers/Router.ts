@@ -1,9 +1,6 @@
 import { html } from 'lit'
 import { type Context, Router } from '@thepassle/app-tools/router.js'
-
-// views
-import '../views/Map'
-import '../views/Home'
+import { lazy } from '@thepassle/app-tools/router/plugins/lazy.js'
 
 // @ts-ignore
 if (!globalThis.URLPattern) {
@@ -15,13 +12,19 @@ const router: Router = new Router({
   fallback: '/404',
   routes: [
     {
-      path: '/',
+      path: '',
       title: 'ethermap | index',
+      plugins: [
+        lazy(() => import('../views/Home'))
+      ],
       render: () => html`<home-view></home-view>`,
     },
     {
       path: '/m/:mapName',
       title: (ctx: Partial<Context>) => `ethermap | ${ctx.params?.mapName}`,
+      plugins: [
+        lazy(() => import('../views/Map'))
+      ],
       render: (ctx: Context) => html`<map-view .mapName=${ctx.params.mapName}></map-view>`,
     },
     {

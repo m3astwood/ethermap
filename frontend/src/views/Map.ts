@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css'
 
 // import UserCursor from '../controllers/UserCursor'
 import ObserveCtrl from '../controllers/Observable'
+import '../components/LeafletMap'
 import '../components/EmPoint'
 import '../components/PointPane'
 import { loadMap } from '../state/actions/map'
@@ -131,7 +132,6 @@ export class MapView extends LitElement {
 
     main {
       height: 100%;
-      background: pink;
     }
   `,
   ]

@@ -3,6 +3,6 @@
   "include": [
     "./**/*.ts"
   ],
-  "outDir": "../dist/backend/"
+  "outDir": "../dist/frontend/"
 }
 

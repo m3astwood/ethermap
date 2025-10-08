@@ -32,7 +32,7 @@ if (['development', 'test'].includes(process.env.NODE_ENV ?? '')) {
 
   // static hosting
   app.use(express.static(path.resolve('./frontend')))
-  app.all('/{*splat}', (_req: Request, res: Response) => {
+  app.all('/*splat', (_req: Request, res: Response) => {
     res.sendFile(path.resolve('./frontend/index.html'))
   })
 }
