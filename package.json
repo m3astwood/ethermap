@@ -1,12 +1,12 @@
 {
   "name": "ethermap",
   "private": true,
-  "version": "1.0.0",
-  "description": "> This is very much a janky _earlydays_ project. All help is welcome!",
+  "version": "0.1.0",
+  "description": "Collaborative map platform inspired by etherpad",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development nodemon -e js,ts,json --exec npm start",
+    "start": "node ./dist/server.js",
+    "dev": "NODE_ENV=development nodemon -e js,ts,json --exec tsx server.ts",
     "build:backend": "tsc --project ./backend/tsconfig.back.json && tsc-alias -p ./backend/tsconfig.back.json",
     "build:frontend": "vite build",
     "build": "npm run build:backend && npm run build:frontend",
@@ -21,7 +21,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "keywords": [],
-  "author": "",
+  "author": "Max Franklin",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@lit/task": "^1.0.3",
