@@ -36,21 +36,16 @@ jobs:
       - name: Create stable release version
         id: release_version
         run: |
-          # Bumps version (e.g., 1.2.3-SNAPSHOT.0 -> 1.2.3) and creates a commit.
-          # --no-git-tag-version prevents npm from creating its own tag.
           npm version ${{ github.event.inputs.version_type }} --no-git-tag-version -m "chore(release): release v%s"
-          # Read the new version from package.json and set it as an output.
           VERSION=$(node -p "require('./package.json').version")
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Create Git tag for the release
         run: |
-          # Use the version from the previous step to create the tag.
           git tag v${{ steps.release_version.outputs.version }}
 
       - name: Push release commit and tag to trigger build
         run: |
-          # This push will trigger your 'build.yml' workflow.
           git push --follow-tags
 
       - name: Create next pre-release version

@@ -37,15 +37,16 @@ jobs:
           DOCKER_TAGS=""
           IMAGE_NAME="${{ vars.DOCKER_REGISTRY }}/ethermap"
 
+          # If generating image for a tag
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             VERSION=${{ github.ref_name }}
             VERSION=${VERSION#v}
             DOCKER_TAGS="$IMAGE_NAME:$VERSION,$IMAGE_NAME:latest"
-
+          # If generating image merging to main
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
             VERSION=$(node -p "require('./package.json').version")
-            BASE_VERSION=$(echo $VERSION | cut -d'-' -f1)
-            DOCKER_TAGS="$IMAGE_NAME:$BASE_VERSION-SNAPSHOT"
+            VERSION_NO_INCREMENT=$(echo $VERSION | cut -d'-' -f1)
+            DOCKER_TAGS="$IMAGE_NAME:$VERSION_NO_INCREMENT"
           fi
 
           echo "tags=${DOCKER_TAGS}" >> $FORGEJO_OUTPUT
