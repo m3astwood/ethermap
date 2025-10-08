@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    runs-on: docker-cli
+    runs-on: docker-dind
 
     steps:
       - name: Install NodeJS
