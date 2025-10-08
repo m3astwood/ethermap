@@ -1,23 +1,4 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "sourceMap": true,
-    "target": "esnext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictPropertyInitialization": false,
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "strict": true,
-    "skipLibCheck": true
-  },
+  "extends": "./tsconfig.base.json",
   "include": ["backend/**/*.ts", "./server.ts"],
-  "tsc-alias": {
-    "resolveFullPaths": true,
-    "verbose": false
-  }
 }

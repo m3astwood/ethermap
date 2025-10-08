@@ -16,7 +16,7 @@ const server = app.listen(env.PORT, () => {
 // sockets
 socket.upgrade(server, Session)
 
-if (['development', 'test'].includes(process.env.NODE_ENV ?? '')) {
+if (['development', 'test'].includes(env.NODE_ENV ?? '')) {
   // vite hosting
   ViteExpress.bind(app, server)
 } else {

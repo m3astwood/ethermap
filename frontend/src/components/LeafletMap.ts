@@ -1,7 +1,5 @@
 import { unsafeCSS, LitElement, html, css } from 'lit'
-// @ts-ignore : this is a Vite feature
 import leafletCss from 'leaflet/dist/leaflet.css?inline'
-// @ts-ignore : this is a Vite feature
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
 import L, { type Map as LeafletMap } from 'leaflet'
 import 'leaflet-contextmenu'
