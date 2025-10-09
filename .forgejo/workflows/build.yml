@@ -39,12 +39,12 @@ jobs:
 
           # If generating image for a tag
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            GIT_V=${{ github.ref_name }}
-            VERSION=${GIT_V#v}
+            GIT_VERSION=${{ github.ref_name }}
+            VERSION=${GIT_VERSION#v}
           # If generating image merging to main
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            NODE_V=$(node -p "require('./package.json').version")
-            VERSION=$(echo $NODE_V | cut -d'-' -f1)
+            NPM_VERSION=$(node -p "require('./package.json').version")
+            VERSION=$(echo $NPM_VERSION | cut -d'-' -f1)
           fi
 
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
@@ -61,4 +61,4 @@ jobs:
           file: ./Dockerfile
           target: production
           push: true
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:${{ steps.meta.outputs.version }}
+          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:${{ steps.meta.outputs.version }},${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
