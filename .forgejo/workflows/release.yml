@@ -36,7 +36,7 @@ jobs:
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Create Git tag for the release
-        uses: github.com/rickstaa/action-create-tag@v1
+        uses: https://github.com/rickstaa/action-create-tag@v1
         id: "tag"
         with:
           tag: ${{ steps.release_version.outputs.version }}
@@ -47,4 +47,4 @@ jobs:
           npm version prepatch --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
 
       - name: Setup next development cycle
-        uses: github.com/stefanzweifel/git-auto-commit-action@v6
+        uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
