@@ -37,8 +37,6 @@ jobs:
           DOCKER_TAGS=""
           IMAGE_NAME="${{ env.FORGEJO_REPOSITORY }}"
 
-          echo $IMAGE_NAME
-
           # If generating image for a tag
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             VERSION=${{ github.ref_name }}
@@ -58,12 +56,12 @@ jobs:
         run: |
           echo ${{ steps.meta.outputs.tags }}
 
-      # - name: Build and push the Docker image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     target: production
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
+      - name: Build and push the Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
