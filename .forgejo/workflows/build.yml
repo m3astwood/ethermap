@@ -64,4 +64,3 @@ jobs:
           target: production
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
