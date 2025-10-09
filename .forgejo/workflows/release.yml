@@ -28,14 +28,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Git
-        run: apk --update add git
-
-      - name: Configure Git
-        run: |
-          git config user.name "Forgejo Actions"
-          git config user.email "actions@forgejo"
-
       - name: Create stable release version
         id: release_version
         run: |
@@ -44,16 +36,15 @@ jobs:
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Create Git tag for the release
-        run: |
-          git tag v${{ steps.release_version.outputs.version }}
-
-      - name: Push release commit and tag to trigger build
-        run: |
-          git push --follow-tags
+        uses: rickstaa/action-create-tag@v1
+        id: "tag"
+        with:
+          tag: ${{ steps.release_version.outputs.version }}
+          tag_exists_error: false
 
       - name: Create next pre-release version
         run: |
           npm version prepatch --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
 
-      - name: Push next development version
-        run: git push
+      - name: Setup next development cycle
+        uses: stefanzweifel/git-auto-commit-action@v6
