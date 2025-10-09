@@ -34,25 +34,23 @@ jobs:
       - name: Determine Docker tags
         id: meta
         run: |
-          VERSION=""
           IMAGE_NAME="${{ env.FORGEJO_REPOSITORY }}"
+          TAGS=""
 
           # If generating image for a tag
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             GIT_VERSION=${{ github.ref_name }}
             VERSION=${GIT_VERSION#v}
+            TAGS=${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:${VERSION},${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
           # If generating image merging to main
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
             NPM_VERSION=$(node -p "require('./package.json').version")
             VERSION=$(echo $NPM_VERSION | cut -d'-' -f1)
+            TAGS=${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:${VERSION}
           fi
 
-          echo "version=${VERSION}" >> $FORGEJO_OUTPUT
-          echo "Generated version: ${VERSION}"
-
-      - name: Validate generated tags
-        run: |
-          echo ${{ steps.meta.outputs.tags }}
+          echo "tags=${TAGS}" >> $FORGEJO_OUTPUT
+          echo "Generated tags: ${TAGS}"
 
       - name: Build and push the Docker image
         uses: docker/build-push-action@v6
@@ -61,4 +59,4 @@ jobs:
           file: ./Dockerfile
           target: production
           push: true
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:${{ steps.meta.outputs.version }},${{ vars.DOCKER_REGISTRY }}/${{ env.FORGEJO_REPOSITORY }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
