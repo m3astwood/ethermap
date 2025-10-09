@@ -2,7 +2,7 @@ services:
   app:
     image: git.suroh.tk/suroh/ethermap:latest
     ports:
-      - 3000:${PORT}
+      - ${PORT}:${PORT}
     env_file: .env
     environment:
       - NODE_ENV=production
