@@ -1,4 +1,3 @@
-import type { Marker } from 'leaflet'
 import type { UserSession } from './User'
 
 export interface Point {
@@ -13,4 +12,4 @@ export interface Point {
   updatedAt?: string
 }
 
-export interface PointMarker extends Point, Marker {}
+export interface PointMarker extends Point {}

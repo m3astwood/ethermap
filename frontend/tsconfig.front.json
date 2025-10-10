@@ -4,9 +4,7 @@
     "./**/*.ts"
   ],
   "compilerOptions": {
-    "types": [
-      "@types/leaflet"
-    ]
+    "types": [ "maplibre-gl" ]
   },
   "outDir": "../dist/frontend/"
 }

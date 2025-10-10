@@ -1,7 +1,7 @@
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects'
 import type { Action } from '@ngneat/effects/src/lib/actions.types'
 import { type Observable, switchMap, tap } from 'rxjs'
-import type { SelectMapSchema } from '../../../../backend/db/schema/map.schema'
+import type { SelectMapSchema } from '../../../../backend/db/schema/map.schema.ts'
 import { loadMap, loadMapError, loadMapSuccess } from '../actions/map'
 import { setMap } from '../reducers/map'
 import { api } from '../../api/httpApi'

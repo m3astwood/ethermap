@@ -3,19 +3,15 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { repeat } from 'lit/directives/repeat.js'
 import { fromEvent, tap, debounceTime } from 'rxjs'
 
-import io from '../api/socket'
-
-import type { LeafletMouseEvent } from 'leaflet'
-import 'leaflet-contextmenu'
-import 'leaflet/dist/leaflet.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 // import UserCursor from '../controllers/UserCursor'
 import ObserveCtrl from '../controllers/Observable'
-import '../components/LeafletMap'
+import '../components/EmMap'
 import '../components/EmPoint'
 import '../components/PointPane'
 import { loadMap } from '../state/actions/map'
-import { createPoint, createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
+import { createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
 
 // state & effects
 import { select } from '@ngneat/elf'
@@ -27,7 +23,6 @@ import '../state/effects/point'
 
 // interfaces
 import type MapModel from '../../../backend/db/models/map'
-import type { Point } from '../interfaces/Point'
 import { selectAllEntities } from '@ngneat/elf-entities'
 
 @customElement('map-view')
@@ -44,9 +39,6 @@ export class MapView extends LitElement {
   private mapId: number
 
   @state()
-  private contextMenu: Array<{ text: string, callback(event: LeafletMouseEvent): void }>
-
-  @state()
   private map$: Observable<MapModel>
 
   @state()
@@ -56,15 +48,6 @@ export class MapView extends LitElement {
     super()
 
     this.map$ = mapState.pipe(select((state) => state.map))
-
-    this.contextMenu = [
-      {
-        text: 'create point',
-        callback: (evt: LeafletMouseEvent) => {
-          dispatch(createPoint({ mapId: this.mapId, point: { location: evt.latlng } }))
-        },
-      },
-    ]
   }
 
   async firstUpdated() {
@@ -114,11 +97,11 @@ export class MapView extends LitElement {
   render() {
     return html`
       <main>
-        <em-leaflet-map .contextMenu="${this.contextMenu}" controls>
+        <em-map controls>
           ${this.points?.value ? repeat(this.points?.value, (point) => point.id,
             p => html`<em-point id=${p.id} .latlng=${p.location} @click=${this.pointClick}></em-point>`
           ): ''}
-        </em-leaflet-map>
+        </em-map>
         <em-point-pane ?active=${!!this.selectedPoint.value} .point=${this.selectedPoint.value}></em-point-pane>
       </main>
     `

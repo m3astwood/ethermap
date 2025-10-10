@@ -1,4 +1,3 @@
-import L, { type LeafletMouseEvent, type Map as LMap, type Marker } from 'leaflet'
 import { LitElement, type PropertyValueMap, html } from 'lit'
 import EventController from '../api/event'
 import { customElement, property, state } from 'lit/decorators.js'
@@ -15,9 +14,6 @@ export class EtherPoint extends LitElement {
   @property({ type: Number })
   latlng: { lat: number, lng: number } = { lat: 0, lng: 0 }
 
-  @property({ type: Object })
-  leaflet: LMap
-
   @state()
   marker: Marker = L.marker(this.latlng)
 
@@ -25,10 +21,6 @@ export class EtherPoint extends LitElement {
   added = false
 
   firstUpdated() {
-    this.marker.addEventListener('click', (event: LeafletMouseEvent) => {
-      this.event.dispatch('click', { detail: { ...event, id: this.id } })
-    })
-
     this.marker.bindContextMenu({
       contextMenu: true,
       contextmenuInheritItems: false,
@@ -43,16 +35,10 @@ export class EtherPoint extends LitElement {
     })
   }
 
-  protected willUpdate(att: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-    if (att.has('leaflet')) {
-      this.marker.setLatLng(this.latlng).addTo(this.leaflet)
-      this.added = true
-    }
-  }
+  protected willUpdate(att: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {}
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
-    this.marker.removeFrom(this.leaflet)
   }
 
   render() {

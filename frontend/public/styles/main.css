@@ -15,3 +15,13 @@ main.map {
   display: block;
   flex-grow: 1;
 }
+
+.map-context-menu,
+[popover] {
+  position: absolute;
+  margin: 0;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.25em;
+  border: thin solid black;
+}

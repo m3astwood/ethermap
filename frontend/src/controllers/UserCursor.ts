@@ -1,4 +1,3 @@
-import L from 'leaflet'
 import io from '../api/socket.js'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
@@ -10,12 +9,10 @@ export default class UserCursor implements ReactiveController {
   host: ReactiveControllerHost
   socket = io
   cursors: L.Marker[] = []
-  leafletMap: L.Map
 
-  constructor(host: ReactiveControllerHost, leafletMap: L.Map) {
+  constructor(host: ReactiveControllerHost) {
     this.host = host
     this.host.addController(this)
-    this.leafletMap = leafletMap
   }
 
   hostConnected() {
@@ -37,20 +34,7 @@ export default class UserCursor implements ReactiveController {
       const { user, pos } = data
 
       // if user is not created, then do so
-      if (!this.cursors[user.id]) {
-        const cursorIcon = L.divIcon({
-          html: SvgCursor(user.colour),
-          iconSize: [20, 30],
-          iconAnchor: [0, 8],
-          className: 'user-cursor',
-        })
-
-        this.cursors[user.id] = L.marker([pos.lat, pos.lng], {
-          icon: cursorIcon,
-          interactive: false,
-          zIndexOffset: 1000,
-        }).addTo(this.leafletMap)
-      }
+      if (!this.cursors[user.id]) {}
 
       // update cursor's position
       this.cursors[user.id].setLatLng([pos.lat, pos.lng])

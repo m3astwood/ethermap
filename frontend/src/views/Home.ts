@@ -1,12 +1,12 @@
 import { LitElement, css, html } from 'lit'
 
 import '../components/NewMapModal'
-import '../components/LeafletMap'
+import '../components/EmMap'
 
 class HomeView extends LitElement {
   render() {
     return html`
-      <em-leaflet-map></em-leaflet-map>
+      <em-map></em-map>
       <newmap-modal></newmap-modal>
     `
   }

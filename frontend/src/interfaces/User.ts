@@ -1,4 +1,3 @@
-import type { LatLng } from "leaflet"
 import type { Session } from 'express-session'
 
 export interface UserData {
@@ -9,7 +8,7 @@ export interface UserData {
 
 export interface UserServerData {
   user: UserData
-  pos: LatLng
+  pos: { lat: number, lng: number}
   session: string
 }
 
