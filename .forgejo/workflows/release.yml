@@ -45,10 +45,10 @@ jobs:
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Commit Git tag for the release
-        uses: msrd0/git-auto-commit-action@v6
-        with:
-          tagging_messsage: ${{ steps.release_version.version }}
-          create_git_tag_only: true
+        run: |
+          echo "Pusing tag ${{ steps.release_version.version }}"
+          git tag -l
+          git push origin ${{ steps.release_version.version }}
 
       - name: Create next pre-release version
         run: |
