@@ -45,7 +45,7 @@ jobs:
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Commit Git tag for the release
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: msrd0/git-auto-commit-action@v6
         with:
           create_git_tag_only: true
 
@@ -54,6 +54,6 @@ jobs:
           npm version pre${{ forgejo.event.inputs.version_type }} --preid ${{ forgejo.event.inputs.pre_id }} -m "chore: begin next development cycle"
 
       - name: Setup next development cycle
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: msrd0/git-auto-commit-action@v6
         with:
           create_git_tag_only: true
