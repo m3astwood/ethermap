@@ -23,7 +23,9 @@ jobs:
     runs-on: node-lts
 
     steps:
-      - run: apk --update add bash
+
+      - name: Install dependencies
+        run: apk --update add bash git
 
       - name: Checkout repository
         uses: actions/checkout@v5
