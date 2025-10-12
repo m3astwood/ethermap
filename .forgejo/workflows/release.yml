@@ -31,17 +31,14 @@ jobs:
       - name: Create stable release version
         id: release_version
         run: |
-          npm version ${{ github.event.inputs.version_type }} --no-git-tag-version -m "chore(release): release v%s"
+          npm version ${{ github.event.inputs.version_type }} -m "chore(release): release v%s"
           VERSION=$(node -p "require('./package.json').version")
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
-      - name: Create Git tag for the release
-        uses: https://github.com/rickstaa/action-create-tag@v1
-        id: "tag"
+      - name: Commit Git tag for the release
+        uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
         with:
-          github_token: ${{ secrets.FORGEJO_TOKEN }}
-          tag: ${{ steps.release_version.outputs.version }}
-          tag_exists_error: false
+          token: ${{ secrets.FORGEJO_TOKEN }}
 
       - name: Create next pre-release version
         run: |
