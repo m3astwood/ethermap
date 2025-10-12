@@ -25,36 +25,35 @@ jobs:
     steps:
 
       - name: Install dependencies
-        run: apk --update add bash git
+        run: |
+          apk --update add bash git
+          git config --global user.email "forgejo@suroh.tk"
+          git config --global user.name "Forgejo Action"
 
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          ref: ${{ forgejo.head_ref }}
+
 
       - name: Create stable release version
         id: release_version
         run: |
-          npm version ${{ github.event.inputs.version_type }} -m "chore(release): release v%s"
+          npm version ${{ forgejo.event.inputs.version_type }} -m "chore(release): release v%s"
           VERSION=$(node -p "require('./package.json').version")
           echo "version=${VERSION}" >> $FORGEJO_OUTPUT
 
       - name: Commit Git tag for the release
-        uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          commit_user_name: Forgejo Actions Bot
-          commit_user_email: forgejo.bot@suroh.tk
-          commit_author: Forgejo Actions Bot <forgejo.bot@suroh.tk>
           create_git_tag_only: true
 
       - name: Create next pre-release version
         run: |
-          npm version pre${{ forgejo.event.inputs.version_type }} --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
+          npm version pre${{ forgejo.event.inputs.version_type }} --preid ${{ forgejo.event.inputs.pre_id }} -m "chore: begin next development cycle"
 
       - name: Setup next development cycle
-        uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          commit_user_name: Forgejo Actions Bot
-          commit_user_email: forgejo.bot@suroh.tk
-          commit_author: Forgejo Actions Bot <forgejo.bot@suroh.tk>
           create_git_tag_only: true
