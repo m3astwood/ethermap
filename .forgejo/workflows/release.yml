@@ -39,6 +39,7 @@ jobs:
         uses: https://github.com/rickstaa/action-create-tag@v1
         id: "tag"
         with:
+          github_token: ${{ secrets.FORGEJO_TOKEN }}
           tag: ${{ steps.release_version.outputs.version }}
           tag_exists_error: false
 
@@ -48,3 +49,5 @@ jobs:
 
       - name: Setup next development cycle
         uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
+        with:
+          token: ${{ secrets.FORGEJO_TOKEN }}
