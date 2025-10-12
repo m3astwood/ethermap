@@ -49,9 +49,12 @@ jobs:
 
       - name: Create next pre-release version
         run: |
-          npm version prepatch --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
+          npm version pre${{ forgejo.event.inputs.version_type }} --preid ${{ github.event.inputs.pre_id }} -m "chore: begin next development cycle"
 
       - name: Setup next development cycle
         uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
         with:
-          token: ${{ secrets.FORGEJO_TOKEN }}
+          commit_user_name: Forgejo Actions Bot
+          commit_user_email: forgejo.bot@suroh.tk
+          commit_author: Forgejo Actions Bot <forgejo.bot@suroh.tk>
+          create_git_tag_only: true
