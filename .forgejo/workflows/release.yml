@@ -42,7 +42,10 @@ jobs:
       - name: Commit Git tag for the release
         uses: https://github.com/stefanzweifel/git-auto-commit-action@v6
         with:
-          token: ${{ secrets.FORGEJO_TOKEN }}
+          commit_user_name: Forgejo Actions Bot
+          commit_user_email: forgejo.bot@suroh.tk
+          commit_author: Forgejo Actions Bot <forgejo.bot@suroh.tk>
+          create_git_tag_only: true
 
       - name: Create next pre-release version
         run: |
