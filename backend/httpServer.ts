@@ -5,31 +5,34 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import pino from 'pino-http'
 
 import type UserSession from './interfaces/UserSession'
-import client from './routes/client'
-
-// Augment express-session with a custom SessionData object
-
-// webserver setup
-const app = new Hono()
-
-// logger
-// app.use(pino({
-//   level: 'error',
-//   transport: {
-//     target: 'pino-pretty'
-//   }
-// }))
 
 //middleware
-// import session, { setSessionData } from './middleware/sessions'
-//
-// app.use(session)
-// app.use(setSessionData)
+import {
+  Session,
+} from 'hono-sessions'
+import session from './middleware/sessions'
+import { mapProcedures } from './routes/maps'
+import { pointProdecures } from './routes/points'
+import { userProcedures } from './routes/users'
+
+// webserver setup
+const app = new Hono<{
+  Variables: {
+    session: Session<UserSession>,
+    session_key_rotation: boolean
+  }
+}>()
+
+app.use('*', session)
 
 // routes
 // import apiRouter from './routes/api'
-app.use('/api', apiRouter)
+const routes = app
+  .route('/api/maps', mapProcedures)
+  .route('/api/points', pointProdecures)
+  .route('/api/users', userProcedures)
 
+// Host frontend in dev
 app.use('../frontend/public/*', serveStatic({ root: './' }))
 app.get('/*', (c) => {
   return c.html(html`
@@ -52,3 +55,4 @@ app.get('/*', (c) => {
 })
 
 export { app }
+export type AppType = typeof routes

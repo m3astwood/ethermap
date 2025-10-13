@@ -1,5 +1,9 @@
 // express ssession
-import session from 'express-session'
+import {
+  Session,
+  sessionMiddleware,
+  CookieStore
+} from 'hono-sessions'
 
 // database
 import db from '../db'
@@ -8,17 +12,20 @@ import { sessions } from '../db/schema'
 // session store
 import { DrizzlePostgresSessionStore } from '../lib/sessionStore'
 import type { NextFunction, Request, Response } from 'express'
-const store = new DrizzlePostgresSessionStore({ db, table: sessions })
+// const store = new DrizzlePostgresSessionStore({ db, table: sessions })
 
-export default session({
-  secret: 'supersessionstoresecretsauce',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 365 * 24 * 60 * 60 * 1000,
-  },
+const store = new CookieStore()
+
+export default sessionMiddleware({
   store,
-  rolling: true,
+  encryptionKey: 'password_at_least_32_characters_long',
+  expireAfterSeconds: 900,
+  autoExtendExpiration: true,
+  cookieOptions: {
+    sameSite: 'Lax',
+    path: '/',
+    httpOnly: true,
+  },
 })
 
 export const setSessionData = (req: Request, _res: Response, next: NextFunction) => {

@@ -39,6 +39,7 @@
     "elf": "^0.1.22",
     "exome": "^2.8.1",
     "hono": "^4.9.12",
+    "hono-sessions": "^0.8.0",
     "leaflet": "^1.9.4",
     "leaflet-contextmenu": "^1.4.0",
     "lit": "^3.3.1",
