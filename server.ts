@@ -1,11 +1,9 @@
 import { app } from './backend/httpServer'
-import ViteExpress from 'vite-express'
 import 'dotenv/config'
 
 import path from 'node:path'
 import Session from './backend/middleware/sessions'
 import { socket } from './backend/sockets'
-import express, { type Request, type Response } from 'express'
 import env from './backend/lib/env'
 import { migrateSchemas } from './backend/db'
 
@@ -14,7 +12,7 @@ const server = app.listen(env.PORT, () => {
 })
 
 // sockets
-socket.upgrade(server, Session)
+// socket.upgrade(server, Session)
 
 if (['development', 'test'].includes(env.NODE_ENV ?? '')) {
   // vite hosting

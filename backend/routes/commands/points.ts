@@ -97,26 +97,6 @@ const deletePoint = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const getPointById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params
-    const point = await db.query.points.findFirst({
-      where: eq(points.id, Number.parseInt(id)),
-      with: {
-        createdBy: true,
-        updatedBy: true
-      }
-    })
-
-    if (!point) {
-      res.status(404)
-      throw new Error(`Point with id ${id} cannot be found`)
-    }
-
-    res.status(200)
-    res.json(point)
-  } catch (err) {
-    next(err)
-  }
 }
 
 export { createPoint, updatePoint, deletePoint, getPointById }

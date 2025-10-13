@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
+import devServer from '@hono/vite-dev-server'
 
 export default defineConfig({
   root: './frontend/',
@@ -12,5 +13,11 @@ export default defineConfig({
   test: {
     root: './',
     hookTimeout: 30000,
-  }
+  },
+  plugins: [
+    devServer({
+      export: 'app',
+      entry: 'backend/httpServer.ts',
+    }),
+  ],
 })

@@ -1,4 +1,3 @@
-import AccountIcon from '/icons/AccountUserPersonSquare.svg'
 import { LitElement, html, css } from 'lit'
 import { live } from 'lit/directives/live.js'
 import { fromEvent, debounceTime, tap, map } from 'rxjs'
@@ -54,7 +53,7 @@ class UserTool extends LitElement {
   render() {
     return html`
       <button @click=${this.toggleDropdown}>
-        <img src=${AccountIcon}>
+        USR
       </button>
 
       <form class="dropdown">
