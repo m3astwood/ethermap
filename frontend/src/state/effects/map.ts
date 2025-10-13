@@ -2,10 +2,10 @@ import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngn
 import type { Action } from '@ngneat/effects/src/lib/actions.types'
 import { type Observable, switchMap, tap } from 'rxjs'
 import type { SelectMapSchema } from '../../../../backend/db/schema/map.schema'
-import { loadMap, loadMapError, loadMapSuccess } from '../actions/map'
-import { setMap } from '../reducers/map'
 import { api } from '../../api/httpApi'
 import type { Point } from '../../interfaces/Point'
+import { loadMap, loadMapError, loadMapSuccess } from '../actions/map'
+import { setMap } from '../reducers/map'
 
 const effects = {
   loadMap$: createEffect((actions$) =>

@@ -1,17 +1,13 @@
-import { mapState } from '../store/mapState'
-import type { Point } from '../../interfaces/Point'
 import { addEntities, deleteEntities, getEntity, updateEntities } from '@ngneat/elf-entities'
+import type { Point } from '../../interfaces/Point'
+import { mapState } from '../store/mapState'
 
 export function setPoint(point: Point) {
-  mapState.update(
-    addEntities(point),
-  )
+  mapState.update(addEntities(point))
 }
 
 export function updatePoint(point: Point) {
-  mapState.update(
-    updateEntities(point.id, point),
-  )
+  mapState.update(updateEntities(point.id, point))
 }
 
 export function removePoint(id: number) {
@@ -26,9 +22,9 @@ export function selectPoint(id?: number) {
       selectedPoint,
     }))
   } else {
-    mapState.update(state => ({
+    mapState.update((state) => ({
       ...state,
-      selectedPoint: undefined
+      selectedPoint: undefined,
     }))
   }
 }

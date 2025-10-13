@@ -1,10 +1,10 @@
-import L, { type LeafletMouseEvent, type Map as LMap, type Marker } from 'leaflet'
-import { LitElement, type PropertyValueMap, html, unsafeCSS } from 'lit'
-import EventController from '../api/event'
-import { customElement, property, state } from 'lit/decorators.js'
 import { dispatch } from '@ngneat/effects'
-import { deletePoint } from '../state/actions/point'
+import L, { type LeafletMouseEvent, type Map as LMap, type Marker } from 'leaflet'
 import leafletCss from 'leaflet/dist/leaflet.css?inline'
+import { html, LitElement, type PropertyValueMap, unsafeCSS } from 'lit'
+import { customElement, property, state } from 'lit/decorators.js'
+import EventController from '../api/event'
+import { deletePoint } from '../state/actions/point'
 
 @customElement('em-point')
 export class EtherPoint extends LitElement {
@@ -14,7 +14,7 @@ export class EtherPoint extends LitElement {
   id: string
 
   @property({ type: Number })
-  latlng: { lat: number, lng: number } = { lat: 0, lng: 0 }
+  latlng: { lat: number; lng: number } = { lat: 0, lng: 0 }
 
   @property({ type: Object })
   leaflet: LMap
@@ -40,7 +40,7 @@ export class EtherPoint extends LitElement {
             dispatch(deletePoint({ id: Number.parseInt(this.id) }))
           },
         },
-      ]
+      ],
     })
   }
 
@@ -63,8 +63,6 @@ export class EtherPoint extends LitElement {
   }
 
   static get styles() {
-    return [
-      unsafeCSS(leafletCss),
-    ]
+    return [unsafeCSS(leafletCss)]
   }
 }

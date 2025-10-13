@@ -8,9 +8,8 @@ export function setMap({ mapData }) {
 
   mapState.update((state) => ({
     ...state,
-    map
+    map,
   }))
 
   mapState.update(setEntities(points))
 }
-

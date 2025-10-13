@@ -12,7 +12,7 @@ export class Api {
   constructor(config: Config = {}) {
     this.config = {
       responseType: 'json',
-      ...config
+      ...config,
     }
   }
 
@@ -21,11 +21,11 @@ export class Api {
     const responseType = opts?.responseType ?? this.config.responseType
     const headers = new Headers({
       'Content-Type': 'application/json',
-      ...opts?.headers
+      ...opts?.headers,
     })
 
-    if(baseURL) {
-      url = url.replace(/^(?!.*\/\/)\/?/, `${baseURL}`);
+    if (baseURL) {
+      url = url.replace(/^(?!.*\/\/)\/?/, `${baseURL}`)
     }
 
     return fromFetch(url, {
@@ -41,16 +41,16 @@ export class Api {
       ...(opts?.integrity ? { integrity: opts.integrity } : {}),
       ...(opts?.keepalive ? { keepalive: opts.keepalive } : {}),
       ...(opts?.signal ? { signal: opts.signal } : {}),
-    }).pipe(switchMap(res => res[responseType]()))
+    }).pipe(switchMap((res) => res[responseType]()))
   }
 
   get = (url: string, opts?) => this.fetch(url, 'GET', opts)
   options = (url: string, opts?) => this.fetch(url, 'OPTION', opts)
-  delete = (url: string, opts?) => this.fetch(url, 'DELETE', opts);
-  head = (url: string, opts?) => this.fetch(url, 'HEAD', opts);
-  post = (url: string, data, opts?) => this.fetch(url, 'POST', opts, data);
-  put = (url: string, data, opts?) => this.fetch(url, 'PUT', opts, data);
-  patch = (url: string, data, opts?) => this.fetch(url, 'PATCH', opts, data);
+  delete = (url: string, opts?) => this.fetch(url, 'DELETE', opts)
+  head = (url: string, opts?) => this.fetch(url, 'HEAD', opts)
+  post = (url: string, data, opts?) => this.fetch(url, 'POST', opts, data)
+  put = (url: string, data, opts?) => this.fetch(url, 'PUT', opts, data)
+  patch = (url: string, data, opts?) => this.fetch(url, 'PATCH', opts, data)
 }
 
-export const api = new Api({ baseUrl: `${location.origin}/`})
+export const api = new Api({ baseUrl: `${location.origin}/` })

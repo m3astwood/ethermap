@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { css, html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
 import Router from './controllers/Router'
@@ -10,7 +10,6 @@ import './state/effects/user'
 
 @customElement('ethermap-app')
 export class EthermapApp extends LitElement {
-
   @state()
   route = Router.render()
 

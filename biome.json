@@ -1,10 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
-  "files": {
-    "include": [
-      "./**/*.ts", "./**/*.js", "./**/*.css"
-    ]
-  },
+  "$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
+  "files": {},
   "formatter": {
     "enabled": true,
     "formatWithErrors": true,
@@ -22,13 +18,12 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
+      "recommended": true,
       "style": {
         "recommended": true,
         "noDefaultExport": "off"
       }
-    },
-    "ignore": [ "node_modules" ]
+    }
   },
   "vcs": {
     "enabled": true,

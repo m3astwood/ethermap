@@ -1,4 +1,4 @@
-import { Socket, io } from 'socket.io-client'
+import { io, type Socket } from 'socket.io-client'
 
 const ioClient: Socket = io()
 

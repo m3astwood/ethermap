@@ -1,14 +1,14 @@
 import { createStore, withProps } from '@ngneat/elf'
+import { withEntities } from '@ngneat/elf-entities'
 import type MapModel from '../../../../backend/db/models/map'
 import type { Point } from '../../interfaces/Point'
-import { withEntities } from '@ngneat/elf-entities'
 
 export interface MapStateProps {
   map: MapModel
   user: {
     name: string
     colour: string
-  },
+  }
   selectedPoint: Point | undefined
 }
 
@@ -18,9 +18,9 @@ export const mapState = createStore(
     map: {} as MapModel,
     user: {
       name: '',
-      colour: ''
+      colour: '',
     },
-    selectedPoint: undefined
+    selectedPoint: undefined,
   }),
-  withEntities<Point>()
+  withEntities<Point>(),
 )

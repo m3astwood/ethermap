@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll } from 'vitest'
 import { eq } from 'drizzle-orm'
 import { migrate } from 'drizzle-orm/pglite/migrator'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 import db from '../db'
-import { maps } from '../db/schema/map.schema'
 import { points } from '../db/schema/index'
+import { maps } from '../db/schema/map.schema'
 
 describe.sequential('Database Tests', () => {
   beforeAll(async () => {
@@ -18,19 +18,22 @@ describe.sequential('Database Tests', () => {
   })
 
   it('should return map object when inserting a new map', async () => {
-    const [ map ] = await db.insert(maps).values({ name: 'milo' }).returning()
+    const [map] = await db.insert(maps).values({ name: 'milo' }).returning()
 
     expect(map.name).toEqual('milo')
   })
 
   it('should returns point on inserting point for existing map', async () => {
-    const [ point ] = await db.insert(points).values({ mapId: 1, name: 'pointy', location: { lat: 50.8552, lng: 4.3454 } }).returning()
+    const [point] = await db
+      .insert(points)
+      .values({ mapId: 1, name: 'pointy', location: { lat: 50.8552, lng: 4.3454 } })
+      .returning()
 
     const map = await db.query.maps.findFirst({
       where: eq(maps.name, 'milo'),
       with: {
-        mapPoints: true
-      }
+        mapPoints: true,
+      },
     })
 
     expect(point?.name).toEqual('pointy')

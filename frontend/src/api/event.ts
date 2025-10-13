@@ -24,7 +24,7 @@ export default class EventController implements ReactiveController {
 
     const e = new CustomEvent(event, opts)
 
-    // @ts-ignore: host is custom element and has dispatchEvent
+    // @ts-expect-error: host is custom element and has dispatchEvent
     this.host.dispatchEvent(e)
   }
 }

@@ -1,17 +1,16 @@
-import { LitElement, html, css } from 'lit'
-import { live } from 'lit/directives/live.js'
-import { fromEvent, debounceTime, tap, map } from 'rxjs'
 import { dispatch } from '@ngneat/effects'
-
+import { css, html, LitElement } from 'lit'
+import { state } from 'lit/decorators.js'
+import { live } from 'lit/directives/live.js'
+import { debounceTime, fromEvent, map, tap } from 'rxjs'
+import ObserveCtrl from '../controllers/Observable'
 // store
 import { updateUser } from '../state/actions/user'
-import { state } from 'lit/decorators.js'
-import ObserveCtrl from '../controllers/Observable'
 import { mapState } from '../state/store/mapState'
 
 class UserTool extends LitElement {
   @state()
-  user = new ObserveCtrl(this, mapState.pipe(map(mapState => mapState.user)))
+  user = new ObserveCtrl(this, mapState.pipe(map((mapState) => mapState.user)))
 
   @state()
   userForm: HTMLFormElement
@@ -21,15 +20,17 @@ class UserTool extends LitElement {
 
   firstUpdated() {
     this.userForm = this.shadowRoot?.querySelector('.dropdown') as HTMLFormElement
-    fromEvent(this.userForm, 'change').pipe(
-      debounceTime(500),
-      tap(() => {
-        const formData = new FormData(this.userForm)
-        const user = Object.fromEntries(formData)
-        // @ts-ignore: user has required properties
-        dispatch(updateUser({ user }))
-      })
-    ).subscribe()
+    fromEvent(this.userForm, 'change')
+      .pipe(
+        debounceTime(500),
+        tap(() => {
+          const formData = new FormData(this.userForm)
+          const user = Object.fromEntries(formData)
+          // @ts-expect-error: user has required properties
+          dispatch(updateUser({ user }))
+        }),
+      )
+      .subscribe()
 
     this.addEventListener('mouseleave', () => {
       this.cursorWithin = false

@@ -1,10 +1,10 @@
-import { Hono } from "hono";
-import { Session } from "hono-sessions";
-import UserSession from "../interfaces/UserSession";
+import { Hono } from 'hono'
+import type { Session } from 'hono-sessions'
+import type UserSession from '../interfaces/UserSession'
 
 const userProcedures = new Hono<{
   Variables: {
-    session: Session<UserSession>,
+    session: Session<UserSession>
     session_key_rotation: boolean
   }
 }>()

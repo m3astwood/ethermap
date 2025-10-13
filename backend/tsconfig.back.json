@@ -1,9 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": [
-    "./**/*.ts", "../*.ts"
-  ],
+  "include": ["./**/*.ts", "../*.ts"],
   "compilerOptions": {
-    "types": [ "node", "pino-http", "@types/express", "@types/express-session" ]
+    "types": ["node", "pino-http", "@types/express", "@types/express-session"]
   }
 }

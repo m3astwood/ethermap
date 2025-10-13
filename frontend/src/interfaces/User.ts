@@ -1,5 +1,5 @@
-import type { LatLng } from "leaflet"
 import type { Session } from 'express-session'
+import type { LatLng } from 'leaflet'
 
 export interface UserData {
   id: number
@@ -18,4 +18,3 @@ export interface UserSession {
   sess: Session & { user: UserData }
   expired: string
 }
-

@@ -1,11 +1,11 @@
-import { Hono } from "hono"
-import { streamSSE } from "hono/streaming"
-import db from "../db"
-import { maps, SelectMapSchema } from "../db/schema/map.schema"
-import { eq } from "drizzle-orm"
-import { MapEvent$ } from "../utils/emitter"
-import { filter } from "rxjs"
-import { MapEvent } from "../interfaces/MapEvent"
+import { eq } from 'drizzle-orm'
+import { Hono } from 'hono'
+import { streamSSE } from 'hono/streaming'
+import { filter } from 'rxjs'
+import db from '../db'
+import { maps, type SelectMapSchema } from '../db/schema/map.schema'
+import type { MapEvent } from '../interfaces/MapEvent'
+import { MapEvent$ } from '../utils/emitter'
 
 const mapProcedures = new Hono()
   .get('/', async (c) => {
@@ -22,17 +22,17 @@ const mapProcedures = new Hono()
           mapPoints: {
             with: {
               createdBy: true,
-              updatedBy: true
-            }
-          }
-        }
+              updatedBy: true,
+            },
+          },
+        },
       })
 
       if (existingMap) {
         returnMap = existingMap
         c.status(200)
       } else {
-        const [ newMap ] = await db.insert(maps).values({ name }).returning()
+        const [newMap] = await db.insert(maps).values({ name }).returning()
 
         returnMap = newMap
 
@@ -48,12 +48,11 @@ const mapProcedures = new Hono()
   .get('/:id/events', async (c) => {
     const { id } = c.req.param()
     return streamSSE(c, async (stream) => {
-
       MapEvent$.pipe(
         filter((event: MapEvent) => event.mapId === Number.parseInt(id)),
         // filter((event: MapEvent) => event.sessionID !== req.sessionID)
       ).subscribe({
-        next: (event) => stream.writeSSE({ data: event.body, event: event.type })
+        next: (event) => stream.writeSSE({ data: event.body, event: event.type }),
       })
     })
   })

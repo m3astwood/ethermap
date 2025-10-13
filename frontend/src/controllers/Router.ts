@@ -1,8 +1,8 @@
-import { html } from 'lit'
-import { type Context, Router } from '@thepassle/app-tools/router.js'
 import { lazy } from '@thepassle/app-tools/router/plugins/lazy.js'
+import { type Context, Router } from '@thepassle/app-tools/router.js'
+import { html } from 'lit'
 
-// @ts-ignore
+// @ts-expect-error
 if (!globalThis.URLPattern) {
   await import('urlpattern-polyfill')
 }
@@ -14,17 +14,13 @@ const router: Router = new Router({
     {
       path: '',
       title: 'ethermap | index',
-      plugins: [
-        lazy(() => import('../views/Home'))
-      ],
+      plugins: [lazy(() => import('../views/Home'))],
       render: () => html`<home-view></home-view>`,
     },
     {
       path: '/m/:mapName',
       title: (ctx: Partial<Context>) => `ethermap | ${ctx.params?.mapName}`,
-      plugins: [
-        lazy(() => import('../views/Map'))
-      ],
+      plugins: [lazy(() => import('../views/Map'))],
       render: (ctx: Context) => html`<map-view .mapName=${ctx.params.mapName}></map-view>`,
     },
     {

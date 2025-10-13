@@ -12,4 +12,3 @@ export const updateUser = userActions.create('Update user', props<{ user: UserDa
 export const updateUserSuccess = userActions.create('Update user Success', props<{ user: UserData }>())
 
 export const userError = userActions.create('User ERROR', props<{ error: Error }>())
-

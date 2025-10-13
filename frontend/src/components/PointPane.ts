@@ -1,11 +1,10 @@
-import { LitElement, type PropertyValueMap, css, html } from 'lit'
-import { live } from 'lit/directives/live.js'
-import EventController from '../api/event.js'
-import { customElement, property, state } from 'lit/decorators.js'
-import type { Point } from '../interfaces/Point.js'
-
 // state & effects
 import { dispatch } from '@ngneat/effects'
+import { css, html, LitElement, type PropertyValueMap } from 'lit'
+import { customElement, property, state } from 'lit/decorators.js'
+import { live } from 'lit/directives/live.js'
+import EventController from '../api/event.js'
+import type { Point } from '../interfaces/Point.js'
 import '../state/effects/map'
 import '../state/effects/point'
 import { deletePoint } from '../state/actions/point.js'
@@ -27,7 +26,7 @@ export class PointPane extends LitElement {
   meta: {
     createdBy: {
       name?: string
-    },
+    }
     updatedBy: {
       name?: string
     }
@@ -61,8 +60,8 @@ export class PointPane extends LitElement {
     this.eventController.dispatch('em:point-update', {
       detail: {
         id: this.point.id,
-        ...this.updatedDetails
-      }
+        ...this.updatedDetails,
+      },
     })
   }
 
@@ -156,4 +155,3 @@ export class PointPane extends LitElement {
     }
   `
 }
-

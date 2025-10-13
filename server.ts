@@ -2,10 +2,10 @@ import { app } from './backend/httpServer'
 import 'dotenv/config'
 
 import path from 'node:path'
+import { migrateSchemas } from './backend/db'
+import env from './backend/lib/env'
 import Session from './backend/middleware/sessions'
 import { socket } from './backend/sockets'
-import env from './backend/lib/env'
-import { migrateSchemas } from './backend/db'
 
 const server = app.listen(env.PORT, () => {
   console.log(`Ethermap listening for connections on port ${env.PORT}`)
@@ -23,7 +23,7 @@ if (['development', 'test'].includes(env.NODE_ENV ?? '')) {
     .then(() => {
       console.log('Successfully migrated database structure')
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err)
       process.exit(1)
     })

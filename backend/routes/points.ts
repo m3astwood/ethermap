@@ -1,6 +1,6 @@
+import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import db from '../db'
-import { eq } from 'drizzle-orm'
 import { maps, points } from '../db/schema'
 import { emitMapEvent } from '../utils/emitter'
 
@@ -12,8 +12,8 @@ const pointProdecures = new Hono()
         where: eq(points.id, Number.parseInt(id)),
         with: {
           createdBy: true,
-          updatedBy: true
-        }
+          updatedBy: true,
+        },
       })
 
       if (!point) {
@@ -33,7 +33,7 @@ const pointProdecures = new Hono()
       const { map_id } = c.req.param()
 
       const map = await db.query.maps.findFirst({
-        where: eq(maps.id, Number.parseInt(map_id))
+        where: eq(maps.id, Number.parseInt(map_id)),
       })
 
       if (!map) {
@@ -45,8 +45,8 @@ const pointProdecures = new Hono()
         where: eq(points.mapId, Number.parseInt(map_id)),
         with: {
           createdBy: true,
-          updatedBy: true
-        }
+          updatedBy: true,
+        },
       })
 
       c.status(200)
@@ -112,8 +112,8 @@ const pointProdecures = new Hono()
         where: eq(points.id, Number.parseInt(id)),
         with: {
           createdBy: true,
-          updatedBy: true
-        }
+          updatedBy: true,
+        },
       })
 
       if (!_point) {
@@ -136,7 +136,10 @@ const pointProdecures = new Hono()
   .delete('/:id', async (c) => {
     try {
       const { id } = c.req.param()
-      const [ point ] = await db.delete(points).where(eq(points.id, Number.parseInt(id))).returning()
+      const [point] = await db
+        .delete(points)
+        .where(eq(points.id, Number.parseInt(id)))
+        .returning()
 
       if (!point) {
         c.status(404)

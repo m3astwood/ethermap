@@ -1,15 +1,12 @@
 // web server
+
+import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { html } from 'hono/html'
-import { serveStatic } from '@hono/node-server/serve-static'
-import pino from 'pino-http'
-
-import type UserSession from './interfaces/UserSession'
-
 //middleware
-import {
-  Session,
-} from 'hono-sessions'
+import type { Session } from 'hono-sessions'
+import pino from 'pino-http'
+import type UserSession from './interfaces/UserSession'
 import session from './middleware/sessions'
 import { mapProcedures } from './routes/maps'
 import { pointProdecures } from './routes/points'
@@ -18,7 +15,7 @@ import { userProcedures } from './routes/users'
 // webserver setup
 const app = new Hono<{
   Variables: {
-    session: Session<UserSession>,
+    session: Session<UserSession>
     session_key_rotation: boolean
   }
 }>()
@@ -27,10 +24,7 @@ app.use('*', session)
 
 // routes
 // import apiRouter from './routes/api'
-const routes = app
-  .route('/api/maps', mapProcedures)
-  .route('/api/points', pointProdecures)
-  .route('/api/users', userProcedures)
+const routes = app.route('/api/maps', mapProcedures).route('/api/points', pointProdecures).route('/api/users', userProcedures)
 
 // Host frontend in dev
 app.use('../frontend/public/*', serveStatic({ root: './' }))

@@ -1,17 +1,13 @@
 // express ssession
-import {
-  Session,
-  sessionMiddleware,
-  CookieStore
-} from 'hono-sessions'
 
+import type { NextFunction, Request, Response } from 'express'
+import { CookieStore, Session, sessionMiddleware } from 'hono-sessions'
 // database
 import db from '../db'
 import { sessions } from '../db/schema'
-
 // session store
 import { DrizzlePostgresSessionStore } from '../lib/sessionStore'
-import type { NextFunction, Request, Response } from 'express'
+
 // const store = new DrizzlePostgresSessionStore({ db, table: sessions })
 
 const store = new CookieStore()

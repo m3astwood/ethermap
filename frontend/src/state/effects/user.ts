@@ -1,8 +1,8 @@
-import { switchMap, map, type Observable } from 'rxjs'
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects'
-import { getUser, getUserSuccess, updateUser, updateUserSuccess, userError } from '../actions/user'
-import type { UserData } from '../../interfaces/User'
+import { map, type Observable, switchMap } from 'rxjs'
 import { api } from '../../api/httpApi'
+import type { UserData } from '../../interfaces/User'
+import { getUser, getUserSuccess, updateUser, updateUserSuccess, userError } from '../actions/user'
 import { setUser } from '../reducers/user'
 
 const effects = {
@@ -17,10 +17,10 @@ const effects = {
                 dispatch(getUserSuccess({ user }))
               },
               (error: Error) => dispatch(userError({ error })),
-            )
-          )
-      )
-    )
+            ),
+          ),
+      ),
+    ),
   ),
   getUserSuccess$: createEffect((actions$) =>
     actions$.pipe(
@@ -28,8 +28,8 @@ const effects = {
       tapResult(
         ({ user }) => setUser(user),
         (error: Error) => dispatch(userError({ error })),
-      )
-    )
+      ),
+    ),
   ),
   updateUser$: createEffect((actions$) =>
     actions$.pipe(
@@ -37,12 +37,12 @@ const effects = {
       switchMap((action) =>
         api.post('/api/user', action.user).pipe(
           tapResult(
-            ({ user })=> dispatch(updateUserSuccess({ user })),
-            (error: Error) => dispatch(userError({ error }))
-          )
-        )
-      )
-    )
+            ({ user }) => dispatch(updateUserSuccess({ user })),
+            (error: Error) => dispatch(userError({ error })),
+          ),
+        ),
+      ),
+    ),
   ),
   updateUserSuccess$: createEffect((actions$) =>
     actions$.pipe(
@@ -52,11 +52,11 @@ const effects = {
           setUser(res.user)
         },
         (error: Error) => dispatch(userError({ error })),
-      )
-    )
+      ),
+    ),
   ),
   userError$: createEffect((actions$) => actions$.pipe(ofType(userError), tapResult(console.log, console.error))),
 }
 
-registerEffects([ ...Object.values(effects) ])
+registerEffects([...Object.values(effects)])
 export default { ...effects }

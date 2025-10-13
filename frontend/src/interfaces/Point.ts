@@ -5,7 +5,7 @@ export interface Point {
   id: number
   name?: string
   notes?: string
-  location: { lat: number, lng: number }
+  location: { lat: number; lng: number }
   mapId: number
   createdBy: UserSession
   createdAt?: string

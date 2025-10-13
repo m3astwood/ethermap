@@ -1,6 +1,6 @@
-import { LitElement, html, css } from 'lit'
-import Router from '../controllers/Router'
+import { css, html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import Router from '../controllers/Router'
 
 @customElement('newmap-modal')
 export class NewMapModal extends LitElement {

@@ -1,7 +1,7 @@
+import { eq } from 'drizzle-orm'
+import type { Request } from 'express'
 import { Server, type Socket } from 'socket.io'
 import db from './db'
-import type { Request } from 'express'
-import { eq } from 'drizzle-orm'
 import { points } from './db/schema/point.schema'
 
 export default class SocketConnection {
@@ -30,10 +30,7 @@ export default class SocketConnection {
       // update point data
       socket.on('client-point-update', async (point) => {
         point.updated_by = req.session.id
-        const patched = await db.update(points)
-          .set(point)
-          .where(eq(points.id, point.id))
-          .returning()
+        const patched = await db.update(points).set(point).where(eq(points.id, point.id)).returning()
 
         if (patched.length > 0) {
           const _point = await db.query.points.findFirst({
@@ -41,7 +38,7 @@ export default class SocketConnection {
             with: {
               updatedBy: true,
               createdBy: true,
-            }
+            },
           })
 
           socket.to(roomId).emit('point-update', _point)
@@ -50,16 +47,12 @@ export default class SocketConnection {
 
       // mouse movement
       socket.on('mousemove', (pos) => {
-        socket
-          .to(roomId)
-          .emit('mousemove', { user: { ...req.session.user }, pos })
+        socket.to(roomId).emit('mousemove', { user: { ...req.session.user }, pos })
       })
 
       // user settings update
       socket.on('user-updated', (settings) => {
-        socket
-          .to(roomId)
-          .emit('user-updated', { id: req.session.user?.id, ...settings })
+        socket.to(roomId).emit('user-updated', { id: req.session.user?.id, ...settings })
       })
 
       socket.on('disconnect', () => {

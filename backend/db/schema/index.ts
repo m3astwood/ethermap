@@ -1,3 +1,3 @@
-export { maps, mapRelations, insertMapSchema, selectMapSchema } from './map.schema'
-export { points, pointRelations, insertPointSchema, selectPointSchema } from './point.schema'
+export { insertMapSchema, mapRelations, maps, selectMapSchema } from './map.schema'
+export { insertPointSchema, pointRelations, points, selectPointSchema } from './point.schema'
 export { sessions } from './session.schema'

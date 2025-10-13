@@ -1,6 +1,6 @@
 import L from 'leaflet'
-import io from '../api/socket.js'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
+import io from '../api/socket.js'
 
 // FIX: this needs to be finessed
 import SvgCursor from '../components/SvgCursor'

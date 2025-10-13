@@ -1,11 +1,9 @@
-import { LitElement, html, css } from 'lit'
+import type { LeafletMouseEvent } from 'leaflet'
+import { css, html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { repeat } from 'lit/directives/repeat.js'
-import { fromEvent, tap, debounceTime } from 'rxjs'
-
+import { debounceTime, fromEvent, tap } from 'rxjs'
 import io from '../api/socket'
-
-import type { LeafletMouseEvent } from 'leaflet'
 import 'leaflet-contextmenu'
 import 'leaflet/dist/leaflet.css'
 
@@ -14,28 +12,27 @@ import ObserveCtrl from '../controllers/Observable'
 import '../components/LeafletMap'
 import '../components/EmPoint'
 import '../components/PointPane'
-import { loadMap } from '../state/actions/map'
-import { createPoint, createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
-
+import { dispatch } from '@ngneat/effects'
 // state & effects
 import { select } from '@ngneat/elf'
-import { dispatch } from '@ngneat/effects'
 import type { Observable } from 'rxjs'
+import { loadMap } from '../state/actions/map'
+import { createPoint, createPointSuccess, deletePointSuccess, selectPoint, updatePoint, updatePointSuccess } from '../state/actions/point'
 import { mapState } from '../state/store/mapState'
 import '../state/effects/map'
 import '../state/effects/point'
 
+import { selectAllEntities } from '@ngneat/elf-entities'
 // interfaces
 import type MapModel from '../../../backend/db/models/map'
 import type { Point } from '../interfaces/Point'
-import { selectAllEntities } from '@ngneat/elf-entities'
 
 @customElement('map-view')
 export class MapView extends LitElement {
   // controllers
   // userCursor = new UserCursor(this)
   points = new ObserveCtrl(this, mapState.pipe(selectAllEntities()))
-  selectedPoint = new ObserveCtrl(this, mapState.pipe(select(state => state.selectedPoint)))
+  selectedPoint = new ObserveCtrl(this, mapState.pipe(select((state) => state.selectedPoint)))
 
   @property({ type: String })
   mapName = ''
@@ -44,7 +41,7 @@ export class MapView extends LitElement {
   private mapId: number
 
   @state()
-  private contextMenu: Array<{ text: string, callback(event: LeafletMouseEvent): void }>
+  private contextMenu: Array<{ text: string; callback(event: LeafletMouseEvent): void }>
 
   @state()
   private map$: Observable<MapModel>
@@ -94,12 +91,14 @@ export class MapView extends LitElement {
 
     this.addEventListener('em:close-pane', () => dispatch(selectPoint({ id: undefined })))
 
-    fromEvent<CustomEvent>(this, 'em:point-update').pipe(
-      debounceTime(500),
-      tap((evt) => {
-        dispatch(updatePoint({ point: evt.detail }))
-      })
-    ).subscribe()
+    fromEvent<CustomEvent>(this, 'em:point-update')
+      .pipe(
+        debounceTime(500),
+        tap((evt) => {
+          dispatch(updatePoint({ point: evt.detail }))
+        }),
+      )
+      .subscribe()
   }
 
   disconnectedCallback(): void {
@@ -115,9 +114,15 @@ export class MapView extends LitElement {
     return html`
       <main>
         <em-leaflet-map .contextMenu="${this.contextMenu}" controls>
-          ${this.points?.value ? repeat(this.points?.value, (point) => point.id,
-            p => html`<em-point id=${p.id} .latlng=${p.location} @click=${this.pointClick}></em-point>`
-          ): ''}
+          ${
+            this.points?.value
+              ? repeat(
+                  this.points?.value,
+                  (point) => point.id,
+                  (p) => html`<em-point id=${p.id} .latlng=${p.location} @click=${this.pointClick}></em-point>`,
+                )
+              : ''
+          }
         </em-leaflet-map>
         <em-point-pane ?active=${!!this.selectedPoint.value} .point=${this.selectedPoint.value}></em-point-pane>
       </main>

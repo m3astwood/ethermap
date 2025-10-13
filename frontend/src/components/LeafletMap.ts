@@ -1,15 +1,14 @@
-import { unsafeCSS, LitElement, html, css } from 'lit'
+import L, { type Map as LeafletMap } from 'leaflet'
 import leafletCss from 'leaflet/dist/leaflet.css?inline'
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
-import L, { type Map as LeafletMap } from 'leaflet'
+import { css, html, LitElement, unsafeCSS } from 'lit'
 import 'leaflet-contextmenu'
 
-import type { EtherPoint } from './EmPoint'
+import { devTools } from '@ngneat/elf-devtools'
 
 // import UserCursor from '../controllers/UserCursor'
 import { customElement, property, state } from 'lit/decorators.js'
-
-import { devTools } from '@ngneat/elf-devtools'
+import type { EtherPoint } from './EmPoint'
 
 @customElement('em-leaflet-map')
 export class LeafletMapElement extends LitElement {
@@ -31,7 +30,7 @@ export class LeafletMapElement extends LitElement {
     super()
     this.controls = this.controls !== undefined
 
-    devTools();
+    devTools()
   }
 
   firstUpdated() {
@@ -75,9 +74,9 @@ export class LeafletMapElement extends LitElement {
   handleSlotChange(evt: Event) {
     const childElements = (evt.target as HTMLSlotElement)?.assignedElements()
     for (const point of childElements) {
-      // @ts-ignore
+      // @ts-expect-error
       if (!point.leaflet) {
-        (point as unknown as EtherPoint).leaflet = this.leaflet
+        ;(point as unknown as EtherPoint).leaflet = this.leaflet
       }
     }
   }

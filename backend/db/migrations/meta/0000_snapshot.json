@@ -42,9 +42,7 @@
         "maps_name_unique": {
           "name": "maps_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},

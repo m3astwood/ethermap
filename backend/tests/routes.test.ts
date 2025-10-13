@@ -1,7 +1,8 @@
 // testing tools
-import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest'
+
 import { migrate } from 'drizzle-orm/pglite/migrator'
 import request, { type Agent } from 'supertest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 // express app
 import { app } from '../httpServer'
@@ -15,7 +16,7 @@ import db, { type Db } from '../db'
 describe.sequential('Routes tests', () => {
   // test setup
   beforeAll(async () => {
-    await migrate(db, { migrationsFolder: './backend/db/migrations'})
+    await migrate(db, { migrationsFolder: './backend/db/migrations' })
   })
 
   beforeEach(() => {
@@ -46,9 +47,7 @@ describe.sequential('Routes tests', () => {
 
   it('should return a point with status 201 on POST "/api/point" body containing a name, location and map_id', async () => {
     const {
-      body: {
-        id: mapId,
-      },
+      body: { id: mapId },
     } = await agent.get('/api/map/bingo')
     const res = await agent.post('/api/point').send({
       mapId,
@@ -75,9 +74,7 @@ describe.sequential('Routes tests', () => {
 
   it('should throw 400 error on POST "/api/point" with incorrect data keys', async () => {
     const {
-      body: {
-        id: mapId,
-      },
+      body: { id: mapId },
     } = await agent.get('/api/map/bingo')
     const error = await agent.post('/api/point').send({
       mapId,

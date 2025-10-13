@@ -1,7 +1,7 @@
+import { eq } from 'drizzle-orm'
 import session from 'express-session'
 import type { Db } from '../db'
-import { sessions, type SessionsSchema } from '../db/schema/session.schema'
-import { eq } from 'drizzle-orm'
+import { type SessionsSchema, sessions } from '../db/schema/session.schema'
 
 export class DrizzlePostgresSessionStore extends session.Store {
   db: Db
