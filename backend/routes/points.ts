@@ -91,8 +91,7 @@ const pointProdecures = new Hono<{
         .values({ ...point, mapId, createdBy, updatedBy })
         .returning()
 
-      // missing session ID
-      emitMapEvent({ type: 'point-create', sessionID: '', mapId, body: _point })
+      emitMapEvent({ type: 'point-create', sessionID: session._id ?? '', mapId, body: _point })
 
       c.status(201)
       return c.json(_point)

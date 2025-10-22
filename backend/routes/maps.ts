@@ -1,13 +1,13 @@
+import type UserSession from 'backend/interfaces/UserSession'
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
+import type { Session } from 'hono-sessions'
 import { filter } from 'rxjs'
 import db from '../db'
 import { maps, type SelectMapSchema } from '../db/schema/map.schema'
 import type { MapEvent } from '../interfaces/MapEvent'
 import { MapEvent$ } from '../utils/emitter'
-import { Session } from 'hono-sessions'
-import UserSession from 'backend/interfaces/UserSession'
 
 const mapProcedures = new Hono<{
   Variables: {
@@ -51,13 +51,30 @@ const mapProcedures = new Hono<{
   })
   .get('/:id/events', async (c) => {
     const { id } = c.req.param()
+    const session = c.get('session').getCache()
     return streamSSE(c, async (stream) => {
-      MapEvent$.pipe(
+      console.log(`Client ${session._id} connected to map ${id} events.`)
+
+      const subscription = MapEvent$.pipe(
         filter((event: MapEvent) => event.mapId === Number.parseInt(id)),
-        // filter((event: MapEvent) => event.sessionID !== req.sessionID)
+        filter((event: MapEvent) => event.sessionID !== session._id),
       ).subscribe({
-        next: (event) => stream.writeSSE({ data: event.body, event: event.type }),
+        next: async (event) => {
+          await stream.writeSSE({ data: JSON.stringify(event.body), event: event.type })
+        },
       })
+
+      stream.onAbort(() => {
+        console.log(`Client ${session._id} disconnected from map ${id} events. Unsubscribing.`)
+        subscription.unsubscribe()
+      })
+
+      while (!stream.aborted) {
+        await stream.write(':\n')
+        await stream.sleep(15000)
+      }
+
+      console.log(`SSE stream terminated for ${session._id} on map ${id}.`)
     })
   })
 
