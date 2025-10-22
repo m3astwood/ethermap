@@ -31,11 +31,10 @@ const pointProdecures = new Hono<{
       c.status(200)
       return c.json(point)
     } catch (err) {
-      console.error(err)
       return c.json({ error: err })
     }
   })
-  .get('/:map_id', async (c) => {
+  .get('/map/:map_id', async (c) => {
     try {
       const { map_id } = c.req.param()
 
@@ -57,9 +56,8 @@ const pointProdecures = new Hono<{
       })
 
       c.status(200)
-      c.json({ points: mapPoints })
+      return c.json({ points: mapPoints })
     } catch (err) {
-      console.error(err)
       return c.json({ error: err })
     }
   })
@@ -69,7 +67,7 @@ const pointProdecures = new Hono<{
 
       if (!point?.location) {
         c.status(400)
-        c.json({ error: 'Point structure invalid' })
+        return c.json({ error: 'Point structure invalid' })
       }
 
       const session = c.get('session').getCache()
@@ -96,7 +94,6 @@ const pointProdecures = new Hono<{
       c.status(201)
       return c.json(_point)
     } catch (err) {
-      console.error(err)
       return c.json({ error: err })
     }
   })
@@ -134,7 +131,6 @@ const pointProdecures = new Hono<{
       c.status(201)
       return c.json(_point)
     } catch (err) {
-      console.error(err)
       return c.json({ error: err })
     }
   })
@@ -148,7 +144,7 @@ const pointProdecures = new Hono<{
 
       if (!point) {
         c.status(404)
-        throw new Error('No items deleted with id : ${id}')
+        throw new Error(`No items deleted with id : ${id}`)
       }
 
       const { mapId } = point
@@ -159,7 +155,6 @@ const pointProdecures = new Hono<{
       c.status(200)
       return c.json({})
     } catch (err) {
-      console.error(err)
       return c.json({ error: err })
     }
   })

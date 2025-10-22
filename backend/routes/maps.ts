@@ -1,4 +1,4 @@
-import type UserSession from 'backend/interfaces/UserSession'
+import type UserSession from '../interfaces/UserSession'
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
@@ -17,7 +17,7 @@ const mapProcedures = new Hono<{
 }>()
   .get('/', async (c) => {
     const maps = await db.query.maps.findMany()
-    c.json({ maps })
+    return c.json({ maps })
   })
   .get('/:name', async (c) => {
     let returnMap: SelectMapSchema
