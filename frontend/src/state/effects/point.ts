@@ -1,7 +1,7 @@
 import { createEffect, dispatch, ofType, registerEffects, tapResult } from '@ngneat/effects'
 import type { Action } from '@ngneat/effects/src/lib/actions.types'
-import { switchMap } from 'rxjs'
-import { api } from '../../api/httpApi'
+import { from, switchMap } from 'rxjs'
+import { rpcClient } from '../../api/rpcClient'
 import type { Point } from '../../interfaces/Point'
 import { createPoint, createPointSuccess, deletePoint, deletePointSuccess, pointError, selectPoint, updatePoint, updatePointSuccess } from '../actions/point'
 import { removePoint, selectPoint as selPoint, setPoint, updatePoint as updatePointReducer } from '../reducers/point'
@@ -10,13 +10,19 @@ const effects = {
   createPoint$: createEffect((actions$) =>
     actions$.pipe(
       ofType(createPoint),
-      switchMap((action: Action) =>
-        api.post('/api/point', { mapId: action.mapId, point: action.point }).pipe(
+      switchMap((action: Action) => {
+        return from(
+          rpcClient.api.points.$post({
+            json: { mapId: action.mapId, point: action.point },
+          }),
+        ).pipe(
+          switchMap((res: Response) => from(res.json())),
           tapResult(
             (point: Point) => dispatch(createPointSuccess({ point })),
             (error: Error) => dispatch(pointError({ error })),
           ),
-        ),
+        )
+      }
       ),
     ),
   ),
@@ -37,7 +43,17 @@ const effects = {
     actions$.pipe(
       ofType(updatePoint),
       switchMap((action: Action) =>
-        api.put(`/api/point/${action.point.id}`, { point: action.point }).pipe(tapResult((point) => dispatch(updatePointSuccess({ point })), console.error)),
+        from(
+          rpcClient.api.points[':id'].$put({
+            param: {
+              id: action.point.id,
+            },
+            json: { point: action.point },
+          }),
+        ).pipe(
+          switchMap((res: Response) => from(res.json())),
+          tapResult((point) => dispatch(updatePointSuccess({ point })), console.error),
+        ),
       ),
     ),
   ),
@@ -53,7 +69,13 @@ const effects = {
     actions$.pipe(
       ofType(deletePoint),
       switchMap((action: Action) =>
-        api.delete(`/api/point/${action.id}`).pipe(
+        from(
+          rpcClient.api.points[':id'].$delete({
+            param: {
+              id: action.id,
+            },
+          }),
+        ).pipe(
           tapResult(
             () => dispatch(deletePointSuccess({ id: action.id })),
             (error: Error) => dispatch(pointError({ error })),

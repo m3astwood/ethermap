@@ -6,8 +6,15 @@ import db from '../db'
 import { maps, type SelectMapSchema } from '../db/schema/map.schema'
 import type { MapEvent } from '../interfaces/MapEvent'
 import { MapEvent$ } from '../utils/emitter'
+import { Session } from 'hono-sessions'
+import UserSession from 'backend/interfaces/UserSession'
 
-const mapProcedures = new Hono()
+const mapProcedures = new Hono<{
+  Variables: {
+    session: Session<{ user: UserSession }>
+    session_key_rotation: boolean
+  }
+}>()
   .get('/', async (c) => {
     const maps = await db.query.maps.findMany()
     c.json({ maps })
@@ -27,19 +34,16 @@ const mapProcedures = new Hono()
           },
         },
       })
-
       if (existingMap) {
         returnMap = existingMap
         c.status(200)
       } else {
         const [newMap] = await db.insert(maps).values({ name }).returning()
-
         returnMap = newMap
-
         c.status(201)
       }
 
-      c.json(returnMap)
+      return c.json(returnMap)
     } catch (err) {
       console.error(err)
       return c.json({ error: err })

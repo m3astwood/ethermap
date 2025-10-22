@@ -7,7 +7,7 @@ import { html } from 'hono/html'
 import type { Session } from 'hono-sessions'
 import pino from 'pino-http'
 import type UserSession from './interfaces/UserSession'
-import session from './middleware/sessions'
+import session, { setSessionData } from './middleware/sessions'
 import { mapProcedures } from './routes/maps'
 import { pointProdecures } from './routes/points'
 import { userProcedures } from './routes/users'
@@ -15,15 +15,15 @@ import { userProcedures } from './routes/users'
 // webserver setup
 const app = new Hono<{
   Variables: {
-    session: Session<UserSession>
+    session: Session<{ user: UserSession }>
     session_key_rotation: boolean
   }
 }>()
 
 app.use('*', session)
+app.use('*', setSessionData)
 
-// routes
-// import apiRouter from './routes/api'
+// rpcEndpoints
 const routes = app.route('/api/maps', mapProcedures).route('/api/points', pointProdecures).route('/api/users', userProcedures)
 
 // Host frontend in dev

@@ -1,52 +1,46 @@
 import { eq } from 'drizzle-orm'
-import session from 'express-session'
+import type { SessionData, Store } from 'hono-sessions'
 import type { Db } from '../db'
 import { type SessionsSchema, sessions } from '../db/schema/session.schema'
 
-export class DrizzlePostgresSessionStore extends session.Store {
+export class DrizzlePostgresSessionStore implements Store {
   db: Db
-  sessionTable: SessionsSchema
+  sessions: SessionsSchema
 
   constructor(options: { db: Db; table: SessionsSchema }) {
-    super()
     this.db = options.db
-    this.sessionTable = options.table
+    this.sessions = options.table
   }
 
-  async get(sid: string, callback: (err: any, session?: session.SessionData | null) => void) {
-    try {
-      const session = await this.db.query.sessions.findFirst({
-        where: eq(sessions.sid, sid),
-      })
+  async getSessionById(sid: string): Promise<SessionData | null> {
+    const session = await this.db.query.sessions.findFirst({
+      where: eq(sessions.sid, sid),
+    })
 
-      if (session) {
-        callback(null, session.sess as session.SessionData)
-      } else {
-        callback(null, null)
-      }
+    return session ? session.sess as SessionData : null
+  }
+
+  async createSession(sid: string, data: SessionData) {
+    try {
+      const expired = new Date(data._expire as unknown as Date)
+      await this.db
+        .insert(this.sessions)
+        .values({ sid, sess: data, expired })
+        .onConflictDoUpdate({ target: this.sessions.sid, set: { sess: data, expired } })
     } catch (err) {
-      callback(err)
+      console.error(err)
     }
   }
 
-  async set(sid: string, sess: session.SessionData, callback?: (err?: any) => void) {
-    try {
-      const expired = new Date(sess.cookie.expires as Date)
-
-      await this.db.insert(this.sessionTable).values({ sid, sess, expired }).onConflictDoUpdate({ target: this.sessionTable.sid, set: { sess, expired } })
-
-      callback?.()
-    } catch (err) {
-      callback?.(err)
-    }
+  async persistSessionData(sid: string, sessionData: SessionData) {
+     await this.createSession(sid, sessionData)
   }
 
-  async destroy(sid: string, callback?: (err?: any) => void) {
+  async deleteSession(sid: string) {
     try {
-      await this.db.delete(this.sessionTable).where(eq(this.sessionTable.sid, sid)).execute()
-      callback?.()
+      await this.db.delete(this.sessions).where(eq(this.sessions.sid, sid)).execute()
     } catch (err) {
-      callback?.(err)
+      console.error(err)
     }
   }
 }

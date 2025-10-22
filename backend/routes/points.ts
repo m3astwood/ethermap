@@ -1,10 +1,17 @@
+import type UserSession from 'backend/interfaces/UserSession'
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
+import type { Session } from 'hono-sessions'
 import db from '../db'
 import { maps, points } from '../db/schema'
 import { emitMapEvent } from '../utils/emitter'
 
-const pointProdecures = new Hono()
+const pointProdecures = new Hono<{
+  Variables: {
+    session: Session<{ user: UserSession }>
+    session_key_rotation: boolean
+  }
+}>()
   .get('/:id', async (c) => {
     try {
       const { id } = c.req.param()
@@ -22,7 +29,7 @@ const pointProdecures = new Hono()
       }
 
       c.status(200)
-      c.json(point)
+      return c.json(point)
     } catch (err) {
       console.error(err)
       return c.json({ error: err })
@@ -58,18 +65,17 @@ const pointProdecures = new Hono()
   })
   .post('/', async (c) => {
     try {
-      const { mapId, point } = c.req.json()
+      const { mapId, point } = await c.req.json()
 
       if (!point?.location) {
         c.status(400)
         c.json({ error: 'Point structure invalid' })
       }
 
-      // const createdBy = c.req.session.id
-      // const updatedBy = c.req.session.id
+      const session = c.get('session').getCache()
 
-      const createdBy = ''
-      const updatedBy = ''
+      const createdBy = session._id ?? ''
+      const updatedBy = session._id ?? ''
 
       const map = await db.query.maps.findFirst({
         where: eq(maps.id, Number.parseInt(mapId)),
@@ -89,7 +95,7 @@ const pointProdecures = new Hono()
       emitMapEvent({ type: 'point-create', sessionID: '', mapId, body: _point })
 
       c.status(201)
-      c.json(_point)
+      return c.json(_point)
     } catch (err) {
       console.error(err)
       return c.json({ error: err })
@@ -98,10 +104,10 @@ const pointProdecures = new Hono()
   .put('/:id', async (c) => {
     try {
       const { id } = c.req.param()
-      const { point } = c.req.json()
+      const { point } = await c.req.json()
 
-      point.updatedBy = ''
-      // point.updatedBy = c.req.session.id
+    const session = c.get('session').getCache()
+      point.updatedBy = session._id
 
       await db
         .update(points)
@@ -127,7 +133,7 @@ const pointProdecures = new Hono()
       emitMapEvent({ type: 'point-update', sessionID: '', mapId, body: _point })
 
       c.status(201)
-      c.json(_point)
+      return c.json(_point)
     } catch (err) {
       console.error(err)
       return c.json({ error: err })
@@ -152,7 +158,7 @@ const pointProdecures = new Hono()
       emitMapEvent({ type: 'point-delete', sessionID: '', mapId, body: { id } })
 
       c.status(200)
-      c.json({})
+      return c.json({})
     } catch (err) {
       console.error(err)
       return c.json({ error: err })

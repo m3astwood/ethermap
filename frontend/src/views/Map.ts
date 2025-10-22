@@ -66,11 +66,9 @@ export class MapView extends LitElement {
 
   async firstUpdated() {
     this.map$.subscribe((map) => {
-      console.log(map)
       this.mapId = map?.id ?? null
-
       if (this.mapId) {
-        this.eventSource = new EventSource(`/api/events/map/${this.mapId}`)
+        this.eventSource = new EventSource(`/api/maps/${this.mapId}/events`)
 
         this.eventSource.addEventListener('point-create', ({ data }) => {
           const point = JSON.parse(data)

@@ -1,16 +1,14 @@
-// express ssession
+import { createMiddleware } from 'hono/factory'
+import { sessionMiddleware } from 'hono-sessions'
 
-import type { NextFunction, Request, Response } from 'express'
-import { CookieStore, Session, sessionMiddleware } from 'hono-sessions'
 // database
 import db from '../db'
 import { sessions } from '../db/schema'
+
 // session store
 import { DrizzlePostgresSessionStore } from '../lib/sessionStore'
 
-// const store = new DrizzlePostgresSessionStore({ db, table: sessions })
-
-const store = new CookieStore()
+const store = new DrizzlePostgresSessionStore({ db, table: sessions })
 
 export default sessionMiddleware({
   store,
@@ -24,13 +22,16 @@ export default sessionMiddleware({
   },
 })
 
-export const setSessionData = (req: Request, _res: Response, next: NextFunction) => {
-  if (!req.session.user) {
-    req.session.user = {
-      id: '',
+export const setSessionData = createMiddleware(async (c, next) => {
+  const session = c.get('session')
+  const user = session.get('user')
+
+  if (!user) {
+    session.set('user', {
       name: '',
       colour: '',
-    }
+    })
   }
-  next()
-}
+
+  await next()
+})

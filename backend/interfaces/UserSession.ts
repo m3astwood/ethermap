@@ -1,5 +1,5 @@
 export default interface UserSession {
-  id: string
+  id?: string
   name: string
   colour: string
 }

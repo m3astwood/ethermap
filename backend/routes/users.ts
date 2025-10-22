@@ -4,21 +4,22 @@ import type UserSession from '../interfaces/UserSession'
 
 const userProcedures = new Hono<{
   Variables: {
-    session: Session<UserSession>
+    session: Session<{ user: UserSession }>
     session_key_rotation: boolean
   }
 }>()
   // Need to include session ID
   .get('/', async (c) => {
     const session = c.get('session')
-    return c.json({ user: session })
+    const user = session.get('user')
+    return c.json({ user })
   })
   .post('/', async (c) => {
-    // c.req.session.user = { ...c.req.session.user, ...c.req.json() }
-    const userData = c.req.json()
+    const userData = await c.req.json()
     const session = c.get('session')
-
-    return c.json({ user: session })
+    session.set('user', userData)
+    const user = session.get('user')
+    return c.json({ user })
   })
 
 export { userProcedures }

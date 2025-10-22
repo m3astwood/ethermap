@@ -1,4 +1,4 @@
-import type { Session } from 'express-session'
+import { SessionData } from 'hono-sessions'
 import type { LatLng } from 'leaflet'
 
 export interface UserData {
@@ -15,6 +15,6 @@ export interface UserServerData {
 
 export interface UserSession {
   sid: string
-  sess: Session & { user: UserData }
+  sess: SessionData<UserData>
   expired: string
 }
