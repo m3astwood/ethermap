@@ -1,4 +1,4 @@
-import type UserSession from 'backend/interfaces/UserSession'
+import type UserSession from '../interfaces/UserSession'
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { Session } from 'hono-sessions'
