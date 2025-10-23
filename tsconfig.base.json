@@ -13,7 +13,10 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./*"],
+    }
   },
   "exclude": ["node_modules"],
   "tsc-alias": {

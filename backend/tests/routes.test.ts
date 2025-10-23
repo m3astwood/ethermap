@@ -66,21 +66,21 @@ describe.sequential('Routes tests', () => {
 
     const res = await client.api.points.$post({
       json: {
+        name: 'pointy',
+        location: { lat: 50.8552, lng: 4.3454 },
         mapId,
-        point: {
-          name: 'pointy',
-          location: { lat: 50.8552, lng: 4.3454 },
-        },
       },
     })
 
-    const body = await res.json()
-
     expect(res.status).toEqual(201)
-    expect(body.id).toEqual(1)
-    expect(body.mapId).toEqual(mapId)
-    expect(body.location).toEqual({ lat: 50.8552, lng: 4.3454 })
-    expect(body.name).toEqual('pointy')
+
+    if (res.status === 201) {
+      const body = await res.json()
+      expect(body.id).toEqual(1)
+      expect(body.mapId).toEqual(mapId)
+      expect(body.location).toEqual({ lat: 50.8552, lng: 4.3454 })
+      expect(body.name).toEqual('pointy')
+    }
   })
 
   it('should return a map with an array of points with status 200 on GET "/api/map/:mapName"', async () => {
@@ -97,7 +97,7 @@ describe.sequential('Routes tests', () => {
     expect(body.mapPoints.length).toEqual(1)
   })
 
-  it('should throw 400 error on POST "/api/point" with incorrect data keys', async () => {
+  it('should throw 422 error on POST "/api/point" with incorrect data keys', async () => {
     const mapRes = await client.api.maps[':name'].$get({
       param: {
         name: 'bingo',
@@ -115,11 +115,16 @@ describe.sequential('Routes tests', () => {
       },
     })
 
-    expect(error.status).toEqual(400)
+    expect(error.status).toEqual(422)
+    if (error.status === 422) {
+      const body = await error.json()
+      expect(body.error.issues[0].code).toBe('invalid_type')
+      expect(body.error.issues[0].path[0]).toBe('location')
+    }
   })
 
   it('should return new point object with status 201 on PUT "/api/point/:id" with valid data', async () => {
-    const json = { point: { name: 'very pointy' } }
+    const json = { name: 'very pointy' }
     const res = await client.api.points[':id'].$put({
       param: { id: 1 },
       json,
@@ -144,8 +149,8 @@ describe.sequential('Routes tests', () => {
   it('should return an array of all points associated with map and status of 200 on GET "/api/points/map/:map_id"', async () => {
     const res = await client.api.points.map[':map_id'].$get({
       param: {
-        map_id: 1
-      }
+        map_id: 1,
+      },
     })
     const body = await res.json()
 
@@ -157,8 +162,8 @@ describe.sequential('Routes tests', () => {
   it('should throw a 404 error on GET "/api/points/map/:map_id" with invalid id', async () => {
     const res = await client.api.points.map[':map_id'].$get({
       param: {
-        map_id: 100
-      }
+        map_id: 100,
+      },
     })
 
     expect(res.status).toEqual(404)

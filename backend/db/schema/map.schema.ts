@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import type z from 'zod'
+import z from 'zod'
 
-import { points } from './point.schema'
+import { points, selectPointSchema } from './point.schema'
 
 export const maps = pgTable('maps', {
   id: serial().primaryKey(),
@@ -25,8 +25,13 @@ export const insertMapSchema = createInsertSchema(maps).omit({
   updatedAt: true,
 })
 
+export const selectMapWithPointsSchema = createSelectSchema(maps).safeExtend({
+  mapPoints: z.array(selectPointSchema)
+})
+
 export const patchMapSchema = insertMapSchema.partial()
 
 export type SelectMapSchema = z.infer<typeof selectMapSchema>
+export type SelectMapWithPointsSchema = z.infer<typeof selectMapWithPointsSchema>
 export type InsertMapSchema = z.infer<typeof insertMapSchema>
 export type PatchMapSchema = z.infer<typeof patchMapSchema>

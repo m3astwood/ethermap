@@ -1,32 +1,28 @@
 // web server
-
 import { serveStatic } from '@hono/node-server/serve-static'
-import { Hono } from 'hono'
 import { html } from 'hono/html'
 //middleware
-import type { Session } from 'hono-sessions'
-import pino from 'pino-http'
-import type UserSession from './interfaces/UserSession'
-import session, { setSessionData } from './middleware/sessions'
-import { mapProcedures } from './routes/maps'
-import { pointProdecures } from './routes/points'
-import { userProcedures } from './routes/users'
+import { createApp } from './lib/createApp'
+import configureOpenAPI from './lib/configureOpenApi'
+import index from './routes'
+import maps from './routes/maps/maps.index'
+import points from './routes/points/points.index'
+import users from './routes/users/users.index'
 
-// webserver setup
-const app = new Hono<{
-  Variables: {
-    session: Session<{ user: UserSession }>
-    session_key_rotation: boolean
-  }
-}>()
+// bootstrap App
+const app = createApp()
 
-app.use('*', session)
-app.use('*', setSessionData)
+// setup openapi rest interface
+configureOpenAPI(app)
 
-// rpcEndpoints
-const routes = app.route('/api/maps', mapProcedures).route('/api/points', pointProdecures).route('/api/users', userProcedures)
+// endpoints
+const routes = app
+  .route('/api', index)
+  .route('/api/maps', maps)
+  .route('/api/points', points)
+  .route('/api/users', users)
 
-// Host frontend in dev
+// host frontend in dev
 app.use('../frontend/public/*', serveStatic({ root: './' }))
 app.get('/*', (c) => {
   return c.html(html`

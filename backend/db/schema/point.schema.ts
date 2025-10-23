@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { integer, json, pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import type { z } from 'zod'
+import { z } from 'zod'
 import { maps } from './map.schema'
 import { sessions } from './session.schema'
 
@@ -34,14 +34,36 @@ export const pointRelations = relations(points, ({ one }) => ({
   }),
 }))
 
-export const selectPointSchema = createSelectSchema(points)
-export const insertPointSchema = createInsertSchema(points).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  updatedBy: true,
+const locationSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
 })
-export const patchPointSchema = insertPointSchema.partial()
+
+export const selectPointSchema = createSelectSchema(points).extend({
+  location: locationSchema,
+})
+
+export const insertPointSchema = createInsertSchema(points)
+  .extend({
+    location: locationSchema,
+  })
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    updatedBy: true,
+  })
+
+export const patchPointSchema = selectPointSchema
+  .extend({
+    location: locationSchema,
+  })
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true
+  })
+  .partial()
 
 export type SelectPointSchema = z.infer<typeof selectPointSchema>
 export type InsertPointSchema = z.infer<typeof insertPointSchema>
