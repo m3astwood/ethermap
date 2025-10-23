@@ -13,7 +13,7 @@ const effects = {
       switchMap((action: Action) => {
         return from(
           rpcClient.api.points.$post({
-            json: { mapId: action.mapId, point: action.point },
+            json: { ...action.point, mapId: action.mapId },
           }),
         ).pipe(
           switchMap((res: Response) => from(res.json())),
@@ -22,8 +22,7 @@ const effects = {
             (error: Error) => dispatch(pointError({ error })),
           ),
         )
-      }
-      ),
+      }),
     ),
   ),
 
@@ -48,7 +47,7 @@ const effects = {
             param: {
               id: action.point.id,
             },
-            json: { point: action.point },
+            json: action.point,
           }),
         ).pipe(
           switchMap((res: Response) => from(res.json())),
