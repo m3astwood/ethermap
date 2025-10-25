@@ -8,6 +8,7 @@ import index from './routes'
 import maps from './routes/maps/maps.index'
 import points from './routes/points/points.index'
 import users from './routes/users/users.index'
+import env from './lib/env'
 
 // bootstrap App
 const app = createApp()
@@ -24,25 +25,27 @@ const routes = app
 
 // host frontend in dev
 app.use('../frontend/public/*', serveStatic({ root: './' }))
-app.get('/*', (c) => {
-  return c.html(html`
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <base href="/">
-        <title>ethermap</title>
-        <link href="/styles/main.css" rel="stylesheet">
-        <script type="module" src="/src/EthermapApp.ts"></script>
-      </head>
-      <body>
-        <ethermap-app></ethermap-app>
-      </body>
-    </html>
+if (env.NODE_ENV !== 'production') {
+  app.get('/*', (c) => {
+    return c.html(html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <meta charset="UTF-8" />
+          <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+          <base href="/">
+          <title>ethermap</title>
+          <link href="/styles/main.css" rel="stylesheet">
+          <script type="module" src="/src/EthermapApp.ts"></script>
+        </head>
+        <body>
+          <ethermap-app></ethermap-app>
+        </body>
+      </html>
     `)
-})
+  })
+}
 
 export { app }
 export type AppType = typeof routes
