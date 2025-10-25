@@ -23,7 +23,7 @@ export default defineConfig({
   plugins: [
     devServer({
       export: 'app',
-      entry: 'backend/httpServer.ts',
+      entry: 'backend/app.ts',
     }),
   ],
 })

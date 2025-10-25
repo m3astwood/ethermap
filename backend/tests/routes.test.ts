@@ -4,7 +4,7 @@ import { testClient } from 'hono/testing'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 // hono app
-import { app } from '../httpServer'
+import { app } from '../app'
 
 // test agent (single request for all tests)
 let client
