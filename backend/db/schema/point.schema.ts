@@ -4,6 +4,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { maps } from './map.schema'
 import { sessions } from './session.schema'
+import { locationSchema } from './location.schema'
 
 export const points = pgTable('points', {
   id: serial().primaryKey(),
@@ -33,11 +34,6 @@ export const pointRelations = relations(points, ({ one }) => ({
     references: [sessions.sid],
   }),
 }))
-
-const locationSchema = z.object({
-  lat: z.number(),
-  lng: z.number(),
-})
 
 export const selectPointSchema = createSelectSchema(points).extend({
   location: locationSchema,

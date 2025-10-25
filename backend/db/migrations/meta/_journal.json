@@ -15,6 +15,20 @@
       "when": 1730733992772,
       "tag": "0001_sparkling_sentinels",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1761409107482,
+      "tag": "0002_steady_darkhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1761411667386,
+      "tag": "0003_cloudy_exiles",
+      "breakpoints": true
     }
   ]
 }
