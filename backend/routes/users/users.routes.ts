@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
-import { sessionUserSchema, sessionSchema } from '@/backend/db/schema/session.schema'
+import { sessionUserSchema } from '@/backend/db/schema/session.schema'
 
 const tags = ['Users']
 

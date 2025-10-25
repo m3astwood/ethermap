@@ -21,17 +21,3 @@ export default sessionMiddleware({
     httpOnly: true,
   },
 })
-
-export const setSessionData = createMiddleware(async (c, next) => {
-  const session = c.get('session')
-  const user = session.get('user')
-
-  if (!user) {
-    session.set('user', {
-      name: '',
-      colour: '',
-    })
-  }
-
-  await next()
-})
