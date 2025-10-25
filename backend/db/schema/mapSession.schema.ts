@@ -1,9 +1,9 @@
 import { integer, json, pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import type z from 'zod'
 import { locationSchema } from './location.schema'
 import { maps } from './map.schema'
 import { sessions } from './session.schema'
-import z from 'zod'
 
 export const mapSessions = pgTable(
   'map_session',
@@ -23,9 +23,13 @@ export const mapSessions = pgTable(
 export const selectMapSessionSchema = createSelectSchema(mapSessions).extend({
   location: locationSchema,
 })
-export const insertMapSessionSchema = createInsertSchema(mapSessions).extend({
-  location: locationSchema,
-})
+export const insertMapSessionSchema = createInsertSchema(mapSessions)
+  .extend({
+    location: locationSchema,
+  })
+  .omit({
+    sid: true,
+  })
 export const updateMapSessionSchema = insertMapSessionSchema.partial()
 
 export type SelectMapSessionSchema = z.infer<typeof selectMapSessionSchema>
