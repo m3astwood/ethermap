@@ -4,15 +4,15 @@ import { testClient } from 'hono/testing'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 // hono app
-import { app } from '../app'
+import { app } from '@/backend/app'
 
 // test agent (single request for all tests)
 let client
 
 // db
-import db from '../db'
+import db from '@/backend/db'
 
-describe.sequential('Routes tests', () => {
+describe.sequential('Points routes tests', () => {
   // test setup
   beforeAll(async () => {
     await migrate(db, { migrationsFolder: './backend/db/migrations' })
@@ -20,39 +20,6 @@ describe.sequential('Routes tests', () => {
 
   beforeEach(() => {
     client = testClient(app)
-  })
-
-  // tests
-  it('should return an object containing an array called "maps" on GET "/api/maps" route', async () => {
-    const res = await client.api.maps.$get()
-    const body = await res.json()
-
-    expect(res.status).toEqual(200)
-    expect(body.maps?.constructor).toEqual(Array)
-  })
-
-  it('should return new map with matching name and status 201 on GET "/api/map/:mapName" route to new mapName', async () => {
-    const res = await client.api.maps[':name'].$get({
-      param: {
-        name: 'bingo',
-      },
-    })
-    const body = await res.json()
-
-    expect(res.status).toEqual(201)
-    expect(body.name).toEqual('bingo')
-  })
-
-  it('should return same id with status 200 on GET "/api/map/:mapName" route to existing mapName', async () => {
-    const res = await client.api.maps[':name'].$get({
-      param: {
-        name: 'bingo',
-      },
-    })
-    const body = await res.json()
-
-    expect(res.status).toEqual(200)
-    expect(body.id).toEqual(1)
   })
 
   it('should return a point with status 201 on POST "/api/point" body containing a name, location and map_id', async () => {
@@ -81,20 +48,6 @@ describe.sequential('Routes tests', () => {
       expect(body.location).toEqual({ lat: 50.8552, lng: 4.3454 })
       expect(body.name).toEqual('pointy')
     }
-  })
-
-  it('should return a map with an array of points with status 200 on GET "/api/map/:mapName"', async () => {
-    const res = await client.api.maps[':name'].$get({
-      param: {
-        name: 'bingo',
-      },
-    })
-
-    const body = await res.json()
-
-    expect(res.status).toEqual(200)
-    expect(body.mapPoints).toBeTruthy()
-    expect(body.mapPoints.length).toEqual(1)
   })
 
   it('should throw 422 error on POST "/api/point" with incorrect data keys', async () => {

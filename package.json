@@ -10,7 +10,7 @@
     "build:backend": "tsc --project ./backend/tsconfig.back.json && tsc-alias -p ./backend/tsconfig.back.json",
     "build:frontend": "vite build",
     "build": "npm run build:backend && npm run build:frontend",
-    "test:all": "vitest",
+    "test:all": "LOG_LEVEL=error vitest",
     "test:routes": "vitest ./backend/tests/routes.test.ts",
     "test:db": "vitest ./backend/tests/db.test.ts",
     "test:ci": "vitest --watch=false",

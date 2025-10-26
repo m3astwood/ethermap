@@ -13,13 +13,14 @@ export const sessions = pgTable('sessions', {
 })
 
 export const mapSessionRelations = relations(sessions, ({ many }) => ({
-  mapSessions: many(mapSessions)
+  mapSessions: many(mapSessions, { relationName: 'userSession' }),
 }))
 
 export const sessionSchema = createSelectSchema(sessions)
 export const sessionUserSchema = z.object({
   name: z.string(),
-  colour: z.string()
+  colour: z.string(),
 })
 
+export type SessionsTable = typeof sessions
 export type SessionsSchema = typeof sessionSchema

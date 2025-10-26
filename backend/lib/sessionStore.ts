@@ -1,13 +1,13 @@
 import { eq } from 'drizzle-orm'
 import type { SessionData, Store } from 'hono-sessions'
 import type { Db } from '../db'
-import { type SessionsSchema, sessions } from '../db/schema/session.schema'
+import { sessions, SessionsTable } from '../db/schema/session.schema'
 
 export class DrizzlePostgresSessionStore implements Store {
   db: Db
-  sessions: SessionsSchema
+  sessions: SessionsTable
 
-  constructor(options: { db: Db; table: SessionsSchema }) {
+  constructor(options: { db: Db; table: SessionsTable }) {
     this.db = options.db
     this.sessions = options.table
   }

@@ -1,4 +1,3 @@
-import { createMiddleware } from 'hono/factory'
 import { sessionMiddleware } from 'hono-sessions'
 
 // database

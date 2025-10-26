@@ -13,12 +13,13 @@ export const getUser: AppRouteHandler<GetUserRoute> = async (c) => {
   if (session._id) {
     user = await db.query.sessions.findFirst({
       where: eq(sessions.sid, session._id),
+      with: {
+        mapSessions: true
+      }
     })
   }
 
-  console.log(user)
-
-  return c.json({ user: user || {} })
+  return c.json(user || {})
 }
 
 export const setUser: AppRouteHandler<SetUserRoute> = async (c) => {
@@ -33,6 +34,7 @@ export const setUser: AppRouteHandler<SetUserRoute> = async (c) => {
 
     const [user] = await db.update(sessions).set(userData).where(eq(sessions.sid, session._id)).returning()
 
+    c.status(201)
     return c.json({ user })
   } catch (err) {
     return c.json({ error: err })
@@ -52,12 +54,13 @@ export const setMapSession: AppRouteHandler<SetMapSessionRoute> = async (c) => {
     const [mapSession] = await db
       .insert(mapSessions)
       .values({ sid: session._id, ...mapSessionData })
-      .onConflictDoUpdate({ target: mapSessions.sid, set: { ...mapSessionData } })
+      .onConflictDoUpdate({ target: [mapSessions.sid, mapSessions.mapId], set: mapSessionData })
       .returning()
 
     c.status(201)
     return c.json(mapSession)
   } catch (err) {
+    c.var.logger.error(err)
     c.json({ error: err })
   }
 }

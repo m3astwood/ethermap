@@ -5,4 +5,5 @@ import * as handlers from './users.handlers'
 export default createRouter()
   .openapi(routes.getUser, handlers.getUser)
   .openapi(routes.setUser, handlers.setUser)
+  .openapi(routes.setMapSession, handlers.setMapSession)
 
