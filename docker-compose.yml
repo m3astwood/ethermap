@@ -1,6 +1,7 @@
 services:
   app:
-    image: git.suroh.tk/suroh/ethermap:latest
+    # image: git.suroh.tk/suroh/ethermap:latest
+    image: ethermap:local-test
     ports:
       - ${PORT}:${PORT}
     env_file: .env

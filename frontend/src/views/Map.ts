@@ -89,6 +89,11 @@ export class MapView extends LitElement {
 
     this.addEventListener('em:close-pane', () => dispatch(selectPoint({ id: undefined })))
 
+    this.addEventListener('em:viewport-changed', ({ detail }) => {
+      console.log('VIEWPORT-CHANGED :', detail)
+      // update mapSession
+    })
+
     fromEvent<CustomEvent>(this, 'em:point-update')
       .pipe(
         debounceTime(500),

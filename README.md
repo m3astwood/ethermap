@@ -30,11 +30,11 @@ You should now be able to access ethermaps on [http://localhost:3000](http://loc
 
 ### Backend
 
-Backend is running on [express.js](https://expressjs.com/) with [ViteExpress](https://github.com/szymmis/vite-express) bridging the gap between the front and backends.
+Backend is running on [hono.js](https://hono.dev/) with [Vite](https://vite.dev/) bridging the gap between the front and backends.
 
 Database is setup with [Drizzle](https://orm.drizzle.team) and [Postgres](https://www.postgresql.org/).
 
-Live data is shared with the client using [socket.io](https://socket.io/).
+WIP : Live data is shared with the client using [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) & [socket.io](https://socket.io/).
 
 Tests are written with [Vitest](https://vitest.dev) and route testing uses [supertest](https://github.com/ladjs/supertest).
 

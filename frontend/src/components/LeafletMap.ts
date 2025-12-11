@@ -8,11 +8,13 @@ import { devTools } from '@ngneat/elf-devtools'
 
 // import UserCursor from '../controllers/UserCursor'
 import { customElement, property, state } from 'lit/decorators.js'
+import EventController from '../api/event'
 import type { EtherPoint } from './EmPoint'
 
 @customElement('em-leaflet-map')
 export class LeafletMapElement extends LitElement {
   // userCursor = new UserCursor(this)
+  eventController = new EventController(this)
 
   @property({ type: Array })
   contextMenu: Array<{ text: string; callback(event: L.LeafletMouseEvent): void }> = []
@@ -65,6 +67,13 @@ export class LeafletMapElement extends LitElement {
           console.error('location cannot be found')
         })
       }
+
+      this.leaflet.on('moveend', (evt) => {
+        // console.log('MOVEND :', evt)
+        this.eventController.dispatch('em:viewport-changed', {
+          detail: { zoom: evt.target._zoom, location: evt.target._lastCenter },
+        })
+      })
 
       // track mouse movement
       // this.leaflet.on('mousemove', (evt) => this.userCursor.mouseMove(evt.latlng))
