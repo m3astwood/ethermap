@@ -1,13 +1,12 @@
 // testing tools
-
 import { migrate } from 'drizzle-orm/pglite/migrator'
 import { testClient } from 'hono/testing'
+import type { SessionData } from 'hono-sessions'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 // hono app
 import { app } from '@/backend/app'
 // db
 import db from '@/backend/db'
-import { SessionData } from 'hono-sessions'
 
 // test agent (single request for all tests)
 let client
@@ -88,9 +87,10 @@ describe.sequential('User routes', () => {
       json: {
         mapId: 1,
         lastLocation: {
-          lat: 20, lng: 50
+          lat: 20,
+          lng: 50,
         },
-        zoom: 2
+        zoom: 2,
       },
     })
 
@@ -110,7 +110,7 @@ describe.sequential('User routes', () => {
       const body = await userRes.json()
       expect(body.mapSessions?.constructor).toEqual(Array)
 
-      const [ mapSession ] = body.mapSessions
+      const [mapSession] = body.mapSessions
       expect(mapSession.mapId).toEqual(1)
       expect(mapSession.lastLocation).toEqual({ lat: 20, lng: 50 })
       expect(mapSession.zoom).toEqual(2)
@@ -120,7 +120,7 @@ describe.sequential('User routes', () => {
   it('should return 422 if mapSession data is invalid', async () => {
     const postRes = await client.api.users.map.$post({
       json: {
-        invalid: 'json'
+        invalid: 'json',
       },
     })
 
