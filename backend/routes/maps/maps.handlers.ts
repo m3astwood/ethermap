@@ -3,7 +3,7 @@ import { streamSSE } from 'hono/streaming'
 import { filter } from 'rxjs'
 import type { AppRouteHandler } from '@/backend/interfaces/App'
 import db from '../../db'
-import { maps, type SelectMapWithPointsSchema } from '../../db/schema/map.schema'
+import { maps } from '../../db/schema/map.schema'
 import type { MapEvent } from '../../interfaces/MapEvent'
 import { MapEvent$ } from '../../utils/emitter'
 import type { GetMapByNameRoute, GetMapEventsRoute, GetMapsRoute } from './maps.routes'
@@ -14,33 +14,26 @@ export const getMaps: AppRouteHandler<GetMapsRoute> = async (c) => {
 }
 
 export const getMapByName: AppRouteHandler<GetMapByNameRoute> = async (c) => {
-  let returnMap: SelectMapWithPointsSchema
   const { name } = c.req.valid('param')
-  try {
-    const existingMap = await db.query.maps.findFirst({
-      where: eq(maps.name, name),
-      with: {
-        mapPoints: {
-          with: {
-            createdBy: true,
-            updatedBy: true,
-          },
+
+  const existingMap = await db.query.maps.findFirst({
+    where: eq(maps.name, name),
+    with: {
+      mapPoints: {
+        with: {
+          createdBy: true,
+          updatedBy: true,
         },
       },
-    })
-    if (existingMap) {
-      returnMap = existingMap
-      c.status(200)
-    } else {
-      const [newMap] = await db.insert(maps).values({ name }).returning()
-      returnMap = { ...newMap, mapPoints: [] }
-      c.status(201)
-    }
+    },
+  })
 
-    return c.json(returnMap)
-  } catch (err) {
-    return c.json({ error: err })
+  if (existingMap) {
+    return c.json(existingMap, 200)
   }
+
+  const [newMap] = await db.insert(maps).values({ name }).returning()
+  return c.json({ ...newMap, mapPoints: [] }, 201)
 }
 
 export const getMapEvents: AppRouteHandler<GetMapEventsRoute> = async (c) => {
