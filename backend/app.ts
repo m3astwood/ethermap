@@ -1,14 +1,14 @@
 // web server
 import { serveStatic } from '@hono/node-server/serve-static'
 import { html } from 'hono/html'
+import configureOpenAPI from './lib/configureOpenApi'
 //middleware
 import { createApp } from './lib/createApp'
-import configureOpenAPI from './lib/configureOpenApi'
+import env from './lib/env'
 import index from './routes'
 import maps from './routes/maps/maps.index'
 import points from './routes/points/points.index'
 import users from './routes/users/users.index'
-import env from './lib/env'
 
 // bootstrap App
 const app = createApp()
@@ -17,15 +17,11 @@ const app = createApp()
 configureOpenAPI(app)
 
 // endpoints
-const routes = app
-  .route('/api', index)
-  .route('/api/maps', maps)
-  .route('/api/points', points)
-  .route('/api/users', users)
+const routes = app.route('/api', index).route('/api/maps', maps).route('/api/points', points).route('/api/users', users)
 
-// host frontend in dev
-app.use('../frontend/public/*', serveStatic({ root: './' }))
 if (env.NODE_ENV !== 'production') {
+  // host frontend in dev
+  app.use('../frontend/public/*', serveStatic({ root: './' }))
   app.get('/*', (c) => {
     return c.html(html`
       <!DOCTYPE html>
@@ -45,6 +41,9 @@ if (env.NODE_ENV !== 'production') {
       </html>
     `)
   })
+} else {
+  app.use('../frontend/*', serveStatic({ root: './' }))
+  app.get('/*', serveStatic({ path: '../frontend/index.html' }))
 }
 
 export { app }

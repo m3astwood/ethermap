@@ -27,4 +27,4 @@ COPY --from=build /app/dist .
 
 COPY --from=build /app/backend/db/migrations ./backend/db/migrations
 
-CMD [ "node", "server.js"]
+CMD [ "node", "backend/app.js"]

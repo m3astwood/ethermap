@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./dist/server.js",
     "dev": "NODE_ENV=development vite",
-    "build:backend": "tsc --project ./backend/tsconfig.back.json && tsc-alias -p ./backend/tsconfig.back.json",
+    "build:backend": "tsc --project ./backend/tsconfig.back.json && tsc-alias -p ./backend/tsconfig.back.json && cp package.json dist/",
     "build:frontend": "vite build",
     "build": "npm run build:backend && npm run build:frontend",
     "test:all": "LOG_LEVEL=error vitest",

@@ -15,7 +15,7 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
   "exclude": ["node_modules"],

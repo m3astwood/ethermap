@@ -1,8 +1,15 @@
-import { createRouter } from '@/backend/lib/createApp'
 import { createRoute, z } from '@hono/zod-openapi'
 import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent } from 'stoker/openapi/helpers'
-import { version } from '@/package.json' with { type: 'json' }
+import { createRouter } from '@/backend/lib/createApp'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'))
+const version = packageJson.version
 
 const router = createRouter().openapi(
   createRoute({
@@ -10,17 +17,20 @@ const router = createRouter().openapi(
     method: 'get',
     path: '/',
     responses: {
-      [HttpStatusCodes.OK]: jsonContent(z.object({
-        message: z.string().default('Ethermap API'),
-        version: z.string()
-      }), 'Ethermap API Index'),
+      [HttpStatusCodes.OK]: jsonContent(
+        z.object({
+          message: z.string().default('Ethermap API'),
+          version: z.string(),
+        }),
+        'Ethermap API Index',
+      ),
     },
   }),
   (c) => {
     return c.json(
       {
         message: 'Ethermap API',
-        version
+        version,
       },
       HttpStatusCodes.OK,
     )
