@@ -3,7 +3,7 @@ import * as HttpStatusCodes from 'stoker/http-status-codes'
 import { jsonContent, jsonContentRequired } from 'stoker/openapi/helpers'
 import { createErrorSchema, IdParamsSchema } from 'stoker/openapi/schemas'
 import { insertPointSchema, selectPointSchema } from '@/backend/db/schema'
-import { patchPointSchema } from '@/backend/db/schema/point.schema'
+import { patchPointSchema, selectPointSchemaWithUsers } from '@/backend/db/schema/point.schema'
 
 const tags = ['Points']
 
@@ -15,7 +15,7 @@ export const getPointById = createRoute({
   },
   tags,
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(selectPointSchema, 'Selected point'),
+    [HttpStatusCodes.OK]: jsonContent(selectPointSchemaWithUsers, 'Selected point'),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       z.object({
         error: z.string(),
@@ -39,7 +39,7 @@ export const getPointsByMapId = createRoute({
   },
   tags,
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(z.array(selectPointSchema), 'List of points for map'),
+    [HttpStatusCodes.OK]: jsonContent(z.array(selectPointSchemaWithUsers), 'List of points for map'),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       z.object({
         error: z.string(),
@@ -77,7 +77,7 @@ export const updatePointById = createRoute({
   },
   tags,
   responses: {
-    [HttpStatusCodes.CREATED]: jsonContent(selectPointSchema, 'The point that was updated'),
+    [HttpStatusCodes.CREATED]: jsonContent(selectPointSchemaWithUsers, 'The point that was updated'),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       z.object({
         error: z.string(),
