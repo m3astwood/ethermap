@@ -3,11 +3,12 @@ import leafletCss from 'leaflet/dist/leaflet.css?inline'
 import leafletContextCss from 'leaflet-contextmenu/dist/leaflet.contextmenu.css?inline'
 import { css, html, LitElement, unsafeCSS } from 'lit'
 import 'leaflet-contextmenu'
-
 import { devTools } from '@ngneat/elf-devtools'
-
 // import UserCursor from '../controllers/UserCursor'
 import { customElement, property, state } from 'lit/decorators.js'
+import markerIconUrl from '@/node_modules/leaflet/dist/images/marker-icon.png'
+import markerIconRetinaUrl from '@/node_modules/leaflet/dist/images/marker-icon-2x.png'
+import markerShadowUrl from '@/node_modules/leaflet/dist/images/marker-shadow.png'
 import EventController from '../api/event'
 import type { EtherPoint } from './EmPoint'
 
@@ -55,6 +56,11 @@ export class LeafletMapElement extends LitElement {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(this.leaflet)
+
+      L.Icon.Default.prototype.options.iconUrl = markerIconUrl
+      L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl
+      L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl
+      L.Icon.Default.imagePath = ''
 
       if (!this.controls) {
         this.leaflet.locate({ setView: true, maxZoom: 19 })
