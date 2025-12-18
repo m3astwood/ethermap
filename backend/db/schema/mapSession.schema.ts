@@ -1,10 +1,10 @@
+import { relations } from 'drizzle-orm'
 import { integer, json, pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import type z from 'zod'
 import { locationSchema } from './location.schema'
 import { maps } from './map.schema'
 import { sessions } from './session.schema'
-import { relations } from 'drizzle-orm'
 
 export const mapSessions = pgTable(
   'map_session',
@@ -21,12 +21,12 @@ export const sessionRelation = relations(mapSessions, ({ one }) => ({
   user: one(sessions, {
     fields: [mapSessions.sid],
     references: [sessions.sid],
-    relationName: 'userSession'
+    relationName: 'userSession',
   }),
   map: one(maps, {
     fields: [mapSessions.mapId],
-    references: [maps.id]
-  })
+    references: [maps.id],
+  }),
 }))
 
 export const selectMapSessionSchema = createSelectSchema(mapSessions).extend({

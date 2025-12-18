@@ -53,7 +53,7 @@ export const insertPointSchema = createInsertSchema(points)
     id: true,
     createdAt: true,
     updatedAt: true,
-    updatedBy: true,
+    updatedById: true,
   })
 
 export const patchPointSchema = selectPointSchema
