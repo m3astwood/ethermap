@@ -27,4 +27,4 @@ COPY --from=build /app/dist .
 
 COPY --from=build /app/backend/db/migrations ./backend/db/migrations
 
-CMD [ "node", "backend/app.js"]
+CMD [ "node", "--require", "@opentelemetry/auto-instrumentations-node/register", "server.js"]
