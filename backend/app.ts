@@ -42,8 +42,8 @@ if (env.NODE_ENV !== 'production') {
     `)
   })
 } else {
-  app.use('../frontend/*', serveStatic({ root: './' }))
-  app.get('/*', serveStatic({ path: '../frontend/index.html' }))
+  app.use('/*', serveStatic({ root: './frontend' }))
+  app.get('/*', serveStatic({ path: './frontend/index.html' }))
 }
 
 export { app }
