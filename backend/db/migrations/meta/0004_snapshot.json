@@ -38,10 +38,7 @@
       "compositePrimaryKeys": {
         "map_session_sid_mapId_pk": {
           "name": "map_session_sid_mapId_pk",
-          "columns": [
-            "sid",
-            "mapId"
-          ]
+          "columns": ["sid", "mapId"]
         }
       },
       "uniqueConstraints": {},
@@ -87,9 +84,7 @@
         "maps_name_unique": {
           "name": "maps_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},

@@ -34,7 +34,7 @@ export const getMapByName = createRoute({
     params: z.object({
       name: z.string().openapi({
         description: 'Name of map',
-        example: 'bingo'
+        example: 'bingo',
       }),
     }),
   },

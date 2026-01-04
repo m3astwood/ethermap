@@ -1,8 +1,8 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import session from '@/backend/middleware/sessions'
-import { AppBindings } from '@/backend/interfaces/App'
-import { defaultHook } from 'stoker/openapi'
 import { notFound, onError, serveEmojiFavicon } from 'stoker/middlewares'
+import { defaultHook } from 'stoker/openapi'
+import type { AppBindings } from '@/backend/interfaces/App'
+import session from '@/backend/middleware/sessions'
 import { pinoLogger } from '../middleware/pinoLogger'
 
 export function createRouter() {
@@ -15,10 +15,7 @@ export function createRouter() {
 export function createApp() {
   const app = createRouter()
 
-  app
-    .use(serveEmojiFavicon('🗺️'))
-    .use(pinoLogger())
-    .use('*', session)
+  app.use(serveEmojiFavicon('🗺️')).use(pinoLogger()).use('*', session)
 
   app.notFound(notFound)
   app.onError(onError)

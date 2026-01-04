@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import type { SessionData, Store } from 'hono-sessions'
 import type { Db } from '../db'
-import { sessions, SessionsTable } from '../db/schema/session.schema'
+import { type SessionsTable, sessions } from '../db/schema/session.schema'
 
 export class DrizzlePostgresSessionStore implements Store {
   db: Db
@@ -17,7 +17,7 @@ export class DrizzlePostgresSessionStore implements Store {
       where: eq(sessions.sid, sid),
     })
 
-    return session ? session.sess as SessionData : null
+    return session ? (session.sess as SessionData) : null
   }
 
   async createSession(sid: string, data: SessionData) {
@@ -33,7 +33,7 @@ export class DrizzlePostgresSessionStore implements Store {
   }
 
   async persistSessionData(sid: string, sessionData: SessionData) {
-     await this.createSession(sid, sessionData)
+    await this.createSession(sid, sessionData)
   }
 
   async deleteSession(sid: string) {

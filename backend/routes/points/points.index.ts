@@ -1,6 +1,6 @@
-import { createRouter } from "@/backend/lib/createApp";
-import * as routes from './points.routes'
+import { createRouter } from '@/backend/lib/createApp'
 import * as handlers from './points.handlers'
+import * as routes from './points.routes'
 
 export default createRouter()
   .openapi(routes.getPointById, handlers.getPointById)

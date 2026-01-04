@@ -1,4 +1,4 @@
-import { SessionData } from 'hono-sessions'
+import type { SessionData } from 'hono-sessions'
 import type { LatLng } from 'leaflet'
 
 export interface UserData {

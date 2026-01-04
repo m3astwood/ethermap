@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import devServer from '@hono/vite-dev-server'
-import { defineConfig } from 'vite'
 import path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   root: './frontend/',

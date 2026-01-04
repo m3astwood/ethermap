@@ -26,7 +26,7 @@ export const insertMapSchema = createInsertSchema(maps).omit({
 })
 
 export const selectMapWithPointsSchema = createSelectSchema(maps).safeExtend({
-  mapPoints: z.array(selectPointSchema)
+  mapPoints: z.array(selectPointSchema),
 })
 
 export const patchMapSchema = insertMapSchema.partial()

@@ -42,9 +42,7 @@
         "maps_name_unique": {
           "name": "maps_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -198,12 +196,8 @@
           "name": "map_session_sid_sessions_sid_fk",
           "tableFrom": "map_session",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "sid"
-          ],
-          "columnsTo": [
-            "sid"
-          ],
+          "columnsFrom": ["sid"],
+          "columnsTo": ["sid"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -211,12 +205,8 @@
           "name": "map_session_mapId_maps_id_fk",
           "tableFrom": "map_session",
           "tableTo": "maps",
-          "columnsFrom": [
-            "mapId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["mapId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -224,10 +214,7 @@
       "compositePrimaryKeys": {
         "map_session_sid_mapId_pk": {
           "name": "map_session_sid_mapId_pk",
-          "columns": [
-            "sid",
-            "mapId"
-          ]
+          "columns": ["sid", "mapId"]
         }
       },
       "uniqueConstraints": {},

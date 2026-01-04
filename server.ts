@@ -4,4 +4,3 @@ import env from './backend/lib/env'
 
 console.log(`${env.SITE_NAME} running on port ${env.PORT}.`)
 serve(app)
-
