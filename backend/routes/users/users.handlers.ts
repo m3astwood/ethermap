@@ -4,6 +4,7 @@ import { sessions } from '@/backend/db/schema'
 import { mapSessions } from '@/backend/db/schema/mapSession.schema'
 import type { AppRouteHandler } from '@/backend/interfaces/App'
 import type { GetUserRoute, SetMapSessionRoute, SetUserRoute } from './users.routes'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getUser: AppRouteHandler<GetUserRoute> = async (c) => {
   const session = c.get('session').getCache()
@@ -39,7 +40,7 @@ export const setUser: AppRouteHandler<SetUserRoute> = async (c) => {
     throw new Error('Failed to update user - missing name or colour')
   }
 
-  return c.json({ name: user.name, colour: user.colour }, 201)
+  return c.json({ name: user.name, colour: user.colour }, HttpStatusCodes.CREATED)
 }
 
 export const setMapSession: AppRouteHandler<SetMapSessionRoute> = async (c) => {
@@ -57,5 +58,5 @@ export const setMapSession: AppRouteHandler<SetMapSessionRoute> = async (c) => {
     .returning()
 
   // selectMapSessionSchema expects both lastLocation and location fields
-  return c.json({ ...mapSession, location: mapSession.lastLocation }, 201)
+  return c.json({ ...mapSession, location: mapSession.lastLocation }, HttpStatusCodes.CREATED)
 }

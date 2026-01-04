@@ -7,6 +7,7 @@ import { maps } from '../../db/schema/map.schema'
 import type { MapEvent } from '../../interfaces/MapEvent'
 import { MapEvent$ } from '../../utils/emitter'
 import type { GetMapByNameRoute, GetMapEventsRoute, GetMapsRoute } from './maps.routes'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getMaps: AppRouteHandler<GetMapsRoute> = async (c) => {
   const maps = await db.query.maps.findMany()
@@ -29,11 +30,11 @@ export const getMapByName: AppRouteHandler<GetMapByNameRoute> = async (c) => {
   })
 
   if (existingMap) {
-    return c.json(existingMap, 200)
+    return c.json(existingMap, HttpStatusCodes.OK)
   }
 
   const [newMap] = await db.insert(maps).values({ name }).returning()
-  return c.json({ ...newMap, mapPoints: [] }, 201)
+  return c.json({ ...newMap, mapPoints: [] }, HttpStatusCodes.CREATED)
 }
 
 export const getMapEvents: AppRouteHandler<GetMapEventsRoute> = async (c) => {
