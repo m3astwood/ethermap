@@ -4,6 +4,7 @@ import db from '../../db'
 import { maps, points } from '../../db/schema'
 import { emitMapEvent } from '../../utils/emitter'
 import type { CreatePointRoute, DeletePointByIdRoute, GetPointByIdRoute, GetPointsByMapIdRoute, UpdatePointByIdRoute } from './points.routes'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getPointById: AppRouteHandler<GetPointByIdRoute> = async (c) => {
   const { id } = c.req.valid('param')
@@ -16,10 +17,10 @@ export const getPointById: AppRouteHandler<GetPointByIdRoute> = async (c) => {
   })
 
   if (!point) {
-    return c.json({ error: 'Point not found' }, 404)
+    return c.json({ error: 'Point not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
-  return c.json(point, 200)
+  return c.json(point, HttpStatusCodes.OK)
 }
 
 export const getPointsByMapId: AppRouteHandler<GetPointsByMapIdRoute> = async (c) => {
@@ -30,7 +31,7 @@ export const getPointsByMapId: AppRouteHandler<GetPointsByMapIdRoute> = async (c
   })
 
   if (!map) {
-    return c.json({ error: 'Map not found' }, 404)
+    return c.json({ error: 'Map not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
   const mapPoints = await db.query.points.findMany({
@@ -41,7 +42,7 @@ export const getPointsByMapId: AppRouteHandler<GetPointsByMapIdRoute> = async (c
     },
   })
 
-  return c.json(mapPoints, 200)
+  return c.json(mapPoints, HttpStatusCodes.OK)
 }
 
 export const createPoint: AppRouteHandler<CreatePointRoute> = async (c) => {
@@ -56,7 +57,7 @@ export const createPoint: AppRouteHandler<CreatePointRoute> = async (c) => {
   })
 
   if (!map) {
-    return c.json({ error: 'Map not found' }, 404)
+    return c.json({ error: 'Map not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
   const [_point] = await db
@@ -66,7 +67,7 @@ export const createPoint: AppRouteHandler<CreatePointRoute> = async (c) => {
 
   emitMapEvent({ type: 'point-create', sessionID: session._id ?? '', mapId: point.mapId, body: _point })
 
-  return c.json(_point, 201)
+  return c.json(_point, HttpStatusCodes.CREATED)
 }
 
 export const updatePointById: AppRouteHandler<UpdatePointByIdRoute> = async (c) => {
@@ -87,7 +88,7 @@ export const updatePointById: AppRouteHandler<UpdatePointByIdRoute> = async (c) 
   })
 
   if (!_point) {
-    return c.json({ error: 'Point not found'}, 404)
+    return c.json({ error: 'Point not found'}, HttpStatusCodes.NOT_FOUND)
   }
 
   const { mapId } = _point
@@ -95,7 +96,7 @@ export const updatePointById: AppRouteHandler<UpdatePointByIdRoute> = async (c) 
   // Missing sessionID
   emitMapEvent({ type: 'point-update', sessionID: session._id ?? '', mapId, body: _point })
 
-  return c.json(_point, 201)
+  return c.json(_point, HttpStatusCodes.CREATED)
 }
 
 export const deletePointById: AppRouteHandler<DeletePointByIdRoute> = async (c) => {
@@ -103,7 +104,7 @@ export const deletePointById: AppRouteHandler<DeletePointByIdRoute> = async (c) 
   const [point] = await db.delete(points).where(eq(points.id, id)).returning()
 
   if (!point) {
-    return c.json({ error: 'Map not found' }, 404)
+    return c.json({ error: 'Map not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
   const { mapId } = point
@@ -111,6 +112,5 @@ export const deletePointById: AppRouteHandler<DeletePointByIdRoute> = async (c) 
   // Missing Session ID
   emitMapEvent({ type: 'point-delete', sessionID: '', mapId, body: { id } })
 
-  c.status(204)
-  return c.json({})
+  return c.body(null, HttpStatusCodes.NO_CONTENT)
 }

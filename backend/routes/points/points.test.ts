@@ -108,8 +108,8 @@ describe.sequential('Points routes tests', () => {
     const body = await res.json()
 
     expect(res.status).toEqual(200)
-    expect(body.points?.constructor).toEqual(Array)
-    expect(body.points[0].name).toEqual('very pointy')
+    expect(body.constructor).toEqual(Array)
+    expect(body[0].name).toEqual('very pointy')
   })
 
   it('should throw a 404 error on GET "/api/points/map/:map_id" with invalid id', async () => {
@@ -130,11 +130,11 @@ describe.sequential('Points routes tests', () => {
     expect(res.status).toEqual(404)
   })
 
-  it('should returns 200 status DELETE "/api/point/:id" with valid id', async () => {
+  it('should returns 204 status DELETE "/api/point/:id" with valid id', async () => {
     const res = await client.api.points[':id'].$delete({
       param: { id: 1 },
     })
 
-    expect(res.status).toEqual(200)
+    expect(res.status).toEqual(204)
   })
 })
