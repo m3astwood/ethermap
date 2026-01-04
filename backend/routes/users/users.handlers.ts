@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 import db from '@/backend/db'
 import { sessions } from '@/backend/db/schema'
 import { mapSessions } from '@/backend/db/schema/mapSession.schema'
 import type { AppRouteHandler } from '@/backend/interfaces/App'
 import type { GetUserRoute, SetMapSessionRoute, SetUserRoute } from './users.routes'
-import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getUser: AppRouteHandler<GetUserRoute> = async (c) => {
   const session = c.get('session').getCache()
@@ -13,8 +13,8 @@ export const getUser: AppRouteHandler<GetUserRoute> = async (c) => {
     const user = await db.query.sessions.findFirst({
       where: eq(sessions.sid, session._id),
       with: {
-        mapSessions: true
-      }
+        mapSessions: true,
+      },
     })
 
     return c.json(user)

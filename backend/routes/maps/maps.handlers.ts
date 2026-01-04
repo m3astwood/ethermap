@@ -1,13 +1,13 @@
 import { eq } from 'drizzle-orm'
 import { streamSSE } from 'hono/streaming'
 import { filter } from 'rxjs'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 import type { AppRouteHandler } from '@/backend/interfaces/App'
 import db from '../../db'
 import { maps } from '../../db/schema/map.schema'
 import type { MapEvent } from '../../interfaces/MapEvent'
 import { MapEvent$ } from '../../utils/emitter'
 import type { GetMapByNameRoute, GetMapEventsRoute, GetMapsRoute } from './maps.routes'
-import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getMaps: AppRouteHandler<GetMapsRoute> = async (c) => {
   const maps = await db.query.maps.findMany()

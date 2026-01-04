@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm'
+import * as HttpStatusCodes from 'stoker/http-status-codes'
 import type { AppRouteHandler } from '@/backend/interfaces/App'
 import db from '../../db'
 import { maps, points } from '../../db/schema'
 import { emitMapEvent } from '../../utils/emitter'
 import type { CreatePointRoute, DeletePointByIdRoute, GetPointByIdRoute, GetPointsByMapIdRoute, UpdatePointByIdRoute } from './points.routes'
-import * as HttpStatusCodes from 'stoker/http-status-codes'
 
 export const getPointById: AppRouteHandler<GetPointByIdRoute> = async (c) => {
   const { id } = c.req.valid('param')
@@ -88,7 +88,7 @@ export const updatePointById: AppRouteHandler<UpdatePointByIdRoute> = async (c) 
   })
 
   if (!_point) {
-    return c.json({ error: 'Point not found'}, HttpStatusCodes.NOT_FOUND)
+    return c.json({ error: 'Point not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
   const { mapId } = _point
