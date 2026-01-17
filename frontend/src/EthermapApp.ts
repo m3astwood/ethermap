@@ -1,5 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import Sentry from '@sentry/browser'
 
 import Router from './controllers/Router'
 
@@ -16,6 +17,12 @@ export class EthermapApp extends LitElement {
   async firstUpdated() {
     Router.addEventListener('route-changed', () => {
       this.route = Router.render()
+    })
+
+    Sentry.init({
+      dsn: import.meta.env.VITE_SENTRY_DSN,
+      tracesSampleRate: 0.01,
+      environment: import.meta.env.PROD ? 'production' : import.meta.env.DEV ? 'development' : 'staging'
     })
 
     dispatch(getUser())
