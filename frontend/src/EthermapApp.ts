@@ -8,6 +8,7 @@ import './components/UserTool'
 import { dispatch } from '@ngneat/effects'
 import { getUser } from './state/actions/user'
 import './state/effects/user'
+import { rpcClient } from './api/rpcClient'
 
 @customElement('ethermap-app')
 export class EthermapApp extends LitElement {
@@ -19,15 +20,32 @@ export class EthermapApp extends LitElement {
       this.route = Router.render()
     })
 
-    if (import.meta.env.VITE_SENTRY_DSN) {
-      Sentry.init({
-        dsn: import.meta.env.VITE_SENTRY_DSN,
-        tracesSampleRate: 0.01,
-        environment: import.meta.env.MODE
-      })
-    }
+    this.setupSentry()
 
     dispatch(getUser())
+  }
+
+  async setupSentry() {
+    try {
+      const req = await rpcClient.api.environment.$get()
+
+      if (req.error) {
+        throw req.error
+      }
+
+      const env = await req.json()
+
+      if (env.SENTRY_DSN) {
+        console.log('Setting up Sentry')
+        Sentry.init({
+          dsn: env.SENTRY_DSN,
+          tracesSampleRate: 0.01,
+          environment: import.meta.env.MODE
+        })
+      }
+    } catch(err) {
+      console.error(err)
+    }
   }
 
   render() {
