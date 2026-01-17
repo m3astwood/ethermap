@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-
 import path from 'node:path'
 import devServer from '@hono/vite-dev-server'
 import { defineConfig, loadEnv } from 'vite'
@@ -9,6 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
     root: './frontend/',
     base: '/',
+    envDir: '../',
     build: {
       sourcemap: true,
       target: ['esnext', 'edge100', 'firefox100', 'chrome100', 'safari18'],
