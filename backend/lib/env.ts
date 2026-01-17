@@ -12,6 +12,7 @@ const EnvSchema = z
     DB_USER: z.string().optional(),
     DB_PASS: z.string().optional(),
     LOG_LEVEL: z.enum(['info', 'warn', 'error', 'fatal', 'silent']).optional(),
+    SENTRY_DSN: z.string(),
   })
   .superRefine((data, context) => {
     if (data.NODE_ENV === 'test') {

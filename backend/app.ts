@@ -16,6 +16,14 @@ const app = createApp()
 // setup openapi rest interface
 configureOpenAPI(app)
 
+// setup 'Sentry'
+import Sentry from '@sentry/node'
+
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+})
+
 // endpoints
 const routes = app.route('/api', index).route('/api/maps', maps).route('/api/points', points).route('/api/users', users)
 
