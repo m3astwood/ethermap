@@ -1,5 +1,6 @@
 // web server
 import { serveStatic } from '@hono/node-server/serve-static'
+import * as Sentry from '@sentry/node'
 import { html } from 'hono/html'
 import configureOpenAPI from './lib/configureOpenApi'
 //middleware
@@ -10,19 +11,22 @@ import maps from './routes/maps/maps.index'
 import points from './routes/points/points.index'
 import users from './routes/users/users.index'
 
+// setup 'Sentry'
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+  integrations: [Sentry.pinoIntegration({
+    error: {
+      levels: ["warn", "error"]
+    }
+  })],
+})
+
 // bootstrap App
 const app = createApp()
 
 // setup openapi rest interface
 configureOpenAPI(app)
-
-// setup 'Sentry'
-import * as Sentry from '@sentry/node'
-
-Sentry.init({
-  dsn: env.SENTRY_DSN,
-  environment: env.NODE_ENV,
-})
 
 // endpoints
 const routes = app.route('/api', index).route('/api/maps', maps).route('/api/points', points).route('/api/users', users)
