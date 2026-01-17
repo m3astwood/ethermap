@@ -22,7 +22,7 @@ export class EthermapApp extends LitElement {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       tracesSampleRate: 0.01,
-      environment: import.meta.env.PROD ? 'production' : import.meta.env.DEV ? 'development' : 'staging',
+      environment: import.meta.env.MODE
     })
 
     dispatch(getUser())
