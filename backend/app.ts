@@ -7,20 +7,25 @@ import configureOpenAPI from './lib/configureOpenApi'
 import { createApp } from './lib/createApp'
 import env from './lib/env'
 import index from './routes'
+import environment from './routes/env/env.index'
 import maps from './routes/maps/maps.index'
 import points from './routes/points/points.index'
 import users from './routes/users/users.index'
 
 // setup 'Sentry'
-Sentry.init({
-  dsn: env.SENTRY_DSN,
-  environment: env.NODE_ENV,
-  integrations: [Sentry.pinoIntegration({
-    error: {
-      levels: ["warn", "error"]
-    }
-  })],
-})
+if (env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: env.SENTRY_DSN,
+    environment: env.NODE_ENV,
+    integrations: [
+      Sentry.pinoIntegration({
+        error: {
+          levels: ['warn', 'error'],
+        },
+      }),
+    ],
+  })
+}
 
 // bootstrap App
 const app = createApp()
@@ -29,7 +34,7 @@ const app = createApp()
 configureOpenAPI(app)
 
 // endpoints
-const routes = app.route('/api', index).route('/api/maps', maps).route('/api/points', points).route('/api/users', users)
+const routes = app.route('/api', index).route('/api/maps', maps).route('/api/points', points).route('/api/users', users).route('/api/environment', environment)
 
 if (env.NODE_ENV !== 'production') {
   // host frontend in dev

@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import 'dotenv/config'
 
+export const FrontEnvSchema = z.object({
+  SENTRY_DSN: z.string().optional()
+})
+
 const EnvSchema = z
   .object({
     NODE_ENV: z.string().optional(),
@@ -12,7 +16,8 @@ const EnvSchema = z
     DB_USER: z.string().optional(),
     DB_PASS: z.string().optional(),
     LOG_LEVEL: z.enum(['info', 'warn', 'error', 'fatal', 'silent']).optional(),
-    SENTRY_DSN: z.string(),
+    SENTRY_DSN: z.string().optional(),
+    FRONTEND_SENTRY_DSN: z.string().optional(),
   })
   .superRefine((data, context) => {
     if (data.NODE_ENV === 'test') {
