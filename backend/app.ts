@@ -17,7 +17,7 @@ const app = createApp()
 configureOpenAPI(app)
 
 // setup 'Sentry'
-import Sentry from '@sentry/node'
+import * as Sentry from '@sentry/node'
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
