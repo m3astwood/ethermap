@@ -10,6 +10,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    post_start:
+      - command: ["npm", "run", "db:migrate"]
 
   db:
     image: postgres:18-alpine

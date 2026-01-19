@@ -12,6 +12,8 @@ services:
       - /app/node_modules
     depends_on:
       - db
+    post_start:
+      - command: ["npm", "run", "db:migrate"]
 
   db:
     image: postgres:18-alpine
